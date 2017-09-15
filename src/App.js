@@ -6,6 +6,7 @@ import { Header } from "./components/header";
 import {Home } from "./components/home";
 import {Main} from './components/main';
 import {Sale} from "./components/sale";
+import {Newinvoice} from "./components/demo";
 import {Payment} from "./components/Payment";
 
 

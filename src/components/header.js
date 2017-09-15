@@ -15,7 +15,7 @@ export class Header extends React.Component{
          <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
            <div className="navbar-nav">
              <a className="nav-item nav-link active" href="/">Home <span className="sr-only">(current)</span></a>
-             <a className="nav-item nav-link" href="/invoice">Invoice</a>
+             <a className="nav-item nav-link" href="/newinvoice">Invoice</a>
              <a className="nav-item nav-link" href="/payment">Payment</a>
              <a className="nav-item nav-link disabled" href="#">Disabled</a>
            </div>

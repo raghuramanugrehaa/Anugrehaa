@@ -5,7 +5,7 @@ import moment from 'moment';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from "axios";
 
-
+var p="/payment";
 
 export  class Home extends Component {
 
@@ -20,16 +20,13 @@ constructor(props) {
 }
 
 componentDidMount() {
-   axios.get(`http://13.126.47.35:8080/AccountRight/48b58bb2-e017-4368-87c4-1fe44c1334ca/Sale/Invoice/Service`,{headers: {
-        "Authorization" : "Basic QWRtaW5pc3RyYXRvcjo=",
-        "x-myobapi-version":"v2"
-      }
-    }).then(res => {
+   axios.get(`http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices`
+   ).then(res => {
 
        const posts = res.data.Items;
 
        this.setState({posts});
-//  console.log("checcd "+JSON.stringify(this.state.posts));
+//console.log("checcd "+JSON.stringify(this.state.posts));
      });
  }
 
@@ -55,18 +52,21 @@ componentDidMount() {
 
 
   cellButton(cell, row, enumObject, rowIndex) {
+  var oo={cell};
+  var pp=oo.cell;
   	return (
-    	<button type="button" className="form-control   btn btn-primary"
-     >
-      	EDIT
-      </button>
+
+
+    <a class="btn btn-primary form-control" href={"/invoice/?id="+pp} role="button">EDIT</a>
+
     )
   }
   cellButton1(cell, row, enumObject, rowIndex) {
+  var oo={cell};
+  var pp=oo.cell;
     	return (
-      	<button type="button" className="form-control   btn btn-primary">
-PAYMENT
-        </button>
+
+      	<a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
       )
     }
 
@@ -90,21 +90,16 @@ PAYMENT
           options={ options }
 
           selectRow={ selectRow }
-          insertRow
           exportCSV
           search
-          deleteRow
           pagination>
           <TableHeaderColumn dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
           <TableHeaderColumn dataField='UID'>Customer Name</TableHeaderColumn>
           <TableHeaderColumn dataField='TotalAmount'>Price</TableHeaderColumn>
           <TableHeaderColumn dataField='Status'>status</TableHeaderColumn>
           <TableHeaderColumn dataField='Date'>Date</TableHeaderColumn>
-          <TableHeaderColumn dataField='button'dataFormat={this.cellButton.bind(this)}>EDIT INVOICE</TableHeaderColumn>
-          <TableHeaderColumn dataField='button'dataFormat={this.cellButton1.bind(this)}>PAYMENT </TableHeaderColumn>
-
-
-
+          <TableHeaderColumn dataField='UID'dataFormat={this.cellButton.bind(this)}>EDIT INVOICE</TableHeaderColumn>
+          <TableHeaderColumn dataField='UID'dataFormat={this.cellButton1.bind(this)}>PAYMENT </TableHeaderColumn>
 
         </BootstrapTable>
 

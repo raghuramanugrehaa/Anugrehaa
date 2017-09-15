@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import Home from './home';
 import invoice from './sale';
 import payment from './Payment';
+import newinvoice from './demo';
 
 
 // The Main component renders one of the three provided
@@ -17,8 +18,9 @@ export class Main extends React.Component{
   <main>
     <Switch>
       <Route exact path='/' component={Home}/>
-      <Route path='/invoice' component={invoice}/>
+      <Route path='/invoice/' component={invoice}/>
       <Route path='/payment' component={payment}/>
+      <Route path='/newinvoice' component={newinvoice}/>
     </Switch>
   </main>
 );

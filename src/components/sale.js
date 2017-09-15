@@ -5,85 +5,79 @@ import moment from 'moment';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import DateTimeField from 'react-bootstrap-datetimepicker';
 import {FormControl, FormGroup,Button} from 'react-bootstrap';
-
+import axios from "axios";
+const queryString = require('query-string');
+var ids="";
+var url="";
 const jobtypes = [ 'USD', 'GBP', 'EUR' ];
 const cellEditProp = {
   mode: 'click',
   blurToSave: true
 };
 
-// validator function pass the user input value and should return true|false.
-function jobNameValidator(value) {
-  const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
-  if (!value) {
-    response.isValid = false;
-    response.notification.type = 'error';
-    response.notification.msg = 'Value must be inserted';
-    response.notification.title = 'Requested Value';
-  } else if (value.length < 10) {
-    response.isValid = false;
-    response.notification.type = 'error';
-    response.notification.msg = 'Value must have 10+ characters';
-    response.notification.title = 'Invalid Value';
-  }
-  return response;
-}
-
-function jobStatusValidator(value) {
-  const nan = isNaN(parseInt(value, 10));
-  if (nan) {
-    return 'Job Status must be a integer!';
-  }
-  return true;
-}
-
 class Sale extends React.Component {
 
-  invalidJobStatus = (cell, row) => {
-    console.log(`${cell} at row id: ${row.id} fails on editing`);
-    return 'invalid-jobstatus-class';
+
+  constructor(props) {
+     super(props);
+     const parsed = queryString.parse(this.props.location.search);
+
+ids=parsed.id;
+url= "http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices/"+ids;
+console.log(ids);
+     this.state = {
+       posts: [],
+       paramss:parsed.id
+     };
   }
 
-  editingJobStatus = (cell, row) => {
-    console.log(`${cell} at row id: ${row.id} in current editing`);
-    return 'editing-jobstatus-class';
-  }
+  componentDidMount() {
+
+       axios.get(url
+     ).then(res => {
+
+       //  const posts = res.data.Items;
+console.log(res.data);
+        // this.setState({posts});
+  //console.log("checcd "+JSON.stringify(this.state.posts));
+       });
+   }
 
   render() {
 
   var jobs = [{
-             id: 123,
+
              name: "ACCOUNT RECV",
              price: 14589
          },{
-             id: 345,
+
              name: "ACCOUNT SALES",
              price: 14758
          },{
-                  id: 698,
+
                   name: "SHOP SALES (INCL GST)",
                   price: 96587
               },{
-                       id: 789,
+
                        name: "FUEL SALE INC GST ",
                        price: 78456
 
                    },{
-                            id: 741,
+
                             name: "LOTTO SALES ",
                             price: 25410
                         },{
-                                 id: 145,
+
                                  name: "FUEL SALES IN LTS",
                                  price: 50000
                              },
                              {
-                               id: 789,
+
                                name: "LIQUOR SALES",
                                price: 50000
                                  },
                             {
-                              id: 785,
+
                             name: "SHOP SALES (EXCL GST)",
                             price: 50000
 
@@ -92,6 +86,7 @@ class Sale extends React.Component {
 
     return (
 <div>
+
 <div className="row">
 
 <div className="row col-md-4">
@@ -116,9 +111,8 @@ class Sale extends React.Component {
                                <br></br>
                                <br></br>
 <BootstrapTable data={ jobs } cellEdit={ cellEditProp } insertRow={ false  }>
-          <TableHeaderColumn dataField='id' isKey={ true }>Job ID</TableHeaderColumn>
-          <TableHeaderColumn dataField='name' editable={false }>Sale Heads</TableHeaderColumn>
-          <TableHeaderColumn dataField='type' editable={ { type: 'select', options: { values: jobtypes } } }>TAX Type</TableHeaderColumn>
+          <TableHeaderColumn dataField='name' isKey={true} editable={false }>Sale Heads</TableHeaderColumn>
+          <TableHeaderColumn dataField='type' editable={ { type: 'select', options: { values: jobtypes } } }>ACCOUNT NAME</TableHeaderColumn>
            <TableHeaderColumn dataField='price' editable={true }>SALE AMOUNT</TableHeaderColumn>
       </BootstrapTable>
 </div>
