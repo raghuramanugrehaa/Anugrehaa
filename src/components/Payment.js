@@ -13,13 +13,39 @@ var url="";
 var cname="";
 var invoice_number="";
 var invoice_date="";
+var cuid="";
 var balance_amount="";
 var account_name="";
+var pay=0;
 const jobtypes = [ 'ATM', 'CASH', 'CHEQUE','CREDIT CARD','DIRECT DEPOSIT','EFTPOS','OTHER' ];
 const cellEditProp = {
   mode: 'click',
-  blurToSave: true
+  blurToSave: true,
+  afterSaveCell: onAfterSaveCell
 };
+
+function handleClick(e){
+e.preventDefault();
+console.log(pay);
+
+axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:"Cash",Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:pay,Type:"Invoice"}]})
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error.response);
+  });
+
+
+
+
+}
+
+function onAfterSaveCell(row,cellName,cellValue){
+ pay+=parseInt(row.price);
+
+}
+
 
 class Payment extends React.Component {
 
@@ -35,7 +61,8 @@ class Payment extends React.Component {
          cusname:"",
          innumber:"",
          indate:"",
-         bamount:""
+         bamount:"",
+
        };
     }
 
@@ -53,6 +80,8 @@ this.setState({cusname:cname});
 this.setState({innumber:invoice_number});
 this.setState({indate:invoice_date});
 this.setState({bamount:balance_amount});
+cuid=data.Customer.UID;
+console.log(cuid);
 
          //  const posts = res.data.Items;
 
@@ -91,7 +120,7 @@ this.setState({bamount:balance_amount});
  <div>
  <div className="row">
     <div className="row col-md-offset-6 col-md-8">
-     <p>                     in     <b>Customer Name:</b> {this.state.cusname}<br /><b>Invoice Number</b>{this.state.innumber}</p><br></br>
+     <p>                     in     <b>Customer Name:</b> {this.state.cusname}<br /><b>Invoice Number:</b>{this.state.innumber}</p><br></br>
 
    <p>                     in     <b>Invoice Date:</b> {this.state.indate}</p>
      <p>                     in     <b>Balance Amount:</b> {this.state.bamount}</p>
@@ -99,7 +128,7 @@ this.setState({bamount:balance_amount});
        </div>
            <div className="col-xl-offset-16">
                       <div class="text-right">
-              <Button bsStyle="success">Submit</Button>
+              <Button bsStyle="success" onClick={handleClick}>Submit</Button>
               </div>
               </div>
               </div>

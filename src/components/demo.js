@@ -73,6 +73,21 @@ axios.post('http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/inv
 
 }
 function onAfterSaveCell(row,cellName,cellValue){
+if(row.price!=="0")
+{
+console.log("i got price "+row.price)
+
+
+
+if(typeof row.type != "undefined") {
+console.log("i got the account")
+    // obj is a valid variable, do something here.
+
+
+if(typeof row.type1 != "undefined") {
+console.log("i got the tax")
+    // obj is a valid variable, do something here.
+
 
 
 
@@ -87,21 +102,14 @@ var gh={};
    var gvf=""+account_uid
 
 accrecv={Description:row.name,Total:row.price,Account:{UID:gvf},TaxCode:{UID:acf}}
-accrecv1={Description:"fooot",Total:3000,Account:{UID:gvf},TaxCode:{UID:acf}}
-if(checkHash[row.name]){
-checkHash[row.name]={}
-checkHash[row.name]=accrecv
-}
-else{
-checkHash[row.name]={}
-checkHash[row.name]=accrecv
-}
 
 
-checkHash["1"]=accrecv;
-checkHash["2"]=accrecv;
-var lf=""+JSON.stringify(checkHash["1"]);
-console.log(lf);
+checkHash[row.name]={}
+checkHash[row.name]=accrecv
+
+
+
+
 Object.keys(checkHash).forEach(function (key) {
    console.log("im in cheking hasg")
 
@@ -110,7 +118,7 @@ Object.keys(checkHash).forEach(function (key) {
 
 
 
-
+}}}
 
  if('ACCOUNT SALES'==row.name){
 

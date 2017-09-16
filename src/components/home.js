@@ -94,8 +94,8 @@ componentDidMount() {
           search
           pagination>
           <TableHeaderColumn dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
-          <TableHeaderColumn dataField='UID'>Customer Name</TableHeaderColumn>
-          <TableHeaderColumn dataField='TotalAmount'>Price</TableHeaderColumn>
+          <TableHeaderColumn dataField='UID'>Store  Name</TableHeaderColumn>
+          <TableHeaderColumn dataField='BalanceDueAmount'>Price</TableHeaderColumn>
           <TableHeaderColumn dataField='Status'>status</TableHeaderColumn>
           <TableHeaderColumn dataField='Date'>Date</TableHeaderColumn>
           <TableHeaderColumn dataField='UID'dataFormat={this.cellButton.bind(this)}>EDIT INVOICE</TableHeaderColumn>
