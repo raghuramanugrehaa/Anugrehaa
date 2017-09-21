@@ -18,33 +18,99 @@ var balance_amount="";
 var account_name="";
 var raccnames = {};
 var pay=0;
-const jobtypes = [ 'ATM', 'CASH', 'CHEQUE','CREDIT CARD','DIRECT DEPOSIT','EFTPOS','OTHER' ];
+var hashacct ={};
+var hashtax={};
+var hashitems={};
+var RV="";
+var CV="";
+var invoiceID="";
+
+var Lines = {
+    details: []
+};
 const cellEditProp = {
   mode: 'click',
   blurToSave: true,
   afterSaveCell: onAfterSaveCell
+
 };
+
+const options = {
+  afterInsertRow: onAfterInsertRow   // A hook for after insert rows
+};
+
 
 function handleClick(e){
 e.preventDefault();
-console.log(pay);
+//var date = document.getElementById("date").value;
 
-axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:"Cash",Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:pay,Type:"Invoice"}]})
+console.log(CV);
+console.log("im final"+JSON.stringify(hashitems));
+var date = document.getElementById("datenow").value;
+Object.keys(hashitems).forEach(function (key) {
+    var value = hashitems[key]
+    var ll=value
+
+    console.log("jhg"+value)
+    Lines.details.push(ll)
+
+    // iteration code
+})
+
+
+var klk=Lines.details;
+console.log(klk);
+console.log("yes"+CV);
+
+axios.post('http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices',{UID:ids,Number:invoiceID,Date:date,Customer:{UID:CV},Lines:klk,RowVersion:RV})
   .then(function (response) {
-    console.log(response);
+   console.log(response);
      window.location.assign('/');
   })
   .catch(function (error) {
     console.log(error.response);
   });
 
-
-
-
 }
 
+
 function onAfterSaveCell(row,cellName,cellValue){
- pay+=parseInt(row.price);
+if(row.Total!=="0")
+{
+console.log("i got price "+row.Total)
+
+
+
+if(typeof row.type != "undefined") {
+console.log("i got the account")
+    // obj is a valid variable, do something here.
+
+
+if(typeof row.Description != "undefined") {
+console.log("i got the tax")
+
+var TUID=hashtax[row.type];
+var accountname= hashacct[row.type];
+var taxcode=TUID.UID;
+
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
+
+  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+
+// pay+=parseInt(row.price);
+}
+}
+}
+}
+
+
+function onAfterInsertRow(row) {
+var TUID=hashtax[row.type];
+var accountname= hashacct[row.type];
+var taxcode=TUID.UID;
+
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
+  console.log('onAfterInsertRow'+JSON.stringify(hashitems[row.Description]));
 
 }
 
@@ -54,6 +120,7 @@ class Sale extends React.Component {
     constructor(props) {
        super(props);
        const parsed = queryString.parse(this.props.location.search);
+          //document.getElementById("datenow").value = "2014-02-09";
 
   ids=parsed.id;
   url= "http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices/"+ids;
@@ -64,18 +131,30 @@ class Sale extends React.Component {
          salesheads:[],
          taxc:[],
          acco:[],
+         datem:""
 
 
        };
     }
 
     componentDidMount() {
+   // document.getElementById("date").value = "2014-02-09";
         axios.all([
         axios.get(url),
         axios.get('http://localhost:3001/sales/dependencies/48b58bb2-e017-4368-87c4-1fe44c1334ca/')
         ])
         .then(axios.spread((invoice,dependencies) => {
         var acc = invoice.data.Lines;
+        RV=invoice.data.RowVersion;
+        CV=invoice.data.Customer.UID;
+        invoiceID=invoice.data.Number;
+        var da=invoice.data.Date;
+         var res = da.split("T");
+
+        this.setState({datem:res[0]})
+        console.log(da);
+
+       // document.getElementById('datenow').defaultValue='2017-02-03'
         var accnt =[];
         for (var k = 0; k < acc.length; k++) {
 
@@ -97,21 +176,20 @@ class Sale extends React.Component {
                           }
           this.setState({salesheads:heads})
 
-        var tax=dependencies.data.taxcodes;
-        var tat=[];
-        for (var k = 0; k < tax.length; k++) {
-                tat.push(tax[k].Name);
-            }
-        this.setState({taxc:tat})
+
 
         var acnames = dependencies.data.Account;
         var acn=[];
 
   for (var k = 0; k < acnames.length; k++) {
                 acn.push(acnames[k].Name);
+            hashacct[acnames[k].Name]=acnames[k].UID
+           hashtax[acnames[k].Name]=acnames[k].TaxCodeUID
             }
+
         this.setState({acco:acn})
-        console.log(acn)
+        var g=hashtax['Freight Collected'];
+        console.log("iam acouint "+g.UID)
         console.log(dependencies.data)
         }))
         .catch(error => console.log(error));
@@ -134,16 +212,18 @@ row.type=pp
                   )
                   }
 
-  render() {
 
+  render() {
 
 
     return (
  <div className="container">
  <div className="row">
-
-           <div className="col-md-10">
-                      <div className="text-right">
+ <div>
+ <input className="form-control col-md-12" id="datenow" type="date" value={this.state.datem}/>
+ </div>
+ <div className="col-md-8">
+ <div className="text-right">
               <Button bsStyle="success" onClick={handleClick}>Submit</Button>
               </div>
               </div>
@@ -151,11 +231,11 @@ row.type=pp
               <br></br>
               <br></br>
 
-     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } insertRow={ true  } insertRow>
+     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } options={ options }insertRow={ true  } insertRow>
                <TableHeaderColumn width="300" dataField='Description' isKey={true} editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Sale Heads</TableHeaderColumn>
                <TableHeaderColumn width="300" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.acco} } } >ACCOUNT NAME</TableHeaderColumn>
                 <TableHeaderColumn width="300" dataField='Total' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
-                <TableHeaderColumn width="300" dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.taxc } } }>TAX TYPE</TableHeaderColumn>
+
 
            </BootstrapTable>
       </div>
