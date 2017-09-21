@@ -64,11 +64,35 @@ componentDidMount() {
   cellButton1(cell, row, enumObject, rowIndex) {
   var oo={cell};
   var pp=oo.cell;
+  var x=row.Status;
+  if(x=="Credit" || x=="Closed"){
     	return (
 
-      	<a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
+<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
       )
+      }
+      else{
+      return(
+
+      <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
+
+      )
+
+      }
     }
+
+      cellButton2(cell, row, enumObject, rowIndex) {
+            var oo={cell};
+           var pp=oo.cell.Name;
+
+            console.log("name is"+pp)
+            	return (
+
+
+              <p>{pp}</p>
+
+              )
+            }
 
     render() {
 //console.log("ffinal "+this.state.posts);
@@ -83,27 +107,23 @@ componentDidMount() {
 
 
       return (
+<div className="container">
 
 
- //{this.state.posts.data.Items.map(post =>
-       <BootstrapTable data={ this.state.posts }
-          options={ options }
 
-          selectRow={ selectRow }
-          exportCSV
-          search
-          pagination>
-          <TableHeaderColumn dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
-          <TableHeaderColumn dataField='UID'>Store  Name</TableHeaderColumn>
-          <TableHeaderColumn dataField='BalanceDueAmount'>Price</TableHeaderColumn>
-          <TableHeaderColumn dataField='Status'>status</TableHeaderColumn>
-          <TableHeaderColumn dataField='Date'>Date</TableHeaderColumn>
-          <TableHeaderColumn dataField='UID'dataFormat={this.cellButton.bind(this)}>EDIT INVOICE</TableHeaderColumn>
-          <TableHeaderColumn dataField='UID'dataFormat={this.cellButton1.bind(this)}>PAYMENT </TableHeaderColumn>
 
-        </BootstrapTable>
 
-//)}
+<BootstrapTable data={ this.state.posts } options={ options } selectRow={ selectRow }  exportCSV  search  pagination >
+         <TableHeaderColumn width="300" dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
+                   <TableHeaderColumn width="350" dataField='Customer' dataFormat={this.cellButton2.bind(this)}>Store  Name</TableHeaderColumn>
+                   <TableHeaderColumn width="300" dataField='BalanceDueAmount'>Price</TableHeaderColumn>
+                   <TableHeaderColumn width="300" dataField='Status' >status</TableHeaderColumn>
+                   <TableHeaderColumn width="100" dataField='Date'>Date</TableHeaderColumn>
+
+                   <TableHeaderColumn width="300" dataField='UID'dataFormat={this.cellButton.bind(this)}>EDIT INVOICE</TableHeaderColumn>
+                   <TableHeaderColumn width="300" dataField='UID'dataFormat={this.cellButton1.bind(this)}>PAYMENT </TableHeaderColumn>
+      </BootstrapTable>
+</div>
 
 
       );

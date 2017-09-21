@@ -1,10 +1,15 @@
 import React from "react";
 import ReactDOM from 'react-dom';
-import { NavLink } from 'react-router-dom';
+import { NavLink,HashRouter } from 'react-router-dom';
 import moment from 'moment';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import {Button} from 'react-bootstrap';
+import {Redirect,Route} from 'react-router';
+import Loading from 'react-loading-bar'
 import axios from "axios";
+import NProgress from "nprogress";
+
+
 var url="";
 var accrecv;
 var accrecv1;
@@ -29,49 +34,7 @@ const cellEditProp = {
   blurToSave: true,
   afterSaveCell: onAfterSaveCell
 };
-function handleClick(e){
-e.preventDefault();
-var date = document.getElementById("date").value;
-var customer=document.getElementById("customer").value;
-//var data="{Date:"+date+",Customer:{UID:"+customer+"},"+accrecv+"}";
 
-Object.keys(checkHash).forEach(function (key) {
-    var value = checkHash[key]
-    var ll=value
-
-    console.log("jhg"+value)
-    Lines.details.push(ll)
-
-    // iteration code
-})
-
-
-var klk=Lines.details;
-
-
-axios.post('http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices',{Date:date,Customer:{UID:customer},Lines:klk})
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error.response);
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
 function onAfterSaveCell(row,cellName,cellValue){
 if(row.price!=="0")
 {
@@ -148,15 +111,53 @@ Object.keys(checkHash).forEach(function (key) {
 class Newinvoice extends React.Component {
 
 
+
   constructor(props) {
      super(props);
+     this.handleClick = this.handleClick.bind(this);
      url= "http://localhost:3001/sales/dependencies/48b58bb2-e017-4368-87c4-1fe44c1334ca/";
      this.state = {
        posts: [],
-       accounts: []
+       accounts: [],
+       salesheads:[]
 
      };
   }
+
+
+ handleClick(){
+//e.preventDefault();
+NProgress.start();
+var date = document.getElementById("date").value;
+var customer=document.getElementById("customer").value;
+//var data="{Date:"+date+",Customer:{UID:"+customer+"},"+accrecv+"}";
+
+Object.keys(checkHash).forEach(function (key) {
+    var value = checkHash[key]
+    var ll=value
+
+    console.log("jhg"+value)
+    Lines.details.push(ll)
+
+    // iteration code
+})
+
+
+var klk=Lines.details;
+
+
+axios.post('http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices',{Date:date,Customer:{UID:customer},Lines:klk})
+  .then(function (response) {
+   console.log(response);
+     window.location.assign('/');
+NProgress.done();
+  })
+  .catch(function (error) {
+    console.log(error.response);
+  });
+{this.onHide}
+}
+
 
   componentDidMount() {
 
@@ -178,7 +179,28 @@ for (var k = 0; k < acc.length; k++) {
         accnt.push(acc[k].Name);
         myHash[acc[k].Name]=[acc[k].UID];
     }
+
+
+
 this.setState({accounts:accnt})
+
+var acc1=res.data.salesheads
+var heads=[];
+
+for (var k = 0; k < acc1.length; k++) {
+        heads.push(acc1[k]);
+
+    }
+
+
+
+this.setState({salesheads:heads})
+
+
+
+
+
+
 console.log("im hash table"+myHash)
 
 
@@ -199,47 +221,9 @@ this.setState({taxc:tat})
 
   render() {
 
-  var jobs = [{
-
-             name: "ACCOUNT RECV",
-             price: 0
-         },{
-
-             name: "ACCOUNT SALES",
-             price: 0
-         },{
-
-                  name: "SHOP SALES (INCL GST)",
-                  price: 0
-              },{
-
-                       name: "FUEL SALE INC GST ",
-                       price: 0
-
-                   },{
-
-                            name: "LOTTO SALES ",
-                            price: 0
-                        },{
-
-                                 name: "FUEL SALES IN LTS",
-                                 price: 0
-                             },
-                             {
-
-                               name: "LIQUOR SALES",
-                               price: 0
-                                 },
-                            {
-
-                          name: "SHOP SALES (EXCL GST)",
-                            price: 0
-
-                            }];
-
 
     return (
-<div>
+<div className="container">
 
 <div className="row">
 
@@ -255,18 +239,18 @@ this.setState({taxc:tat})
 </div>
                  <div className="row-col-md-16">
                                        <div class="text-right">
-                               <Button bsStyle="success" onClick={handleClick}>Submit</Button>
+                               <Button bsStyle="success" onClick={this.handleClick}>Submit</Button>
                                </div>
                  .              </div>
 
                                </div>
                                <br></br>
                                <br></br>
-<BootstrapTable data={ jobs } cellEdit={ cellEditProp } insertRow={ false  }>
-          <TableHeaderColumn dataField='name' isKey={true} editable={false } >Sale Heads</TableHeaderColumn>
-          <TableHeaderColumn dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
-           <TableHeaderColumn dataField='price' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
-           <TableHeaderColumn dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.taxc } } }>TAX TYPE</TableHeaderColumn>
+<BootstrapTable data={ this.state.salesheads } cellEdit={ cellEditProp } insertRow={ false  }>
+          <TableHeaderColumn width="300" dataField='Name' isKey={true} editable={false }  >Sale Heads</TableHeaderColumn>
+          <TableHeaderColumn width="300" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
+           <TableHeaderColumn width="300" dataField='Price' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
+           <TableHeaderColumn width="300" dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.taxc } } }>TAX TYPE</TableHeaderColumn>
 
       </BootstrapTable>
 </div>

@@ -26,15 +26,29 @@ const cellEditProp = {
 
 function handleClick(e){
 e.preventDefault();
-console.log(pay);
-
-axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:"Cash",Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:pay,Type:"Invoice"}]})
+//console.log(document.getElementById('Amount').value);
+var k=parseInt(document.getElementById('Amount').value);
+console.log(k);
+var x=parseInt(balance_amount);
+console.log(x);
+if(k==x)
+{
+axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:"Cash",Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
   .then(function (response) {
     console.log(response);
+     window.location.assign('/');
   })
   .catch(function (error) {
     console.log(error.response);
   });
+
+  }
+  else
+  {
+  alert("Entered Amount does not match with Invoice Amount");
+
+  }
+
 
 
 
@@ -92,6 +106,7 @@ console.log(cuid);
 
   render() {
 
+
   var jobs = [{
              name: "CHEQUE",
              price: 0
@@ -117,29 +132,37 @@ console.log(cuid);
 
 
     return (
- <div>
+ <div className="container">
  <div className="row">
-    <div className="row col-md-offset-6 col-md-8">
-     <p>                     in     <b>Customer Name:</b> {this.state.cusname}<br /><b>Invoice Number:</b>{this.state.innumber}</p><br></br>
+    <div className="row col-md-10">
 
-   <p>                     in     <b>Invoice Date:</b> {this.state.indate}</p>
-     <p>                     in     <b>Balance Amount:</b> {this.state.bamount}</p>
+   <textarea id="note" className="form-control" style={{"height":"100px"} } value={"Customer Name:"+this.state.cusname+"\nInvoice Number:"+this.state.innumber+"\nInvoice Date:"+this.state.indate+"\nBalance Amount:"+this.state.bamount} /><br></br>
 
        </div>
-           <div className="col-xl-offset-16">
-                      <div class="text-right">
-              <Button bsStyle="success" onClick={handleClick}>Submit</Button>
-              </div>
-              </div>
-              </div>
-              <br></br>
-              <br></br>
 
-      <BootstrapTable data={ jobs } cellEdit={ cellEditProp } insertRow={ false  }>
-          <TableHeaderColumn dataField='name' isKey={true} editable={false }>MEDIA TENDERS</TableHeaderColumn>
-           <TableHeaderColumn dataField='type' editable={ { type: 'select', options: { values: jobtypes } } }>MEDIA COLLECTS</TableHeaderColumn>
-           <TableHeaderColumn dataField='price' editable={true }>SETTLEMENT AMOUNT</TableHeaderColumn>
-      </BootstrapTable>
+              </div>
+              <br></br>
+              <br></br>
+<div className="form-inline">
+     <div className="row col-md-4">
+          <select name="cars" className="form-control">
+             <option value="CASH">CASH</option>
+             <option value="CHEQUE">CHEQUE</option>
+             <option value="EFTPOS">EFTPOS</option>
+             <option value="MOTOR PASS">MOTOR PASS</option>
+             <option value="MOTOR CHARGE">MOTOR CHARGE</option>
+             <option value="AMERICAN EXPRESS">AMERICAN EXPRESS</option>
+                      </select>
+     </div>
+     <div className="col-md-2">
+    <input type="text" className="form-control" id="Amount"  onchange="check()" placeholder="Enter Amount"/>
+     </div>
+     <div className="col-md-6">
+                                               <div class="text-right">
+                                       <Button bsStyle="success" onClick={handleClick}>Submit</Button>
+                                       </div>
+                                       </div>
+</div>
       </div>
     );
   }
