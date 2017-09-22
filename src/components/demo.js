@@ -24,6 +24,7 @@ var collectioin="";
 const jobt = [ 'INR', 'DUL', 'DOLL' ];
 var myHash = {};
 var checkHash = {};
+var taxhash={};
 var acid={};
 var tcid={};
 var Lines = {
@@ -36,9 +37,10 @@ const cellEditProp = {
 };
 
 function onAfterSaveCell(row,cellName,cellValue){
-if(row.price!=="0")
+console.log("sixth senes"+JSON.stringify(taxhash))
+if(row.Price!="0")
 {
-console.log("i got price "+row.price)
+console.log("i got price "+row.Price)
 
 
 
@@ -47,30 +49,30 @@ console.log("i got the account")
     // obj is a valid variable, do something here.
 
 
-if(typeof row.type1 != "undefined") {
-console.log("i got the tax")
+
     // obj is a valid variable, do something here.
 
 
 
 
 var gh={};
-   var tax_uid=myHash[row.type1];
+   var taxname= taxhash[row.type];
+   var taxcodes=taxname.UID;
 
    var account_uid=myHash[row.type];
-   console.log()
+   console.log(taxcodes)
 
 
-   var acf=""+tax_uid
+
    var gvf=""+account_uid
 
-accrecv={Description:row.name,Total:row.price,Account:{UID:gvf},TaxCode:{UID:acf}}
+accrecv={Description:row.Name,Total:row.Price,Account:{UID:gvf},TaxCode:{UID:taxcodes}}
 
 
-checkHash[row.name]={}
-checkHash[row.name]=accrecv
+checkHash[row.Name]={}
+checkHash[row.Name]=accrecv
 
-
+console.log(accrecv)
 
 
 Object.keys(checkHash).forEach(function (key) {
@@ -81,7 +83,7 @@ Object.keys(checkHash).forEach(function (key) {
 
 
 
-}}}
+}}
 
  if('ACCOUNT SALES'==row.name){
 
@@ -178,6 +180,7 @@ var accnt=[];
 for (var k = 0; k < acc.length; k++) {
         accnt.push(acc[k].Name);
         myHash[acc[k].Name]=[acc[k].UID];
+        taxhash[acc[k].Name]=acc[k].TaxCodeUID
     }
 
 
@@ -206,15 +209,7 @@ console.log("im hash table"+myHash)
 
                                      /* use key/value for intended purpose */
 
-var tax=res.data.taxcodes
-var tat=[];
-for (var k = 0; k < acc.length; k++) {
-        tat.push(tax[k].Name);
-        myHash[tax[k].Name]=[tax[k].UID];
-    }
-    var value = myHash["CAP"];
-                                            console.log("checking"+value);
-this.setState({taxc:tat})
+
 
   });
  }
@@ -250,7 +245,7 @@ this.setState({taxc:tat})
           <TableHeaderColumn width="300" dataField='Name' isKey={true} editable={false }  >Sale Heads</TableHeaderColumn>
           <TableHeaderColumn width="300" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
            <TableHeaderColumn width="300" dataField='Price' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
-           <TableHeaderColumn width="300" dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.taxc } } }>TAX TYPE</TableHeaderColumn>
+
 
       </BootstrapTable>
 </div>

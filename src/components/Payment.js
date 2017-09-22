@@ -28,12 +28,14 @@ function handleClick(e){
 e.preventDefault();
 //console.log(document.getElementById('Amount').value);
 var k=parseInt(document.getElementById('Amount').value);
-console.log(k);
+var type=document.getElementById('paymentdetails').value
+console.log("Im type"+type);
 var x=parseInt(balance_amount);
 console.log(x);
-if(k==x)
+
+if(k<=x)
 {
-axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:"Cash",Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
+axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:type,Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
   .then(function (response) {
     console.log(response);
      window.location.assign('/');
@@ -76,15 +78,18 @@ class Payment extends React.Component {
          innumber:"",
          indate:"",
          bamount:"",
+         payment:[]
 
        };
     }
 
     componentDidMount() {
 
-         axios.get(url
-       ).then(res => {
-var data=res.data;
+         axios.all([
+                 axios.get(url),
+                 axios.get('http://localhost:3001/sales/dependencies/48b58bb2-e017-4368-87c4-1fe44c1334ca/')
+                 ]).then(axios.spread((invoice,dependencies) =>{
+var data=invoice.data;
 cname=data.Customer.Name;
 console.log(cname);
 invoice_number=data.Number;
@@ -97,38 +102,31 @@ this.setState({bamount:balance_amount});
 cuid=data.Customer.UID;
 console.log(cuid);
 
+
+
+
+
+    var arrTen = [];
+    var result=dependencies.data.paymentmode;
+     for (var k = 0; k < result.length; k++) {
+            arrTen.push(<option key={result[k].Name} value={result[k].Name}> {result[k].Name} </option>);
+        }
+           //  const posts = res.data.Items;
+
+           this.setState({payment: arrTen});
+
+
          //  const posts = res.data.Items;
 
           // this.setState({posts});
     //console.log("checcd "+JSON.stringify(this.state.posts));
-         });
+         }));
      }
 
   render() {
 
 
-  var jobs = [{
-             name: "CHEQUE",
-             price: 0
-             },{
-             name: "CASH",
-             price: 0
-            },{
-            name: "EFTPOS",
-            price: 0
-            },{
-            name: "MOTOR PASS",
-            price: 0
-            },{
-            name: "MOTOR CHARGE",
-            price: 0
-            },{
-            name: "FLEET CARD",
-            price: 0
-            },{
-            name: "AMERICAN EXPRESS",
-            price: 0
-            }];
+
 
 
     return (
@@ -145,13 +143,8 @@ console.log(cuid);
               <br></br>
 <div className="form-inline">
      <div className="row col-md-4">
-          <select name="cars" className="form-control">
-             <option value="CASH">CASH</option>
-             <option value="CHEQUE">CHEQUE</option>
-             <option value="EFTPOS">EFTPOS</option>
-             <option value="MOTOR PASS">MOTOR PASS</option>
-             <option value="MOTOR CHARGE">MOTOR CHARGE</option>
-             <option value="AMERICAN EXPRESS">AMERICAN EXPRESS</option>
+          <select name="cars" id="paymentdetails" className="form-control">
+{this.state.payment}
                       </select>
      </div>
      <div className="col-md-2">
