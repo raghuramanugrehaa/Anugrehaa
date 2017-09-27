@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { NavLink } from 'react-router-dom';
-import moment from 'moment';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from "axios";
 
@@ -54,27 +52,40 @@ componentDidMount() {
   cellButton(cell, row, enumObject, rowIndex) {
   var oo={cell};
   var pp=oo.cell;
-  	return (
+    var x=row.Status;
+ if(x==="Credit" || x==="Closed"){
+     	return (
 
+ //<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
+ <a href={"/payment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="EDIT"/></a>
+       )
+       }
+       else{
+       return(
+     //  <input type="button" value="Payment" className="btn btn-info" onclick={"window.location.href=/payment/?id="+pp} />
+ <a href={"/invoice/?id="+pp} ><input type="button" className="btn btn-info" value="EDIT"/></a>
+    //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
-    <a class="btn btn-primary form-control" href={"/invoice/?id="+pp} role="button">EDIT</a>
+       )
 
-    )
+       }
   }
   cellButton1(cell, row, enumObject, rowIndex) {
   var oo={cell};
   var pp=oo.cell;
   var x=row.Status;
-  if(x=="Credit" || x=="Closed"){
+  if(x==="Credit" || x==="Closed"){
     	return (
 
-<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
+//<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
+<a href={"/payment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="Payment"/></a>
       )
       }
       else{
       return(
-
-      <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
+    //  <input type="button" value="Payment" className="btn btn-info" onclick={"window.location.href=/payment/?id="+pp} />
+<a href={"/payment/?id="+pp} ><input type="button" className="btn btn-info" value="Payment"/></a>
+   //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
       )
 
@@ -102,26 +113,29 @@ componentDidMount() {
         showOnlySelected: true
       };
       const options = {
-        toolBar: this.createCustomToolBar
+        toolBar: this.createCustomToolBar,
+         defaultSortName: 'Status',  // default sort column name
+              defaultSortOrder: 'desc'  // default sort order
       };
 
 
       return (
-<div className="container">
+<div>
 
 
 
 
 
-<BootstrapTable data={ this.state.posts } options={ options } selectRow={ selectRow }  exportCSV  search  pagination >
-         <TableHeaderColumn width="300" dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
-                   <TableHeaderColumn width="350" dataField='Customer' dataFormat={this.cellButton2.bind(this)}>Store  Name</TableHeaderColumn>
-                   <TableHeaderColumn width="300" dataField='BalanceDueAmount'>Price</TableHeaderColumn>
-                   <TableHeaderColumn width="300" dataField='Status' >status</TableHeaderColumn>
-                   <TableHeaderColumn width="100" dataField='Date'>Date</TableHeaderColumn>
+<BootstrapTable data={ this.state.posts } options={ options }   exportCSV  search  pagination  striped hover condensed>
+         <TableHeaderColumn width="120"  dataAlign="center" dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
+                   <TableHeaderColumn width="200"  dataAlign="center" dataField='Customer' dataFormat={this.cellButton2.bind(this)}>Store  Name</TableHeaderColumn>
+                   <TableHeaderColumn width="180"  dataAlign="center" dataField='BalanceDueAmount'>BalanceDueAmount</TableHeaderColumn>
+                   <TableHeaderColumn  width="140" dataAlign="center" dataField='TotalAmount'>TotalAmount</TableHeaderColumn>
+                    <TableHeaderColumn  width="100"  dataAlign="center" dataField='Status' >status</TableHeaderColumn>
+                   <TableHeaderColumn  width="180" dataAlign="center" dataField='Date'>Date</TableHeaderColumn>
 
-                   <TableHeaderColumn width="300" dataField='UID'dataFormat={this.cellButton.bind(this)}>EDIT INVOICE</TableHeaderColumn>
-                   <TableHeaderColumn width="300" dataField='UID'dataFormat={this.cellButton1.bind(this)}>PAYMENT </TableHeaderColumn>
+                   <TableHeaderColumn  width="150"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>EDIT INVOICE</TableHeaderColumn>
+                   <TableHeaderColumn   width="100" dataAlign="center" dataField='UID'dataFormat={this.cellButton1.bind(this)}>PAYMENT </TableHeaderColumn>
       </BootstrapTable>
 </div>
 

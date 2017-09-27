@@ -1,18 +1,8 @@
-import React, { Component } from 'react';
-import Select from 'react-select';
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Header } from "./components/header";
-import {Home } from "./components/home";
 import {Main} from './components/main';
-import {Sale} from "./components/sale";
-import {Newinvoice} from "./components/demo";
-import {Payment} from "./components/Payment";
-
-
-
-
-
 
 export class App extends React.Component {
   render() {

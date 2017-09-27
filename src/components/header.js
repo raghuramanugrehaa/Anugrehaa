@@ -1,7 +1,5 @@
 import React from "react";
-import {NavLink } from 'react-router-dom';
-import {Navbar,Nav, NavItem} from 'react-bootstrap'
-import { Link } from 'react-router-dom';
+
 
 export class Header extends React.Component{
 
@@ -16,7 +14,6 @@ export class Header extends React.Component{
            <div className="navbar-nav">
              <a className="nav-item nav-link active" href="/">Home <span className="sr-only">(current)</span></a>
              <a className="nav-item nav-link" href="/newinvoice">New Invoice</a>
-             <a className="nav-item nav-link" href="#">Payment</a>
              <a className="nav-item nav-link disabled" href="#">Disabled</a>
            </div>
          </div>

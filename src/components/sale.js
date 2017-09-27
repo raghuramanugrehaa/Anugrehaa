@@ -1,23 +1,14 @@
 import React from "react";
-import ReactDOM from 'react-dom';
-import { NavLink } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
+
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import DateTimeField from 'react-bootstrap-datetimepicker';
-import {FormControl, FormGroup,Button} from 'react-bootstrap';
+
+import {Button} from 'react-bootstrap';
 import axios from "axios";
 const queryString = require('query-string');
 var ids="";
 var url="";
-var cname="";
-var invoice_number="";
-var invoice_date="";
-var cuid="";
-var balance_amount="";
-var account_name="";
 var raccnames = {};
-var pay=0;
+
 var hashacct ={};
 var hashtax={};
 var hashitems={};
@@ -36,7 +27,8 @@ const cellEditProp = {
 };
 
 const options = {
-  afterInsertRow: onAfterInsertRow   // A hook for after insert rows
+  afterInsertRow: onAfterInsertRow,
+     // A hook for after insert rows
 };
 
 
@@ -81,12 +73,12 @@ console.log("i got price "+row.Total)
 
 
 
-if(typeof row.type != "undefined") {
+if(typeof row.type !== "undefined") {
 console.log("i got the account")
     // obj is a valid variable, do something here.
 
 
-if(typeof row.Description != "undefined") {
+if(typeof row.Description !== "undefined") {
 console.log("i got the tax")
 
 var TUID=hashtax[row.type];
@@ -171,7 +163,7 @@ class Sale extends React.Component {
 
           var acc1 = dependencies.data.salesheads;
           var heads=[];
-          for (var k = 0; k < acc1.length; k++) {
+          for (k = 0; k < acc1.length; k++) {
                           heads.push(acc1[k].Name);
                           }
           this.setState({salesheads:heads})
@@ -181,7 +173,7 @@ class Sale extends React.Component {
         var acnames = dependencies.data.Account;
         var acn=[];
 
-  for (var k = 0; k < acnames.length; k++) {
+  for (k = 0; k < acnames.length; k++) {
                 acn.push(acnames[k].Name);
             hashacct[acnames[k].Name]=acnames[k].UID
            hashtax[acnames[k].Name]=acnames[k].TaxCodeUID
@@ -206,8 +198,7 @@ console.log(oo)
                 pp=raccnames[row.Description]
                 	return (
 
-row.type=pp
-
+"hi"
 
                   )
                   }
@@ -231,9 +222,9 @@ row.type=pp
               <br></br>
               <br></br>
 
-     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } options={ options }insertRow={ true  } insertRow>
+     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } options={ options } insertRow deleteRow >
                <TableHeaderColumn width="300" dataField='Description' isKey={true} editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Sale Heads</TableHeaderColumn>
-               <TableHeaderColumn width="300" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.acco} } } >ACCOUNT NAME</TableHeaderColumn>
+               <TableHeaderColumn width="300" value="type" dataField='type'  editable={ {defaultValue: 1 ,  type: 'select', options: {values: this.state.acco} } } >ACCOUNT NAME</TableHeaderColumn>
                 <TableHeaderColumn width="300" dataField='Total' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
 
 

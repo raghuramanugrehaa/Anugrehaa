@@ -1,11 +1,5 @@
 import React from "react";
-import ReactDOM from 'react-dom';
-import { NavLink } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import DateTimeField from 'react-bootstrap-datetimepicker';
-import {FormControl, FormGroup,Button} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 import axios from "axios";
 const queryString = require('query-string');
 var ids="";
@@ -15,14 +9,7 @@ var invoice_number="";
 var invoice_date="";
 var cuid="";
 var balance_amount="";
-var account_name="";
-var pay=0;
-const jobtypes = [ 'ATM', 'CASH', 'CHEQUE','CREDIT CARD','DIRECT DEPOSIT','EFTPOS','OTHER' ];
-const cellEditProp = {
-  mode: 'click',
-  blurToSave: true,
-  afterSaveCell: onAfterSaveCell
-};
+
 
 function handleClick(e){
 e.preventDefault();
@@ -38,7 +25,7 @@ if(k<=x)
 axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:type,Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
   .then(function (response) {
     console.log(response);
-     window.location.assign('/');
+     window.location.assign('/payment?id='+ids);
   })
   .catch(function (error) {
     console.log(error.response);
@@ -47,7 +34,7 @@ axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/cus
   }
   else
   {
-  alert("Entered Amount does not match with Invoice Amount");
+  alert("payment amount should not be more than Invoice due amount");
 
   }
 
@@ -57,10 +44,7 @@ axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/cus
 
 }
 
-function onAfterSaveCell(row,cellName,cellValue){
- pay+=parseInt(row.price);
 
-}
 
 
 class Payment extends React.Component {
@@ -68,7 +52,7 @@ class Payment extends React.Component {
     constructor(props) {
        super(props);
        const parsed = queryString.parse(this.props.location.search);
-
+this.onChange = this.onChange.bind(this)
   ids=parsed.id;
   url= "http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices/"+ids;
   console.log(ids);
@@ -82,7 +66,12 @@ class Payment extends React.Component {
 
        };
     }
-
+  onChange(e){
+      const re = /^[0-9\b]+$/;
+      if (e.target.value == '' || re.test(e.target.value)) {
+         this.setState({value: e.target.value})
+      }
+   }
     componentDidMount() {
 
          axios.all([
@@ -133,7 +122,7 @@ console.log(cuid);
  <div className="container">
  <div className="row">
     <div className="row col-md-10">
-
+<label for="note">Sales Details:</label>
    <textarea id="note" className="form-control" style={{"height":"100px"} } value={"Customer Name:"+this.state.cusname+"\nInvoice Number:"+this.state.innumber+"\nInvoice Date:"+this.state.indate+"\nBalance Amount:"+this.state.bamount} /><br></br>
 
        </div>
@@ -143,12 +132,14 @@ console.log(cuid);
               <br></br>
 <div className="form-inline">
      <div className="row col-md-4">
+     <label for="paymentdetails">Payment Methods:</label>
           <select name="cars" id="paymentdetails" className="form-control">
 {this.state.payment}
                       </select>
      </div>
      <div className="col-md-2">
-    <input type="text" className="form-control" id="Amount"  onchange="check()" placeholder="Enter Amount"/>
+     <input value={this.state.value} onkeypress={this.onChange}/>
+    <input type="text" className="form-control" value={this.state.value} id="Amount"  onkeypress={this.onChange} placeholder="Enter Amount"/>
      </div>
      <div className="col-md-6">
                                                <div class="text-right">
