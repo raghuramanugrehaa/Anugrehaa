@@ -14,14 +14,25 @@ var balance_amount="";
 function handleClick(e){
 e.preventDefault();
 //console.log(document.getElementById('Amount').value);
-var k=parseInt(document.getElementById('Amount').value);
+var k=document.getElementById('Amount').value;
+console.log("yes"+k);
+
 var type=document.getElementById('paymentdetails').value
 console.log("Im type"+type);
 var x=parseInt(balance_amount);
 console.log(x);
 
-if(k<=x)
+if(k!="" && k!=0)
 {
+k=document.getElementById('Amount').value;
+if(k>x)
+{
+alert("payment amount should not be more than Invoice due amount");
+}
+else
+{
+
+
 axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:type,Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
   .then(function (response) {
     console.log(response);
@@ -32,9 +43,11 @@ axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/cus
   });
 
   }
+  }
+
   else
   {
-  alert("payment amount should not be more than Invoice due amount");
+  alert("check the enterd amount");
 
   }
 
@@ -43,6 +56,7 @@ axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/cus
 
 
 }
+
 
 
 
@@ -138,11 +152,10 @@ console.log(cuid);
                       </select>
      </div>
      <div className="col-md-2">
-     <input value={this.state.value} onkeypress={this.onChange}/>
-    <input type="text" className="form-control" value={this.state.value} id="Amount"  onkeypress={this.onChange} placeholder="Enter Amount"/>
+    <input type="number" className="form-control"  id="Amount"   placeholder="Enter Amount"/>
      </div>
      <div className="col-md-6">
-                                               <div class="text-right">
+                                               <div className="text-right">
                                        <Button bsStyle="success" onClick={handleClick}>Submit</Button>
                                        </div>
                                        </div>

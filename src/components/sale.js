@@ -15,7 +15,7 @@ var hashitems={};
 var RV="";
 var CV="";
 var invoiceID="";
-
+var row_count=0;
 var Lines = {
     details: []
 };
@@ -28,6 +28,7 @@ const cellEditProp = {
 
 const options = {
   afterInsertRow: onAfterInsertRow,
+   afterDeleteRow: onAfterDeleteRow
      // A hook for after insert rows
 };
 
@@ -35,6 +36,10 @@ const options = {
 function handleClick(e){
 e.preventDefault();
 //var date = document.getElementById("date").value;
+console.log(Object.keys(hashitems).length);
+console.log(row_count);
+if(Object.keys(hashitems).length==row_count)
+{
 
 console.log(CV);
 console.log("im final"+JSON.stringify(hashitems));
@@ -64,6 +69,11 @@ axios.post('http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/inv
   });
 
 }
+else{
+alert("enter sales correctly");
+}
+}
+
 
 
 function onAfterSaveCell(row,cellName,cellValue){
@@ -101,10 +111,27 @@ var TUID=hashtax[row.type];
 var accountname= hashacct[row.type];
 var taxcode=TUID.UID;
 
+row_count++;
+
 hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
   console.log('onAfterInsertRow'+JSON.stringify(hashitems[row.Description]));
 
 }
+function onAfterDeleteRow(rowKeys) {
+
+
+  alert('The sale you are deleting is: ' + rowKeys);
+delete hashitems[rowKeys];
+row_count--;
+
+}
+
+
+
+// If you want to enable deleteRow, you must enable row selection also.
+const selectRowProp = {
+  mode: 'checkbox'
+};
 
 
 class Sale extends React.Component {
@@ -129,6 +156,7 @@ class Sale extends React.Component {
        };
     }
 
+
     componentDidMount() {
    // document.getElementById("date").value = "2014-02-09";
         axios.all([
@@ -145,7 +173,8 @@ class Sale extends React.Component {
 
         this.setState({datem:res[0]})
         console.log(da);
-
+row_count=acc.length;
+//console.log("count of rows"+row_count)
        // document.getElementById('datenow').defaultValue='2017-02-03'
         var accnt =[];
         for (var k = 0; k < acc.length; k++) {
@@ -189,25 +218,14 @@ class Sale extends React.Component {
 
 
 
-     cellButton2(cell, row, enumObject, rowIndex) {
-                var oo={cell};
-               //var pp=oo.cell;
-var pp="hii";
-console.log(oo)
 
-                pp=raccnames[row.Description]
-                	return (
-
-"hi"
-
-                  )
-                  }
 
 
   render() {
 
 
     return (
+
  <div className="container">
  <div className="row">
  <div>
@@ -215,17 +233,18 @@ console.log(oo)
  </div>
  <div className="col-md-8">
  <div className="text-right">
-              <Button bsStyle="success" onClick={handleClick}>Submit</Button>
+              <Button bsStyle="success" onClick={handleClick}>Save</Button>
               </div>
               </div>
               </div>
+
               <br></br>
               <br></br>
 
-     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } options={ options } insertRow deleteRow >
+     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } deleteRow={ true } selectRow={ selectRowProp } options={ options } insertRow deleteRow >
                <TableHeaderColumn width="300" dataField='Description' isKey={true} editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Sale Heads</TableHeaderColumn>
-               <TableHeaderColumn width="300" value="type" dataField='type'  editable={ {defaultValue: 1 ,  type: 'select', options: {values: this.state.acco} } } >ACCOUNT NAME</TableHeaderColumn>
-                <TableHeaderColumn width="300" dataField='Total' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
+               <TableHeaderColumn width="300"  dataField='type'  editable={ {defaultValue: 1 ,  type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
+                <TableHeaderColumn width="300" dataField='Total' editable={true } dataAlign="Center">Sale Amount</TableHeaderColumn>
 
 
            </BootstrapTable>

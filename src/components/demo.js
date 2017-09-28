@@ -47,14 +47,7 @@ accrecv={Description:row.Name,Total:row.Price,Account:{UID:gvf},TaxCode:{UID:tax
 checkHash[row.Name]={}
 checkHash[row.Name]=accrecv
 
-console.log(accrecv)
 
-
-Object.keys(checkHash).forEach(function (key) {
-   console.log("im in cheking hasg")
-
-    // iteration code
-})
 
 
 
@@ -81,9 +74,33 @@ class Newinvoice extends React.Component {
 
  handleClick(){
 //e.preventDefault();
-
 var date = document.getElementById("date").value;
 var customer=document.getElementById("customer").value;
+
+
+console.log(Object.keys(checkHash).length)
+if(customer=="")
+{
+
+alert("Select customer");
+
+}
+else{
+ if (date=="")
+ {
+ alert("select date");
+ }
+ else{
+
+ if(Object.keys(checkHash).length==0)
+ {
+ alert("enter sales");
+ }
+
+
+else{
+
+
 //var data="{Date:"+date+",Customer:{UID:"+customer+"},"+accrecv+"}";
 
 Object.keys(checkHash).forEach(function (key) {
@@ -98,7 +115,8 @@ Object.keys(checkHash).forEach(function (key) {
 
 
 var klk=Lines.details;
-
+console.log("yes"+ customer);
+console.log("no"+date);
 
 axios.post('http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices',{Date:date,Customer:{UID:customer},Lines:klk})
   .then(function (response) {
@@ -111,7 +129,9 @@ axios.post('http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/inv
   });
 
 }
-
+}
+}
+}
 
   componentDidMount() {
 
@@ -171,10 +191,10 @@ console.log("im hash table"+myHash)
 
     return (
 <div className="container">
-<div className="row">
+<div className="form-inline">
 <div className="row">
 
-<div className="row col-md-8">
+<div className="row col-md-6">
 
      <label for="customer">Select Customer:</label>
      <select name="cars" id="customer" className="form-control">
@@ -187,12 +207,11 @@ console.log("im hash table"+myHash)
      <label for="date">Select Date:</label>
 <input className="form-control col-md-12" id="date" placeholder="Select Date" type="date"/>
 </div>
-</div>
-<div className="row col-md-4">
-<div>
+<div className="text-right">
 <Button bsStyle="success" onClick={this.handleClick}>Submit</Button>
 </div>
-                  </div>                .              </div>
+</div>
+</div>
                                <br></br>
                                <br></br>
 <BootstrapTable data={ this.state.salesheads } cellEdit={ cellEditProp } insertRow={ false  }>
