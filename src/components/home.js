@@ -120,25 +120,30 @@ componentDidMount() {
 
 
       return (
-<div>
+<div className="column">
 
 
+<div className="col-md-offset-6">
+<div className="text-right">
+              <a href={"/newinvoice"} className ><input type="button"  className="btn btn-success col-md-offset-3" value="New Invoice"/></a>
+</div>
+</div>
+<div style={{"padding-bottom":"-150px"}}>
 
 
-
-<BootstrapTable data={ this.state.posts } options={ options }   exportCSV  search  pagination  striped hover condensed>
+<BootstrapTable data={ this.state.posts } options={ options }     search  searchPlaceholder='search Invoice' pagination  striped hover condensed>
          <TableHeaderColumn width="120"  dataAlign="center" dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
                    <TableHeaderColumn width="200"  dataAlign="center" dataField='Customer' dataFormat={this.cellButton2.bind(this)}>Store  Name</TableHeaderColumn>
-                   <TableHeaderColumn width="180"  dataAlign="center" dataField='BalanceDueAmount'>Balance Due Amount</TableHeaderColumn>
-                   <TableHeaderColumn  width="140" dataAlign="center" dataField='TotalAmount'>Total Amount</TableHeaderColumn>
+                   <TableHeaderColumn  width="140" dataAlign="center" dataField='TotalAmount'>Total Sales</TableHeaderColumn>
+                    <TableHeaderColumn width="180"  dataAlign="center" dataField='BalanceDueAmount'>Balance Due Amount</TableHeaderColumn>
                     <TableHeaderColumn  width="100"  dataAlign="center" dataField='Status' >Status</TableHeaderColumn>
-                   <TableHeaderColumn  width="180" dataAlign="center" dataField='Date'>Date</TableHeaderColumn>
+                   <TableHeaderColumn  width="180" dataAlign="center" dataField='Date'> Invoice Date</TableHeaderColumn>
 
                    <TableHeaderColumn  width="150"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Invoice</TableHeaderColumn>
                    <TableHeaderColumn   width="100" dataAlign="center" dataField='UID'dataFormat={this.cellButton1.bind(this)}>Payment </TableHeaderColumn>
       </BootstrapTable>
 </div>
-
+</div>
 
       );
     }

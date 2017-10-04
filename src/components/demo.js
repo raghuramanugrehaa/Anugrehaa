@@ -36,13 +36,15 @@ console.log("i got the account")
 
    var account_uid=myHash[row.type];
    console.log(taxcodes)
-
-
-
    var gvf=""+account_uid
-
+if("ACCOUNT SALES"==row.Name)
+{
+accrecv={Description:row.Name,Total:-row.Price,Account:{UID:gvf},TaxCode:{UID:taxcodes}}
+}
+else
+{
 accrecv={Description:row.Name,Total:row.Price,Account:{UID:gvf},TaxCode:{UID:taxcodes}}
-
+}
 
 checkHash[row.Name]={}
 checkHash[row.Name]=accrecv
@@ -187,31 +189,30 @@ console.log("im hash table"+myHash)
  }
 
   render() {
-
+ var valu = new Date().toISOString();
+              var re = valu.split("T");
+              var p =re[0];
 
     return (
 <div className="container">
 <div className="form-inline">
-<div className="row">
-
-<div className="row col-md-6">
-
-     <label for="customer">Select Customer:</label>
+<div className="row col-md-4">
+<label for="customer">Select Store:</label>
      <select name="cars" id="customer" className="form-control">
                    {this.state.posts}
 
                  </select>
                  </div>
-<div>
+<div className="row col-md-4">
 
      <label for="date">Select Date:</label>
-<input className="form-control col-md-12" id="date" placeholder="Select Date" type="date"/>
+<input className="form-control" id="date" placeholder="Select Date" type="date" max={p}/>
 </div>
-<div className="text-right">
+<div className="row col-md-offset-8">
 <Button bsStyle="success" onClick={this.handleClick}>Submit</Button>
 </div>
 </div>
-</div>
+
                                <br></br>
                                <br></br>
 <BootstrapTable data={ this.state.salesheads } cellEdit={ cellEditProp } insertRow={ false  }>

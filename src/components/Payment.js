@@ -8,6 +8,7 @@ var cname="";
 var invoice_number="";
 var invoice_date="";
 var cuid="";
+var total_amount="";
 var balance_amount="";
 
 
@@ -36,7 +37,14 @@ else
 axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:type,Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
   .then(function (response) {
     console.log(response);
+    if(x==k)
+    {
+         window.location.assign('/');
+
+    }
+    else{
      window.location.assign('/payment?id='+ids);
+     }
   })
   .catch(function (error) {
     console.log(error.response);
@@ -76,6 +84,7 @@ this.onChange = this.onChange.bind(this)
          innumber:"",
          indate:"",
          bamount:"",
+         tamount:"",
          payment:[]
 
        };
@@ -97,10 +106,12 @@ cname=data.Customer.Name;
 console.log(cname);
 invoice_number=data.Number;
 invoice_date=data.Date;
+total_amount=data.TotalAmount;
 balance_amount=data.BalanceDueAmount;
 this.setState({cusname:cname});
 this.setState({innumber:invoice_number});
 this.setState({indate:invoice_date});
+this.setState({tamount:total_amount});
 this.setState({bamount:balance_amount});
 cuid=data.Customer.UID;
 console.log(cuid);
@@ -137,7 +148,7 @@ console.log(cuid);
  <div className="row">
     <div className="row col-md-10">
 <label for="note">Sales Details:</label>
-   <textarea id="note" className="form-control" style={{"height":"100px"} } value={"Customer Name:"+this.state.cusname+"\nInvoice Number:"+this.state.innumber+"\nInvoice Date:"+this.state.indate+"\nBalance Amount:"+this.state.bamount} /><br></br>
+   <textarea id="note" className="form-control" style={{"height":"120px"} } value={"Customer Name:"+this.state.cusname+"\nInvoice Number:"+this.state.innumber+"\nInvoice Date:"+this.state.indate+"\nTotal Amount:"+this.state.tamount  +"\nBalance Amount:"+this.state.bamount} /><br></br>
 
        </div>
 
@@ -147,14 +158,12 @@ console.log(cuid);
 <div className="form-inline">
      <div className="row col-md-4">
      <label for="paymentdetails">Payment Methods:</label>
-          <select name="cars" id="paymentdetails" className="form-control">
-{this.state.payment}
-                      </select>
+          <select name="cars" id="paymentdetails" className="form-control">{this.state.payment} </select>
      </div>
-     <div className="col-md-2">
+     <div className="col-md-4">
     <input type="number" className="form-control"  id="Amount"   placeholder="Enter Amount"/>
      </div>
-     <div className="col-md-6">
+     <div className="col-md-4">
                                                <div className="text-right">
                                        <Button bsStyle="success" onClick={handleClick}>Submit</Button>
                                        </div>

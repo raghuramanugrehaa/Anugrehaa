@@ -1,8 +1,8 @@
 import React from "react";
-
+import DatePicker from 'react-bootstrap-datetimepicker';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
-import {Button} from 'react-bootstrap';
+import { Button} from 'react-bootstrap';
 import axios from "axios";
 const queryString = require('query-string');
 var ids="";
@@ -16,6 +16,7 @@ var RV="";
 var CV="";
 var invoiceID="";
 var row_count=0;
+var da="";
 var Lines = {
     details: []
 };
@@ -28,7 +29,8 @@ const cellEditProp = {
 
 const options = {
   afterInsertRow: onAfterInsertRow,
-   afterDeleteRow: onAfterDeleteRow
+   afterDeleteRow: onAfterDeleteRow,
+    deleteBtn: this.createCustomDeleteButton
      // A hook for after insert rows
 };
 
@@ -77,11 +79,6 @@ alert("enter sales correctly");
 
 
 function onAfterSaveCell(row,cellName,cellValue){
-if(row.Total!=="0")
-{
-console.log("i got price "+row.Total)
-
-
 
 if(typeof row.type !== "undefined") {
 console.log("i got the account")
@@ -94,27 +91,50 @@ console.log("i got the tax")
 var TUID=hashtax[row.type];
 var accountname= hashacct[row.type];
 var taxcode=TUID.UID;
+if("ACCOUNT SALES"==row.Description)
+{
+if(row.Total<0){
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
+ console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+}
+else{
+hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
+ console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+}
 
+}
+else
+{
 hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
 
   console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 
+}
 // pay+=parseInt(row.price);
 }
 }
 }
-}
+
 
 
 function onAfterInsertRow(row) {
 var TUID=hashtax[row.type];
 var accountname= hashacct[row.type];
 var taxcode=TUID.UID;
-
 row_count++;
+if("ACCOUNT SALES"==row.Description)
+{
+hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
 
+  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+}
+else
+{
 hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
-  console.log('onAfterInsertRow'+JSON.stringify(hashitems[row.Description]));
+
+  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+
+}
 
 }
 function onAfterDeleteRow(rowKeys) {
@@ -141,6 +161,9 @@ class Sale extends React.Component {
        const parsed = queryString.parse(this.props.location.search);
           //document.getElementById("datenow").value = "2014-02-09";
 
+    this.handleChange = this.handleChange.bind(this);
+
+
   ids=parsed.id;
   url= "http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices/"+ids;
   console.log(ids);
@@ -150,14 +173,31 @@ class Sale extends React.Component {
          salesheads:[],
          taxc:[],
          acco:[],
-         datem:""
-
+         datem:"",
+         value:"",
+         va:""
 
        };
+
+
     }
+
+ createCustomDeleteButton = (onBtnClick) => {
+    return (
+      <button style={ { color: 'red' } } onClick={ onBtnClick }>Delete it!!!</button>
+    );
+  }
+
+ handleChange(event) {
+    this.setState({datem: event.target.value});
+  }
+
+
 
 
     componentDidMount() {
+
+
    // document.getElementById("date").value = "2014-02-09";
         axios.all([
         axios.get(url),
@@ -166,13 +206,15 @@ class Sale extends React.Component {
         .then(axios.spread((invoice,dependencies) => {
         var acc = invoice.data.Lines;
         RV=invoice.data.RowVersion;
+
         CV=invoice.data.Customer.UID;
         invoiceID=invoice.data.Number;
-        var da=invoice.data.Date;
+         da=invoice.data.Date;
          var res = da.split("T");
-
         this.setState({datem:res[0]})
-        console.log(da);
+        console.log("iam date"+res[0]);
+        da=res[0];
+
 row_count=acc.length;
 //console.log("count of rows"+row_count)
        // document.getElementById('datenow').defaultValue='2017-02-03'
@@ -214,22 +256,42 @@ row_count=acc.length;
         console.log(dependencies.data)
         }))
         .catch(error => console.log(error));
+
+
     }
 
 
+  cellButton2(cell, row, enumObject, rowIndex) {
+            var oo={cell};
+           var pp=oo.cell.Description;
+            	return (
 
+
+              <p>{pp}</p>
+
+              )
+            }
 
 
 
   render() {
+  var valu = new Date().toISOString();
+               var re = valu.split("T");
+               var p =re[0];
+
+                                       console.log("hello"+re[0]);
 
 
+var link= da
+console.log("ftr "+typeof(da))
     return (
 
  <div className="container">
  <div className="row">
+
  <div>
- <input className="form-control col-md-12" id="datenow" type="date" value={this.state.datem}/>
+ <input className="form-control col-md-12" id="datenow" type="date"  max={p} onChange={this.handleChange} value={this.state.datem}/>
+
  </div>
  <div className="col-md-8">
  <div className="text-right">
@@ -241,10 +303,10 @@ row_count=acc.length;
               <br></br>
               <br></br>
 
-     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } deleteRow={ true } selectRow={ selectRowProp } options={ options } insertRow deleteRow >
-               <TableHeaderColumn width="300" dataField='Description' isKey={true} editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Sale Heads</TableHeaderColumn>
+     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow deleteRow >
+               <TableHeaderColumn width="300" dataField='Description' isKey={true}  editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Sale Heads</TableHeaderColumn>
                <TableHeaderColumn width="300"  dataField='type'  editable={ {defaultValue: 1 ,  type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
-                <TableHeaderColumn width="300" dataField='Total' editable={true } dataAlign="Center">Sale Amount</TableHeaderColumn>
+                <TableHeaderColumn width="300" dataField='Total' editable={true } dataAlign="Center" >Sale Amount</TableHeaderColumn>
 
 
            </BootstrapTable>
