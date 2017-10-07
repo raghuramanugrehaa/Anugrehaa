@@ -64,7 +64,7 @@ class Newinvoice extends React.Component {
   constructor(props) {
      super(props);
      this.handleClick = this.handleClick.bind(this);
-     url= "http://localhost:3001/sales/dependencies/48b58bb2-e017-4368-87c4-1fe44c1334ca/";
+     url= "http://13.126.189.91:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/";
      this.state = {
        posts: [],
        accounts: [],
@@ -120,7 +120,7 @@ var klk=Lines.details;
 console.log("yes"+ customer);
 console.log("no"+date);
 
-axios.post('http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices',{Date:date,Customer:{UID:customer},Lines:klk})
+axios.post('http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices',{Date:date,Customer:{UID:customer},Lines:klk})
   .then(function (response) {
    console.log(response);
      window.location.assign('/');

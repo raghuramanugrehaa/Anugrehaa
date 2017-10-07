@@ -18,7 +18,7 @@ constructor(props) {
 }
 
 componentDidMount() {
-   axios.get(`http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices`
+   axios.get(`http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices`
    ).then(res => {
 
        const posts = res.data.Items;

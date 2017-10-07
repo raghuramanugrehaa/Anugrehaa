@@ -34,7 +34,7 @@ else
 {
 
 
-axios.post('http://localhost:3001/media/48b58bb2-e017-4368-87c4-1fe44c1334ca/customerPayments',{DepositTo:"Account",PaymentMethod:type,Account:{UID:"65118071-6650-400f-98e4-f88a7761d929"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
+axios.post('http://13.126.189.91:3001/media/e3152784-4811-4f2e-9a4f-884f3439db90/customerPayments',{DepositTo:"Account",PaymentMethod:type,Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
   .then(function (response) {
     console.log(response);
     if(x==k)
@@ -76,7 +76,7 @@ class Payment extends React.Component {
        const parsed = queryString.parse(this.props.location.search);
 this.onChange = this.onChange.bind(this)
   ids=parsed.id;
-  url= "http://localhost:3001/sales/48b58bb2-e017-4368-87c4-1fe44c1334ca/invoices/"+ids;
+  url= "http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices/"+ids;
   console.log(ids);
        this.state = {
          posts: [],
@@ -99,7 +99,7 @@ this.onChange = this.onChange.bind(this)
 
          axios.all([
                  axios.get(url),
-                 axios.get('http://localhost:3001/sales/dependencies/48b58bb2-e017-4368-87c4-1fe44c1334ca/')
+                 axios.get('http://13.126.189.91:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
                  ]).then(axios.spread((invoice,dependencies) =>{
 var data=invoice.data;
 cname=data.Customer.Name;
@@ -148,7 +148,7 @@ console.log(cuid);
  <div className="row">
     <div className="row col-md-10">
 <label for="note">Sales Details:</label>
-   <textarea id="note" className="form-control" style={{"height":"120px"} } value={"Customer Name:"+this.state.cusname+"\nInvoice Number:"+this.state.innumber+"\nInvoice Date:"+this.state.indate+"\nTotal Amount:"+this.state.tamount  +"\nBalance Amount:"+this.state.bamount} /><br></br>
+   <textarea id="note" className="form-control" style={{"height":"120px"} } value={"Customer Name:"+this.state.cusname+"\nInvoice Number:"+this.state.innumber+"\nInvoice Date:"+this.state.indate+"\nTotal Sales:"+this.state.tamount  +"\nBalance Amount:"+this.state.bamount} /><br></br>
 
        </div>
 
@@ -161,7 +161,7 @@ console.log(cuid);
           <select name="cars" id="paymentdetails" className="form-control">{this.state.payment} </select>
      </div>
      <div className="col-md-4">
-    <input type="number" className="form-control"  id="Amount"   placeholder="Enter Amount"/>
+    <input type="number" className="form-control"  id="Amount"   placeholder="Enter Sales"/>
      </div>
      <div className="col-md-4">
                                                <div className="text-right">
