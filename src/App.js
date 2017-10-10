@@ -9,11 +9,8 @@ export class App extends React.Component {
     return (
       <div className="App">
              <div className="App-header">
-               <img src={logo} className="App-logo" alt="logo" />
                <Header/>
-             </div>
-             <br></br>
-             <br></br>
+               </div>
              <br></br>
              <Main/>
             </div>

@@ -15,6 +15,7 @@
     "react-bootstrap-table": "^4.0.3",
     "react-dom": "^15.6.1",
     "react-input-calendar": "^0.4.1",
+    "react-loader": "^2.4.2",
     "react-loading-bar": "0.0.4",
     "react-redux-loading-bar": "^2.9.2",
     "react-router": "^4.2.0",

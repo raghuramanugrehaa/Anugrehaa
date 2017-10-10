@@ -1,6 +1,8 @@
 import React from "react";
 import {Button} from 'react-bootstrap';
 import axios from "axios";
+import Loader from 'react-loader';
+
 const queryString = require('query-string');
 var ids="";
 var url="";
@@ -96,6 +98,7 @@ this.onChange = this.onChange.bind(this)
       }
    }
     componentDidMount() {
+		this.setState ( { loaded: false});
 
          axios.all([
                  axios.get(url),
@@ -115,7 +118,7 @@ this.setState({tamount:total_amount});
 this.setState({bamount:balance_amount});
 cuid=data.Customer.UID;
 console.log(cuid);
-
+ this.setState  ({ loaded: true});
 
 
 
@@ -144,6 +147,8 @@ console.log(cuid);
 
 
     return (
+	          <Loader loaded={this.state.loaded}>
+
  <div className="container">
  <div className="row">
     <div className="row col-md-10">
@@ -170,7 +175,8 @@ console.log(cuid);
                                        </div>
 </div>
       </div>
-    );
+</Loader>
+	  );
   }
 }
 

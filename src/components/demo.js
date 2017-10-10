@@ -2,6 +2,7 @@ import React from "react";
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import {Button} from 'react-bootstrap';
 import axios from "axios";
+import Loader from 'react-loader';
 
 
 
@@ -115,11 +116,11 @@ Object.keys(checkHash).forEach(function (key) {
     // iteration code
 })
 
-
+this.setState ( { loaded: false});
 var klk=Lines.details;
 console.log("yes"+ customer);
 console.log("no"+date);
-
+this.setState ( { loaded: true});
 axios.post('http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices',{Date:date,Customer:{UID:customer},Lines:klk})
   .then(function (response) {
    console.log(response);
@@ -136,9 +137,10 @@ axios.post('http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90
 }
 
   componentDidMount() {
-
+  this.setState ( { loaded: false});
        axios.get(url
      ).then(res => {
+		             this.setState  ({ loaded: true});
 var arrTen = [];
 var result=res.data.customer;
  for (var k = 0; k < result.length; k++) {
@@ -194,6 +196,8 @@ console.log("im hash table"+myHash)
               var p =re[0];
 
     return (
+	          <Loader loaded={this.state.loaded}>
+
 <div className="container">
 <div className="form-inline">
 <div className="row col-md-4">
@@ -216,13 +220,15 @@ console.log("im hash table"+myHash)
                                <br></br>
                                <br></br>
 <BootstrapTable data={ this.state.salesheads } cellEdit={ cellEditProp } insertRow={ false  }>
-          <TableHeaderColumn width="300" dataField='Name' isKey={true} editable={false }  >Sale Heads</TableHeaderColumn>
-          <TableHeaderColumn width="300" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
-           <TableHeaderColumn width="300" dataField='Price' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
+          <TableHeaderColumn width="30%" dataField='Name' isKey={true} editable={false }  >Sale Heads</TableHeaderColumn>
+          <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
+           <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
 
 
       </BootstrapTable>
 </div>
+</Loader>
+
     );
   }
 }
