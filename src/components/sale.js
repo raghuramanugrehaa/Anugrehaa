@@ -1,7 +1,8 @@
 import React from "react";
 import DatePicker from 'react-bootstrap-datetimepicker';
-import { BootstrapTable, TableHeaderColumn ,InsertButton } from 'react-bootstrap-table';
+import { BootstrapTable, TableHeaderColumn,InsertButton} from 'react-bootstrap-table';
 import Loader from 'react-loader';
+
 import { Button} from 'react-bootstrap';
 import axios from "axios";
 const queryString = require('query-string');
@@ -18,7 +19,12 @@ var invoiceID="";
 var invoiceid="";
 var row_count=0;
 var da="";
+var currencies = [ ];
 var cname="";
+
+
+const products = [];
+
 var Lines = {
     details: []
 };
@@ -30,12 +36,26 @@ const cellEditProp = {
 };
 
 
-     // A hook for after insert row
+function addProducts(quantity) {
+  const startId = products.length;
+  for (let i = 0; i < quantity; i++) {
+    const id = startId + i;
+    products.push({
+      id: id,
+      name: 'Item name ' + id,
+      price: {
+        amount: 2100 + i,
+        currency: currencies[i % currencies.length]
+      },
+      //regions: regions.slice(0, (i % regions.length) + 1)
+    });
+  }
+}
 
+addProducts(5);
 
 function handleClick(e){
 e.preventDefault();
-
 //var date = document.getElementById("date").value;
 console.log(Object.keys(hashitems).length);
 console.log(row_count);
@@ -56,16 +76,13 @@ Object.keys(hashitems).forEach(function (key) {
 })
 
 
-
 var klk=Lines.details;
 console.log(klk);
 console.log("yes"+CV);
 
-
 axios.post('http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices',{UID:ids,Number:invoiceID,Date:date,Customer:{UID:CV},Lines:klk,RowVersion:RV})
   .then(function (response) {
    console.log(response);
-   //this.setState ( { loaded: true});
      window.location.assign('/');
   })
   .catch(function (error) {
@@ -81,17 +98,10 @@ alert("enter sales correctly");
 
 
 function onAfterSaveCell(row,cellName,cellValue){
+console.log(row)
 
-if(typeof row.type !== "undefined") {
-console.log("i got the account")
-    // obj is a valid variable, do something here.
-
-
-if(typeof row.Description !== "undefined") {
-console.log("i got the tax")
-
-var TUID=hashtax[row.type];
-var accountname= hashacct[row.type];
+var TUID=hashtax[row.Account];
+var accountname= hashacct[row.Account];
 var taxcode=TUID.UID;
 if("ACCOUNT SALES"==row.Description)
 {
@@ -113,15 +123,15 @@ hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:
 
 }
 // pay+=parseInt(row.price);
-}
-}
+
+
 }
 
 
 
 function onAfterInsertRow(row) {
-var TUID=hashtax[row.type];
-var accountname= hashacct[row.type];
+var TUID=hashtax[row.Account];
+var accountname= hashacct[row.Account];
 var taxcode=TUID.UID;
 row_count++;
 if("ACCOUNT SALES"==row.Description)
@@ -155,6 +165,59 @@ const selectRowProp = {
   mode: 'checkbox'
 };
 
+class PriceEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.updateData = this.updateData.bind(this);
+    this.state = { amount: props.defaultValue.amount, currency: props.defaultValue.currency };
+  }
+  focus() {
+    this.refs.inputRef.focus();
+  }
+  updateData() {
+    this.props.onUpdate({ amount: this.state.amount, currency: this.state.currency });
+  }
+  render() {
+    return (
+      <span>
+        <input
+          ref='inputRef'
+          className={ ( this.props.editorClass || '') + ' form-control editor edit-text' }
+          style={ { display: 'inline', width: '50%' } }
+          type='text'
+          value={ this.state.amount }
+          onKeyDown={ this.props.onKeyDown }
+          onChange={ (ev) => { this.setState({ amount: parseInt(ev.currentTarget.value, 10) }); } } />
+        <select
+          value={ this.state.currency }
+          onKeyDown={ this.props.onKeyDown }
+          onChange={ (ev) => { this.setState({ currency: ev.currentTarget.value }); } } >
+          { currencies.map(currency => (<option key={ currency } value={ currency }>{ currency }</option>)) }
+        </select>
+        <button
+          className='btn btn-info btn-xs textarea-save-btn'
+          onClick={ this.updateData }>
+          save
+        </button>
+      </span>
+    );
+  }
+}
+
+function priceFormatter(cell, row) {
+
+   var oo={cell};
+                     var pp=oo.cell.Name;
+
+                      console.log("name is"+pp)
+
+                      return pp||cell.currency ;
+}
+
+const createPriceEditor = (onUpdate, props) => (<PriceEditor onUpdate={ onUpdate } {...props}/>);
+
+
+
 
 class Sale extends React.Component {
 
@@ -174,13 +237,13 @@ class Sale extends React.Component {
          account:[],
          salesheads:[],
          taxc:[],
-		 loaded:false,
          acco:[],
          datem:"",
          value:"",
          va:"",
-		 cusname:"",
-		  tamount:"",
+                 cusname:"",
+				 invoiceid:"",
+				 tamount:"",
 
        };
 
@@ -189,7 +252,7 @@ class Sale extends React.Component {
 
  createCustomDeleteButton = (onBtnClick) => {
     return (
-                 <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Sale</button>
+           <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Sale</button>
 
     );
   }
@@ -213,13 +276,13 @@ this.setState ( { loaded: false});
         var acc = invoice.data.Lines;
         RV=invoice.data.RowVersion;
 cname=invoice.data.Customer.Name;
-total_amount=invoice.data.TotalAmount;
         CV=invoice.data.Customer.UID;
         invoiceID=invoice.data.Number;
          da=invoice.data.Date;
+		 total_amount=invoice.data.TotalAmount;
          var res = da.split("T");
         this.setState({datem:res[0]})
-		this.setState({cusname:cname});
+        this.setState({cusname:cname});
 		this.setState({invoiceid:invoiceID});
 		this.setState({tamount:total_amount});
         console.log("iam date"+res[0]);
@@ -231,11 +294,12 @@ row_count=acc.length;
         var accnt =[];
         for (var k = 0; k < acc.length; k++) {
 
-
-                accnt.push(acc[k]);
-                console.log(JSON.stringify(acc[k].Account.Name))
+var details={Description:acc[k].Description,Account:acc[k].Account.Name,Total:acc[k].Total}
+hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
+                accnt.push(details);
+                console.log(JSON.stringify(acc[k]))
                 raccnames[acc[k].Description]=acc[k].Account.Name;
-
+//currencies.push(acc[k].Account.Name)
                 }
 
 
@@ -256,6 +320,7 @@ row_count=acc.length;
 
   for (k = 0; k < acnames.length; k++) {
                 acn.push(acnames[k].Name);
+                currencies.push(acnames[k].Name)
             hashacct[acnames[k].Name]=acnames[k].UID
            hashtax[acnames[k].Name]=acnames[k].TaxCodeUID
             }
@@ -271,33 +336,30 @@ row_count=acc.length;
     }
 
 
-  cellButton2(cell, row, enumObject, rowIndex) {
-            var oo={cell};
-           var pp=oo.cell.Description;
-            	return (
+  cellButton(cell, row, enumObject, rowIndex) {
+         var oo={cell};
+                   var pp=oo.cell.Name;
 
-
-              <p>{pp}</p>
-
-              )
+                    console.log("name is"+pp)
+                    return pp;
             }
 
-createCustomInsertButton = (openModal) => {
+
+  createCustomInsertButton = (openModal) => {
     return (
      <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Sale</button>
     );
 }
+    render() {
 
-  render() {
-	  const options = {
-  afterInsertRow: onAfterInsertRow,
-   afterDeleteRow: onAfterDeleteRow,
-    deleteBtn: this.createCustomDeleteButton,
-	       insertBtn:this.createCustomInsertButton
-	  };
-	
-	
-	
+    const options = {
+      afterInsertRow: onAfterInsertRow,
+       afterDeleteRow: onAfterDeleteRow,
+       insertBtn:this.createCustomInsertButton,
+        deleteBtn: this.createCustomDeleteButton
+         // A hook for after insert rows
+    };
+
   var valu = new Date().toISOString();
                var re = valu.split("T");
                var p =re[0];
@@ -308,6 +370,7 @@ createCustomInsertButton = (openModal) => {
 var link= da
 console.log("ftr "+typeof(da))
     return (
+
  <Loader loaded={this.state.loaded}>
 
  <div className="container">
@@ -322,20 +385,20 @@ console.log("ftr "+typeof(da))
       </div>
               </div>
 
+
               <br></br>
               <br></br>
 
      <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow deleteRow >
-               <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Sale Heads</TableHeaderColumn>
-               <TableHeaderColumn width="30%"  dataField='type'  editable={ {defaultValue: 1 ,  type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
+
+   <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Sale Heads</TableHeaderColumn>
+               <TableHeaderColumn width="30%"  dataField='Account'  editable={ { type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
                 <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >Sale Amount</TableHeaderColumn>
-
-
            </BootstrapTable>
       </div>
-         </Loader>
+      </Loader>
 
-   );
+    );
   }
 }
 
