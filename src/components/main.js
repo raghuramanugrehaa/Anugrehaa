@@ -4,6 +4,7 @@ import Home from './home';
 import invoice from './sale';
 import payment from './Payment';
 import newinvoice from './demo';
+import Purchase from './purchase';
 
 
 // The Main component renders one of the three provided
@@ -21,6 +22,7 @@ export class Main extends React.Component{
       <Route path='/invoice/' component={invoice}/>
       <Route path='/payment' component={payment}/>
       <Route path='/newinvoice' component={newinvoice}/>
+      <Route exact path='/purchase' component={Purchase}/>
     </Switch>
   </main>
 );

@@ -22,7 +22,7 @@ export class Header extends React.Component{
                     <a className="nav-link" href="/">Sale</a>
                   </li>
                   <li className="nav-item">
-                                      <a className="nav-link" href="#">Purchase</a>
+                                      <a className="nav-link" href="/purchase">Purchase</a>
                                     </li>
                 </ul>
               </div>
