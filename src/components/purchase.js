@@ -27,7 +27,7 @@ componentDidMount() {
 
        this.setState({posts});
 	          this.setState  ({ loaded: true});
-console.log("checcd "+JSON.stringify(posts));
+//console.log("checcd "+JSON.stringify(posts));
      });
  }
 
@@ -66,7 +66,7 @@ console.log("checcd "+JSON.stringify(posts));
        else{
        return(
      //  <input type="button" value="Payment" className="btn btn-primary" onclick={"window.location.href=/payment/?id="+pp} />
- <a href={"/invoice/?id="+pp} ><input type="button" className="btn btn-info" value="Edit"/></a>
+ <a href={"/Editpurchase/?id="+pp} ><input type="button" className="btn btn-info" value="Edit"/></a>
     //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
        )
@@ -131,13 +131,13 @@ console.log("checcd "+JSON.stringify(posts));
 
 <div className="col-md-offset-6">
 <div className="text-right">
-              <a href={"#"} className ><input type="button"  className="btn btn-success col-md-offset-3" value="New Purchase"/></a>
+              <a href={"/Newpurchase"} className ><input type="button"  className="btn btn-success col-md-offset-3" value="New Purchase"/></a>
 </div>
 </div>
 <div style={{"padding-bottom":"-150px"}}>
 
 
-<BootstrapTable data={ this.state.posts } options={ options }     search  searchPlaceholder='search Invoice' pagination  striped hover condensed>
+<BootstrapTable data={ this.state.posts } options={ options }     search  searchPlaceholder='search Purchase' pagination  striped hover condensed>
          <TableHeaderColumn width="9%"  dataAlign="center" dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
                   <TableHeaderColumn width="12%"  dataAlign="center" dataField='SupplierInvoiceNumber'>Supplier Invoice</TableHeaderColumn>
 
@@ -146,6 +146,8 @@ console.log("checcd "+JSON.stringify(posts));
                     <TableHeaderColumn width="16%"  dataAlign="center" dataField='BalanceDueAmount'>Balance Due Amount</TableHeaderColumn>
                     <TableHeaderColumn  width="10%"  dataAlign="center" dataField='Status' >Status</TableHeaderColumn>
                    <TableHeaderColumn  width="16%" dataAlign="center" dataField='Date'> Invoice Date</TableHeaderColumn>
+     <TableHeaderColumn  width="15%"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Invoice</TableHeaderColumn>
+
 
 
       </BootstrapTable>

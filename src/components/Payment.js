@@ -2,6 +2,8 @@ import React from "react";
 import {Button} from 'react-bootstrap';
 import axios from "axios";
 import Loader from 'react-loader';
+import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+
 
 const queryString = require('query-string');
 var ids="";
@@ -174,6 +176,13 @@ console.log(cuid);
                                        </div>
                                        </div>
 </div>
+
+<BootstrapTable data={ this.state.account } >
+
+                <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Payment Method</TableHeaderColumn>
+               <TableHeaderColumn width="30%"  dataField='Account'  editable={ { type: 'select', options: {values: this.state.acco} } } >Date of Payment</TableHeaderColumn>
+                <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >Amount Applied</TableHeaderColumn>
+           </BootstrapTable>
       </div>
 </Loader>
 	  );
