@@ -85,9 +85,11 @@ componentDidMount() {
       )
       }
       else{
+      var t=row.Customer.Name;
       return(
+
     //  <input type="button" value="Payment" className="btn btn-primary" onclick={"window.location.href=/payment/?id="+pp} />
-<a href={"/payment/?id="+pp} ><input type="button" className="btn btn-primary" value="Payment"/></a>
+<a href={"/payment/?id="+pp+"&&name="+t} ><input type="button" className="btn btn-primary" value="Payment"/></a>
    //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
       )
@@ -99,7 +101,7 @@ componentDidMount() {
             var oo={cell};
            var pp=oo.cell.Name;
 
-            console.log("name is"+pp)
+           // console.log("name is"+pp)
             	return (
 
 
@@ -116,7 +118,7 @@ componentDidMount() {
         showOnlySelected: true
       };
       const options = {
-		  clearSearch: true,
+
         toolBar: this.createCustomToolBar,
          defaultSortName: 'Status',  // default sort column name
               defaultSortOrder: 'desc'  // default sort order

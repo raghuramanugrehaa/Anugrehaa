@@ -7,6 +7,7 @@ import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 const queryString = require('query-string');
 var ids="";
+var nameid="";
 var url="";
 var cname="";
 var invoice_number="";
@@ -80,6 +81,8 @@ class Payment extends React.Component {
        const parsed = queryString.parse(this.props.location.search);
 this.onChange = this.onChange.bind(this)
   ids=parsed.id;
+   nameid=parsed.name;
+  console.log("second "+nameid);
   url= "http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices/"+ids;
   console.log(ids);
        this.state = {
@@ -89,7 +92,8 @@ this.onChange = this.onChange.bind(this)
          indate:"",
          bamount:"",
          tamount:"",
-         payment:[]
+         payment:[],
+         hist:[]
 
        };
     }
@@ -104,9 +108,11 @@ this.onChange = this.onChange.bind(this)
 
          axios.all([
                  axios.get(url),
-                 axios.get('http://13.126.189.91:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
-                 ]).then(axios.spread((invoice,dependencies) =>{
+                 axios.get('http://13.126.189.91:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/'),
+                  axios.get('http://13.126.189.91:3001/media/e3152784-4811-4f2e-9a4f-884f3439db90/customerPayments/'+nameid+'/'+ids)
+                 ]).then(axios.spread((invoice,dependencies,history) =>{
 var data=invoice.data;
+var data1=history.data.history;
 cname=data.Customer.Name;
 console.log(cname);
 invoice_number=data.Number;
@@ -118,6 +124,7 @@ this.setState({innumber:invoice_number});
 this.setState({indate:invoice_date});
 this.setState({tamount:total_amount});
 this.setState({bamount:balance_amount});
+this.setState({hist:data1});
 cuid=data.Customer.UID;
 console.log(cuid);
  this.setState  ({ loaded: true});
@@ -145,7 +152,11 @@ console.log(cuid);
   render() {
 
 
+const options = {
 
+         defaultSortName: 'Date',  // default sort column name
+              defaultSortOrder: 'desc'  // default sort order
+      };
 
 
     return (
@@ -167,21 +178,23 @@ console.log(cuid);
      <label for="paymentdetails">Payment Methods:</label>
           <select name="cars" id="paymentdetails" className="form-control">{this.state.payment} </select>
      </div>
-     <div className="col-md-4">
-    <input type="number" className="form-control"  id="Amount"   placeholder="Enter Sales"/>
+     <div className="col-md-4" style={{'padding-top':'20'}}>
+    <input type="number" className="form-control"  id="Amount"   placeholder="Enter Sales" />
      </div>
-     <div className="col-md-4">
+     <div className="col-md-3" style={{'padding-top':'30'}}>
                                                <div className="text-right">
                                        <Button bsStyle="success" onClick={handleClick}>Submit</Button>
                                        </div>
                                        </div>
 </div>
+<br></br>
+<br></br>
 
-<BootstrapTable data={ this.state.account } >
+<BootstrapTable data={ this.state.hist } >
 
-                <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Payment Method</TableHeaderColumn>
-               <TableHeaderColumn width="30%"  dataField='Account'  editable={ { type: 'select', options: {values: this.state.acco} } } >Date of Payment</TableHeaderColumn>
-                <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >Amount Applied</TableHeaderColumn>
+                <TableHeaderColumn width="30%" dataField='Method' isKey={true}  editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Payment Method</TableHeaderColumn>
+               <TableHeaderColumn width="30%"  dataField='Date'  editable={ { type: 'select', options: {values: this.state.acco} } } >Date of Payment</TableHeaderColumn>
+                <TableHeaderColumn width="30%" dataField='Amount' editable={true } dataAlign="Center" >Amount Applied</TableHeaderColumn>
            </BootstrapTable>
       </div>
 </Loader>
