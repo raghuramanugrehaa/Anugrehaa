@@ -226,7 +226,7 @@ console.log("im hash table"+myHash)
 <BootstrapTable data={ this.state.salesheads } cellEdit={ cellEditProp } insertRow={ false  }>
           <TableHeaderColumn width="30%" dataField='Name' isKey={true} editable={false }  >Sale Heads</TableHeaderColumn>
           <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
-           <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
+           <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center"> ORDER AMOUNT</TableHeaderColumn>
 
 
       </BootstrapTable>

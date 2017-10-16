@@ -1,6 +1,7 @@
 import React from "react";
 import { BootstrapTable, TableHeaderColumn,InsertButton} from 'react-bootstrap-table';
 import Loader from 'react-loader';
+
 import { Button} from 'react-bootstrap';
 import axios from "axios";
 const queryString = require('query-string');
@@ -12,8 +13,7 @@ var hashacct ={};
 var hashtax={};
 var hashitems={};
 var RV="";
-var SI="";
-var Supplier="";
+var CV="";
 var invoiceID="";
 var invoiceid="";
 var row_count=0;
@@ -58,10 +58,9 @@ e.preventDefault();
 //var date = document.getElementById("date").value;
 console.log(Object.keys(hashitems).length);
 console.log(row_count);
-if(Object.keys(hashitems).length==row_count)
+if(Object.keys(hashitems).length===row_count)
 {
-
-console.log(Supplier);
+console.log(CV);
 console.log("im final"+JSON.stringify(hashitems));
 var date = document.getElementById("datenow").value;
 Object.keys(hashitems).forEach(function (key) {
@@ -77,12 +76,12 @@ Object.keys(hashitems).forEach(function (key) {
 
 var klk=Lines.details;
 console.log(klk);
-console.log("yes"+Supplier);
+console.log("yes"+CV);
 
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV})
+axios.post('http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices',{UID:ids,Number:invoiceID,Date:date,Customer:{UID:CV},Lines:klk,RowVersion:RV})
   .then(function (response) {
    console.log(response);
-     window.location.assign('/purchase');
+     window.location.assign('/');
   })
   .catch(function (error) {
     console.log(error.response);
@@ -133,7 +132,7 @@ var TUID=hashtax[row.Account];
 var accountname= hashacct[row.Account];
 var taxcode=TUID.UID;
 row_count++;
-if("ACCOUNT SALES"==row.Description)
+if("ACCOUNT SALES"===row.Description)
 {
 hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
 
@@ -218,7 +217,7 @@ const createPriceEditor = (onUpdate, props) => (<PriceEditor onUpdate={ onUpdate
 
 
 
-class Editpurchase extends React.Component {
+class Editsale extends React.Component {
 
     constructor(props) {
        super(props);
@@ -229,7 +228,7 @@ class Editpurchase extends React.Component {
 
 
   ids=parsed.id;
-  url= "http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order/"+ids;
+  url= "http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices/"+ids;
   console.log(ids);
        this.state = {
          posts: [],
@@ -240,12 +239,14 @@ class Editpurchase extends React.Component {
          datem:"",
          value:"",
          va:"",
-         cusname:"",
-         si:"",
-		 invoiceid:"",
-		 tamount:"",
-         };
-       }
+                 cusname:"",
+				 invoiceid:"",
+				 tamount:"",
+
+       };
+
+
+    }
 
  createCustomDeleteButton = (onBtnClick) => {
     return (
@@ -264,25 +265,22 @@ class Editpurchase extends React.Component {
     componentDidMount() {
 
 this.setState ( { loaded: false});
-   // document.getElem  entById("date").value = "2014-02-09";
+   // document.getElementById("date").value = "2014-02-09";
         axios.all([
         axios.get(url),
-        axios.get('http://13.126.189.91:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
+        axios.get('http://13.126.189.91:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
         ])
         .then(axios.spread((invoice,dependencies) => {
         var acc = invoice.data.Lines;
         RV=invoice.data.RowVersion;
-        SI=invoice.data.SupplierInvoiceNumber;
-console.log("invocice "+SI)
-        cname=invoice.data.Supplier.Name;
-        Supplier=invoice.data.Supplier.UID;
+cname=invoice.data.Customer.Name;
+        CV=invoice.data.Customer.UID;
         invoiceID=invoice.data.Number;
          da=invoice.data.Date;
 		 total_amount=invoice.data.TotalAmount;
          var res = da.split("T");
-        this.setState({datem:res[0]});
+        this.setState({datem:res[0]})
         this.setState({cusname:cname});
-        this.setState({si:SI});
 		this.setState({invoiceid:invoiceID});
 		this.setState({tamount:total_amount});
         console.log("iam date"+res[0]);
@@ -377,24 +375,8 @@ console.log("ftr "+typeof(da))
  <div className="row">
  <label for="note" style={{'padding-top':'40'}}>Invoice Details:</label>
     <textarea id="note" className="form-control col-md-4" style={{"height":"100px","width":"280"} } value={"Customer Name:"+this.state.cusname+"\nInvoice Number:"+this.state.invoiceid+"\nInvoice Date:"+this.state.datem+"\nTotal Amount:"+this.state.tamount} /><br></br>
-
-<div>
-<table>
-<tr>
-<td>
-<div style={{"margin-left":"150","padding-top":"10"}}>
-    <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Supplier Invoice Number" value={this.state.si}/>
-     </div>
-     </td>
-</tr>
-<tr>
-<td>
- <div style={{'margin-left':'150','padding-top':'10'}}>
+ <div style={{'margin-left':'180','padding-top':'40'}}>
   <input className="form-control" id="datenow" type="date"  max={p} onChange={this.handleChange} value={this.state.datem}/>
- </div>
- </td>
- </tr>
- </table>
  </div>
  <div style={{'margin-left':'200','padding-top':'40'}}>
  <Button bsStyle="success" onClick={handleClick}>Save</Button>
@@ -409,7 +391,7 @@ console.log("ftr "+typeof(da))
 
    <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={{ type: 'select', options: {values: this.state.salesheads } } }  >Sale Heads</TableHeaderColumn>
                <TableHeaderColumn width="30%"  dataField='Account'  editable={ { type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
-                <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >ORDER  Amount</TableHeaderColumn>
+                <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >Sale Amount</TableHeaderColumn>
            </BootstrapTable>
       </div>
       </Loader>
@@ -420,4 +402,4 @@ console.log("ftr "+typeof(da))
 
 
 
-export default Editpurchase;
+export default Editsale;

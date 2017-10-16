@@ -38,7 +38,7 @@ console.log("i got the account")
    var account_uid=myHash[row.type];
    console.log(taxcodes)
    var gvf=""+account_uid
-if("ACCOUNT SALES"==row.Name)
+if("ACCOUNT SALES"===row.Name)
 {
 accrecv={Description:row.Name,Total:-row.Price,Account:{UID:gvf},TaxCode:{UID:taxcodes}}
 }
@@ -82,20 +82,20 @@ var customer=document.getElementById("customer").value;
 
 
 console.log(Object.keys(checkHash).length)
-if(customer=="")
+if(customer==="")
 {
 
 alert("Select customer");
 
 }
 else{
- if (date=="")
+ if (date==="")
  {
  alert("select date");
  }
  else{
 
- if(Object.keys(checkHash).length==0)
+ if(Object.keys(checkHash).length===0)
  {
  alert("enter sales");
  }

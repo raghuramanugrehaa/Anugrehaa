@@ -1,12 +1,14 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Home from './home';
-import invoice from './sale';
+import Sale from './sale';
+import invoice from './editsale';
 import payment from './Payment';
-import newinvoice from './demo';
+import newinvoice from './newsale';
 import Purchase from './purchase';
 import Newpurchase from './newpurchase';
 import Editpurchase from './editpurchase';
+import Purchasepayment from './purchasepayment';
+
 
 
 // The Main component renders one of the three provided
@@ -20,13 +22,15 @@ export class Main extends React.Component{
    return(
   <main>
     <Switch>
-      <Route exact path='/' component={Home}/>
+      <Route exact path='/' component={Sale}/>
       <Route path='/invoice/' component={invoice}/>
       <Route path='/payment' component={payment}/>
       <Route path='/newinvoice' component={newinvoice}/>
       <Route exact path='/purchase' component={Purchase}/>
       <Route exact path='/Newpurchase' component={Newpurchase}/>
       <Route exact path='/Editpurchase' component={Editpurchase}/>
+      <Route exact path='/Purchasepayment' component={Purchasepayment}/>
+
 
     </Switch>
   </main>
