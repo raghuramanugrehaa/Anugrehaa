@@ -26,6 +26,9 @@ export class Header extends React.Component{
                   <li className="nav-item">
                                       <a className="nav-link" href="/purchase">Purchase</a>
                                     </li>
+					 <li className="nav-item">
+                                      <a className="nav-link" href="/Payroll">Time Sheets</a>
+                                    </li>
                 </ul>
               </div>
                 </div>
