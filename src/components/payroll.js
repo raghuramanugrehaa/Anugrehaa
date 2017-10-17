@@ -29,12 +29,16 @@ componentDidMount() {
 var acc=[];
        for(var i=0;i<data.length;i++)
 	   {
-		  /* var hr=0;
-		   var rm=data[i].Lines[0].Entries;
-	   for(var j=0;j<rm.length;j++){
+		   var hr=0;
+		   var rm=data[i].Lines;
+		   if(rm.length>0){
+			   var km=data[i].Lines[0].Entries;
+			    for(var j=0;j<km.length;j++){
 		     hr+=  data[i].Lines[0].Entries[j].Hours;
-	   }*/
-		   var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate};
+	   }
+		   }
+	  
+		   var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr};
 
 		   acc.push(em);
 	   }
@@ -142,23 +146,18 @@ var acc=[];
       return (
 	  	          <Loader loaded={this.state.loaded}>
 
-<div className="column">
+<div className="column" style={{'padding-top':'20'}}>
 
-
-<div className="col-md-offset-6">
-<div className="text-right">
-              <a href={"/newinvoice"} className ><input type="button"  className="btn btn-success col-md-offset-3" value="New Timesheet"/></a>
-</div>
-</div>
-<div style={{"padding-bottom":"-150px"}}>
+<div style={{"padding-bottom":"-130px"}}>
 
 
 <BootstrapTable data={ this.state.posts } options={ options }     search  searchPlaceholder='search Timesheet' pagination  striped hover condensed>
-         <TableHeaderColumn width="9%"  dataAlign="center" dataField='employee' isKey={ true }>Employee</TableHeaderColumn>
-                   <TableHeaderColumn width="15%"  dataAlign="center" dataField='StartDate'>Timesheet StartDate</TableHeaderColumn>
-                   <TableHeaderColumn  width="10%" dataAlign="center" dataField='EndDate'>Timesheet EndDate</TableHeaderColumn>
-				   <TableHeaderColumn width="16%"  dataAlign="center" dataField='hour'>Total Hours</TableHeaderColumn>
-                    <TableHeaderColumn width="16%"  dataAlign="center" dataField='hour'>Timesheet Processed</TableHeaderColumn>
+         <TableHeaderColumn width="15%"  dataAlign="center" dataField='employee' isKey={ true }>Employee</TableHeaderColumn>
+                   <TableHeaderColumn width="14%"  dataAlign="center" dataField='StartDate'>Timesheet StartDate</TableHeaderColumn>
+                   <TableHeaderColumn  width="14%" dataAlign="center" dataField='EndDate'>Timesheet EndDate</TableHeaderColumn>
+				   <TableHeaderColumn width="10%"  dataAlign="center" dataField='hour'>Total Hours</TableHeaderColumn>
+				   <TableHeaderColumn  width="10%"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Invoice</TableHeaderColumn>
+
                     
       </BootstrapTable>
 </div>
