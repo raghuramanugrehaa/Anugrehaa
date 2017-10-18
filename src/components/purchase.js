@@ -60,7 +60,7 @@ componentDidMount() {
      	return (
 
  //<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
- <a href={"/payment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="EDIT"/></a>
+ <a href={"/Editpurchase/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="EDIT"/></a>
        )
        }
        else{
@@ -81,13 +81,14 @@ componentDidMount() {
     	return (
 
 //<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
-<a href={"/payment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="Payment"/></a>
+<a href={"/Purchasepayment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="Payment"/></a>
       )
       }
       else{
+            var t=row.Supplier.Name;
       return(
     //  <input type="button" value="Payment" className="btn btn-primary" onclick={"window.location.href=/payment/?id="+pp} />
-<a href={"/payment/?id="+pp} ><input type="button" className="btn btn-primary" value="Payment"/></a>
+<a href={"/Purchasepayment/?id="+pp+"&&name="+t} ><input type="button" className="btn btn-primary" value="Payment"/></a>
    //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
       )

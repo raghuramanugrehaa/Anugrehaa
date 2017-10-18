@@ -8,10 +8,13 @@ import Loader from 'react-loader';
 
 var url="";
 var accrecv;
-
+var hashacct ={};
+var hashitems={};
 var myHash = {};
 var checkHash = {};
 var taxhash={};
+var hashtax={};
+var row_count=0;
 var Lines = {
     details: []
 };
@@ -36,7 +39,7 @@ console.log("i got the account")
    var taxcodes=taxname.UID;
 
    var account_uid=myHash[row.type];
-   console.log(taxcodes)
+  // console.log(taxcodes)
    var gvf=""+account_uid
 if("ACCOUNT SALES"==row.Name)
 {
@@ -57,6 +60,32 @@ checkHash[row.Name]=accrecv
 }}
 
 }
+function onAfterInsertRow(row) {
+
+var TUID=taxhash[row.type];
+
+var accountname= myHash[row.type];
+console.log("inter"+accountname);
+var taxcode=TUID.UID;
+row_count++;
+hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountname},TaxCode:{UID:taxcode}}
+
+  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Desc]));
+
+}
+
+function onAfterDeleteRow(rowKeys) {
+
+
+  alert('The sale you are deleting is: ' + rowKeys);
+delete hashitems[rowKeys];
+row_count--;
+
+}
+
+const selectRowProp = {
+  mode: 'checkbox'
+};
 
 class Newpurchase extends React.Component {
 
@@ -81,24 +110,13 @@ var date = document.getElementById("date").value;
 var supplier=document.getElementById("supplier").value;
 var supplierInvoiceNumber=document.getElementById("SupplierInvoiceNumber").value;
 
-console.log(Object.keys(checkHash).length)
-if(supplier=="")
-{
+console.log(Object.keys(hashitems).length)
 
-alert("Select customer");
-
-}
-else{
  if (date=="")
  {
  alert("select date");
  }
- else{
 
- if(Object.keys(checkHash).length==0)
- {
- alert("enter sales");
- }
 
 
 else{
@@ -106,8 +124,8 @@ else{
 
 //var data="{Date:"+date+",Customer:{UID:"+customer+"},"+accrecv+"}";
 
-Object.keys(checkHash).forEach(function (key) {
-    var value = checkHash[key]
+Object.keys(hashitems).forEach(function (key) {
+    var value = hashitems[key]
     var ll=value
 
     console.log("jhg"+value)
@@ -133,8 +151,7 @@ axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439d
 
 }
 }
-}
-}
+
 
   componentDidMount() {
   this.setState ( { loaded: false});
@@ -142,7 +159,7 @@ axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439d
      ).then(res => {
 		             this.setState  ({ loaded: true});
 var arrTen = [];
- console.log("ji"+JSON.stringify(res.data));
+ //console.log("ji"+JSON.stringify(res.data));
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
         arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
@@ -152,16 +169,19 @@ var result=res.data.Suppliers;
        this.setState({posts: arrTen});
 //account detail fetching
 var acc=res.data.Account
+console.log(JSON.stringify(acc))
 var accnt=[];
 
 for ( k = 0; k < acc.length; k++) {
         accnt.push(acc[k].Name);
-        myHash[acc[k].Name]=[acc[k].UID];
+        myHash[acc[k].Name]=acc[k].UID;
         taxhash[acc[k].Name]=acc[k].TaxCodeUID
+       // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
+
     }
 
 
-
+//console.log("Tax hash"+taxhash);
 this.setState({accounts:accnt})
 
 var acc1=res.data.salesheads
@@ -181,7 +201,7 @@ this.setState({salesheads:heads})
 
 
 
-console.log("im hash table"+myHash)
+//console.log("im hash table"+myHash)
 
 
                                      /* use key/value for intended purpose */
@@ -191,7 +211,26 @@ console.log("im hash table"+myHash)
   });
  }
 
+ createCustomInsertButton = (openModal) => {
+     return (
+      <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Sale</button>
+     );
+ }
+ createCustomDeleteButton = (onBtnClick) => {
+     return (
+            <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Sale</button>
+
+     );
+   }
+
   render() {
+  const options = {
+        afterInsertRow: onAfterInsertRow,
+         afterDeleteRow: onAfterDeleteRow,
+         insertBtn:this.createCustomInsertButton,
+          deleteBtn: this.createCustomDeleteButton
+           // A hook for after insert rows
+      };
  var valu = new Date().toISOString();
               var re = valu.split("T");
               var p =re[0];
@@ -223,8 +262,8 @@ console.log("im hash table"+myHash)
 
                                <br></br>
                                <br></br>
-<BootstrapTable data={ this.state.salesheads } cellEdit={ cellEditProp } insertRow={ false  }>
-          <TableHeaderColumn width="30%" dataField='Name' isKey={true} editable={false }  >Sale Heads</TableHeaderColumn>
+<BootstrapTable  cellEdit={ cellEditProp }  options={ options } selectRow={ selectRowProp } insertRow deleteRow>
+          <TableHeaderColumn width="30%" dataField='Desc' isKey={true} editable={ true } placeholder="enter description" >Description</TableHeaderColumn>
           <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
            <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center"> ORDER AMOUNT</TableHeaderColumn>
 
