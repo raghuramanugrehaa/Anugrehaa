@@ -63,17 +63,7 @@ axios.post('http://13.126.189.91:3001/media/e3152784-4811-4f2e-9a4f-884f3439db90
   alert("check the enterd amount");
 
   }
-
-
-
-
-
 }
-
-
-
-
-
 class Payment extends React.Component {
 
     constructor(props) {

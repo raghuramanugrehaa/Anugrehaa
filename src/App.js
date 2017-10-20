@@ -13,7 +13,7 @@ export class App extends React.Component {
                </div>
 			   <br></br>
 			   <br></br>
-             
+
              <Main/>
             </div>
 

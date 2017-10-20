@@ -1,5 +1,6 @@
 import React from "react";
 import logo from '../logo.svg';
+import { Link } from 'react-router-dom';
 
 
 
@@ -20,16 +21,12 @@ export class Header extends React.Component{
                 <ul className="navbar-nav">
                   <li className="nav-item active">
                   </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="/">Sale</a>
-                  </li>
-                  <li className="nav-item">
-                                      <a className="nav-link" href="/purchase">Purchase</a>
-                                    </li>
-					 <li className="nav-item">
-                                      <a className="nav-link" href="/Payroll">Time Sheets</a>
-                                    </li>
-                </ul>
+                          <li><Link to='/'>Sale</Link></li>
+                          <li className="nav-item active">
+                                            </li>
+                          <li style={{"margin-left":"20px"}}><Link to='/purchase'>Purchase</Link></li>
+                          <li style={{"margin-left":"20px"}}><Link to='/Payroll'>Time Sheets</Link></li>
+                        </ul>
               </div>
                 </div>
 

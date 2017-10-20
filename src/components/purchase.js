@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from "axios";
 import Loader from 'react-loader';
+import { Link } from 'react-router-dom';
+
 
 var p="/payment";
 
@@ -60,13 +62,13 @@ componentDidMount() {
      	return (
 
  //<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
- <a href={"/Editpurchase/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="EDIT"/></a>
+ <a><Link to={"/Editpurchase/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="EDIT"/></Link></a>
        )
        }
        else{
        return(
      //  <input type="button" value="Payment" className="btn btn-primary" onclick={"window.location.href=/payment/?id="+pp} />
- <a href={"/Editpurchase/?id="+pp} ><input type="button" className="btn btn-info" value="Edit"/></a>
+ <a><Link to={"/Editpurchase/?id="+pp} ><input type="button" className="btn btn-info" value="Edit"/></Link></a>
     //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
        )
@@ -81,14 +83,14 @@ componentDidMount() {
     	return (
 
 //<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
-<a href={"/Purchasepayment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="Payment"/></a>
+<a><Link to={"/Purchasepayment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="Payment"/></Link></a>
       )
       }
       else{
             var t=row.Supplier.Name;
       return(
     //  <input type="button" value="Payment" className="btn btn-primary" onclick={"window.location.href=/payment/?id="+pp} />
-<a href={"/Purchasepayment/?id="+pp+"&&name="+t} ><input type="button" className="btn btn-primary" value="Payment"/></a>
+<a><Link to={"/Purchasepayment/?id="+pp+"&&name="+t} ><input type="button" className="btn btn-primary" value="Payment"/></Link></a>
    //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
       )

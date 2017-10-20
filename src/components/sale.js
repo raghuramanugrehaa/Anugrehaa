@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from "axios";
 import Loader from 'react-loader';
-
+import { Link } from 'react-router-dom';
 var p="/payment";
 
 export  class Home extends Component {
@@ -20,7 +20,7 @@ constructor(props) {
 
 componentDidMount() {
 	this.setState ( { loaded: false});
-   axios.get(`http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices`
+   axios.get('http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices'
    ).then(res => {
 
        const posts = res.data.Items;
@@ -60,13 +60,13 @@ componentDidMount() {
      	return (
 
  //<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
- <a href={"/invoice/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="EDIT"/></a>
+ <a><Link to ={"/payment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="EDIT"/></Link></a>
        )
        }
        else{
        return(
      //  <input type="button" value="Payment" className="btn btn-primary" onclick={"window.location.href=/payment/?id="+pp} />
- <a href={"/invoice/?id="+pp} ><input type="button" className="btn btn-info" value="Edit"/></a>
+ <a><Link to ={"/invoice/?id="+pp} ><input type="button" className="btn btn-info" value="Edit"/></Link></a>
     //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
        )
@@ -81,7 +81,7 @@ componentDidMount() {
     	return (
 
 //<a href="index.html" style={{color:'grey',cursor:'default','pointer-events':'none'}}>PAYMENT</a>
-<a href={"/payment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="Payment"/></a>
+<a><Link to ={"/payment/?id="+pp} style={{color:'grey',cursor:'default','pointer-events':'none'}} ><input type="button" className="btn" value="Payment"/></Link></a>
       )
       }
       else{
@@ -89,7 +89,7 @@ componentDidMount() {
       return(
 
     //  <input type="button" value="Payment" className="btn btn-primary" onclick={"window.location.href=/payment/?id="+pp} />
-<a href={"/payment/?id="+pp+"&&name="+t} ><input type="button" className="btn btn-primary" value="Payment"/></a>
+<a><Link to = {"/payment/?id="+pp+"&&name="+t} ><input type="button" className="btn btn-primary" value="Payment"/></Link></a>
    //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> PAYMENT</a>
 
       )
@@ -133,7 +133,7 @@ componentDidMount() {
 
 <div className="col-md-offset-6">
 <div className="text-right">
-              <a href={"/newinvoice"} className ><input type="button"  className="btn btn-success col-md-offset-3" value="New Invoice"/></a>
+              <a><Link to='/newinvoice'><input type="button"  className="btn btn-success col-md-offset-3" value="New Invoice"/></Link></a>
 </div>
 </div>
 <div style={{"padding-bottom":"-150px"}}>
