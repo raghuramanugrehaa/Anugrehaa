@@ -134,7 +134,7 @@ componentDidMount() {
 
 <div className="col-md-offset-6">
 <div className="text-right">
-              <a href={"/Newpurchase"} className ><input type="button"  className="btn btn-success col-md-offset-3" value="New Purchase"/></a>
+              <a><Link to ={"/Newpurchase"} className ><input type="button"  className="btn btn-success col-md-offset-3" value="New Purchase"/></Link></a>
 </div>
 </div>
 <div style={{"padding-bottom":"-150px"}}>
