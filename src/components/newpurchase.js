@@ -3,7 +3,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import {Button} from 'react-bootstrap';
 import axios from "axios";
 import Loader from 'react-loader';
-
+import Modal from 'react-bootstrap-modal';
 
 
 var url="";
@@ -154,6 +154,7 @@ axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439d
 
 
   componentDidMount() {
+
   this.setState ( { loaded: false});
        axios.get(url
      ).then(res => {
@@ -224,6 +225,7 @@ this.setState({salesheads:heads})
    }
 
   render() {
+
   const options = {
         afterInsertRow: onAfterInsertRow,
          afterDeleteRow: onAfterDeleteRow,
@@ -247,28 +249,79 @@ this.setState({salesheads:heads})
 
                  </select>
                  </div>
-<div className="row col-md-4">
+<div className="row col-md-4" style={{'margin-left':'10'}}>
 
      <label for="date">Select Date:</label>
 <input className="form-control" id="date" placeholder="Select Date" type="date" max={p}/>
 </div>
-<div className="col-md-4">
+<div className="col-md-4" style={{ 'margin-left':'-20'}}>
     <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Supplier Invoice Number"/>
      </div>
-<div className="row col-md-offset-8">
+<div className="row col-md-offset-8" style={{ 'margin-left':'-20'}}>
 <Button bsStyle="success" onClick={this.handleClick}>Submit</Button>
 </div>
 </div>
+<br></br>
+
+
+
+
+
+<div className="checkbox" style={{"margin-left":"910"}}>
+  <label><input type="checkbox" value=""/>Tax Inclusive</label>
+</div>
+
+
+
+
 
                                <br></br>
-                               <br></br>
-<BootstrapTable  cellEdit={ cellEditProp }  options={ options } selectRow={ selectRowProp } insertRow deleteRow>
-          <TableHeaderColumn width="30%" dataField='Desc' isKey={true} editable={ true } placeholder="enter description" >Description</TableHeaderColumn>
+
+<BootstrapTable maxHeight="200px" cellEdit={ cellEditProp }  options={ options } selectRow={ selectRowProp } insertRow deleteRow >
+          <TableHeaderColumn width="30%" height="1" dataField='Desc' isKey={true} editable={ true } placeholder="enter description" >Description</TableHeaderColumn>
           <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
            <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center"> ORDER AMOUNT</TableHeaderColumn>
+</BootstrapTable>
+<br></br>
+<div className="col-md-2" style={{ 'margin-left':'870'}}>
+    <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Sub  Total"/>
+     </div>
+<br></br>
 
+<div className="row">
+<label for="customer">Comment:</label>
+<select name="cars" id="supplier" className="form-control col-md-3">
+                   {this.state.posts}
+</select>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"300"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
+<select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"30"}} >
+                   {this.state.posts}
+</select>
+</div>
+<br></br>
+<div className="row">
+<label for="customer">Ship Via:</label>
+<select name="cars" id="supplier" className="form-control col-md-3">
+                   {this.state.posts}
+</select>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"530"}}   id="SupplierInvoiceNumber"   placeholder="Tax"/>
+</div>
+<br></br>
+<div className="row">
+<label for="customer">Promise date:</label>
+<input className=" col-md-2 form-control" id="date" placeholder="Select Date" type="date" min={p}/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"590"}}   id="SupplierInvoiceNumber"   placeholder="Total Amount"/>
+</div>
+<br></br>
+<div className="row">
+<label for="customer">Bill Delivery Status:</label>
+<select name="cars" id="supplier" className="form-control col-md-3">
+                   {this.state.posts}
+</select>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"220"}}   id="SupplierInvoiceNumber"   placeholder="Paid Today"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"50"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
+</div>
 
-      </BootstrapTable>
 </div>
 </Loader>
 
