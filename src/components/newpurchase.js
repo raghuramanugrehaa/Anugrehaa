@@ -98,7 +98,9 @@ class Newpurchase extends React.Component {
      this.state = {
        posts: [],
        accounts: [],
-       salesheads:[]
+       salesheads:[],
+       txt:[]
+
 
      };
   }
@@ -170,21 +172,30 @@ var result=res.data.Suppliers;
        this.setState({posts: arrTen});
 //account detail fetching
 var acc=res.data.Account
+var tax=res.data.TaxCode
 console.log(JSON.stringify(acc))
 var accnt=[];
+var taxt=[];
 
 for ( k = 0; k < acc.length; k++) {
         accnt.push(acc[k].Name);
         myHash[acc[k].Name]=acc[k].UID;
-        taxhash[acc[k].Name]=acc[k].TaxCodeUID
+       // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
+
+    }
+for ( k = 0; k < tax.length; k++) {
+        taxt.push(tax[k].Name);
+        taxhash[tax[k].Name]=tax[k].UID;
        // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
 
     }
 
 
+
+
 //console.log("Tax hash"+taxhash);
 this.setState({accounts:accnt})
-
+this .setState({txt:taxt})
 var acc1=res.data.salesheads
 var heads=[];
 
@@ -281,6 +292,9 @@ this.setState({salesheads:heads})
           <TableHeaderColumn width="30%" height="1" dataField='Desc' isKey={true} editable={ true } placeholder="enter description" >Description</TableHeaderColumn>
           <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
            <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center"> ORDER AMOUNT</TableHeaderColumn>
+           <TableHeaderColumn width="30%" dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.txt } } }>TAX NAME</TableHeaderColumn>
+
+
 </BootstrapTable>
 <br></br>
 <div className="col-md-2" style={{ 'margin-left':'870'}}>
@@ -293,8 +307,8 @@ this.setState({salesheads:heads})
 <select name="cars" id="supplier" className="form-control col-md-3">
                    {this.state.posts}
 </select>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"300"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
-<select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"30"}} >
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"210"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
+<select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"120"}} >
                    {this.state.posts}
 </select>
 </div>
@@ -318,8 +332,8 @@ this.setState({salesheads:heads})
 <select name="cars" id="supplier" className="form-control col-md-3">
                    {this.state.posts}
 </select>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"220"}}   id="SupplierInvoiceNumber"   placeholder="Paid Today"/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"50"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Paid Today"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"110"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
 </div>
 
 </div>

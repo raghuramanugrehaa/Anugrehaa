@@ -3,36 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a24ee07c-6bc4-4075-b338-1e69bdc41a57" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/.babelrc" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/.babelrc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/.eslintrc" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/.eslintrc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/.gitattributes" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/.gitattributes" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/License.txt" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/License.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/README.md" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/gulpfile.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/gulpfile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/karma.conf.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/karma.conf.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Body.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Body.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Dismiss.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Dismiss.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Fade.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Fade.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Footer.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Footer.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Header.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Header.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Modal.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Modal.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Title.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/Title.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/animation.less" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/animation.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/mixins.less" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/mixins.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/modal.less" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/modal.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/rbm-complete.less" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/rbm-complete.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/variables.less" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/lib/styles/variables.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/package.json" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/test.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/test.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/test/.eslintrc" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/test/.eslintrc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/test/modal.jsx" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/test/modal.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/webpack.configs.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/webpack.configs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/webpack/doc-config.es6.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/webpack/doc-config.es6.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/webpack/make-config.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/webpack/make-config.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/webpack/test-config.es6.js" afterPath="$PROJECT_DIR$/node_modules/react-bootstrap-modal/webpack/test-config.es6.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package-lock.json" afterPath="$PROJECT_DIR$/package-lock.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/index.html" afterPath="$PROJECT_DIR$/public/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/newpurchase.js" afterPath="$PROJECT_DIR$/src/components/newpurchase.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -87,7 +57,7 @@
       <file leaf-file-name="purchase.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/purchase.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
+            <state relative-caret-position="2856">
               <caret line="136" column="150" lean-forward="false" selection-start-line="136" selection-start-column="150" selection-end-line="136" selection-end-column="150" />
               <folding />
             </state>
@@ -97,7 +67,7 @@
       <file leaf-file-name="editpurchase.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/editpurchase.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
+            <state relative-caret-position="8211">
               <caret line="391" column="52" lean-forward="false" selection-start-line="391" selection-start-column="34" selection-end-line="391" selection-end-column="52" />
               <folding />
             </state>
@@ -107,8 +77,8 @@
       <file leaf-file-name="newpurchase.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/newpurchase.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="156" column="2" lean-forward="false" selection-start-line="156" selection-start-column="2" selection-end-line="156" selection-end-column="2" />
+            <state relative-caret-position="167">
+              <caret line="294" column="58" lean-forward="false" selection-start-line="294" selection-start-column="58" selection-end-line="294" selection-end-column="58" />
               <folding />
             </state>
           </provider>
@@ -148,10 +118,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>op</find>
-      <find>Stat</find>
-      <find>toggler</find>
-      <find>navbar-toggle</find>
       <find>CV</find>
       <find>WIND</find>
       <find>get</find>
@@ -174,10 +140,14 @@
       <find>hashitems</find>
       <find>hashtax</find>
       <find>selectRow</find>
-      <find>myHash</find>
       <find>edit</find>
       <find>new</find>
       <find>href</find>
+      <find>accnt</find>
+      <find>acc</find>
+      <find>accounts</find>
+      <find>myHash</find>
+      <find>type</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -245,6 +215,8 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -267,8 +239,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="AndroidView" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -401,7 +371,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35520363" sideWeight="0.49785176" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22824919" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23147154" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -482,7 +452,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
           <caret line="12" column="16" lean-forward="false" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -565,7 +534,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
           <caret line="12" column="16" lean-forward="false" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -620,7 +588,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="462">
           <caret line="22" column="30" lean-forward="false" selection-start-line="22" selection-start-column="30" selection-end-line="22" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -741,7 +708,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="588">
           <caret line="28" column="30" lean-forward="false" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -795,7 +761,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/purchase.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
+        <state relative-caret-position="2856">
           <caret line="136" column="150" lean-forward="false" selection-start-line="136" selection-start-column="150" selection-end-line="136" selection-end-column="150" />
           <folding />
         </state>
@@ -803,7 +769,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/editpurchase.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
+        <state relative-caret-position="8211">
           <caret line="391" column="52" lean-forward="false" selection-start-line="391" selection-start-column="34" selection-end-line="391" selection-end-column="52" />
           <folding />
         </state>
@@ -819,8 +785,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/newpurchase.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="156" column="2" lean-forward="false" selection-start-line="156" selection-start-column="2" selection-end-line="156" selection-end-column="2" />
+        <state relative-caret-position="167">
+          <caret line="294" column="58" lean-forward="false" selection-start-line="294" selection-start-column="58" selection-end-line="294" selection-end-column="58" />
           <folding />
         </state>
       </provider>
