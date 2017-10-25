@@ -5,9 +5,12 @@ import axios from "axios";
 import Loader from 'react-loader';
 import Modal from 'react-bootstrap-modal';
 
-
+var sub_total=0;
+var tax_total=0;
 var url="";
 var accrecv;
+var money={};
+var money_tax={};
 var hashacct ={};
 var hashitems={};
 var myHash = {};
@@ -29,13 +32,23 @@ function onAfterSaveCell(row,cellName,cellValue){
 //console.log("sixth senes"+JSON.stringify(taxhash))
 if(row.Price!=="0")
 {
-console.log("i got price "+row.Price)
+//console.log("i got price "+row.Price)
 
 
 
 if(typeof row.type !== "undefined") {
-console.log("i got the account")
-
+//console.log("i got the accou//nt")
+var tr=parseInt(money[row.Desc]);
+sub_total=sub_total-tr;
+sub_total=parseInt(row.Price)+sub_total;
+document.getElementById('sub_total').value=sub_total;
+money[row.Desc]=row.Price;
+var mt=parseInt(newhash[row.type1]);
+tax_total=tax_total-parseInt(money_tax[row.Desc])
+money_tax[row.Desc]=parseInt(row.Price)/mt;
+tax_total=tax_total+parseInt(row.Price)/mt;
+document.getElementById('tax_per').value=tax_total;
+document.getElementById('Total').value=tax_total+sub_total;
    var taxname= taxhash[row.type1];
    var taxcodes=taxname;
 
@@ -64,9 +77,15 @@ checkHash[row.Name]=accrecv
 function onAfterInsertRow(row) {
 
 var TUID=taxhash[row.type1];
-
+money[row.Desc]=row.Price;
+sub_total=parseInt(row.Price)+parseInt(sub_total);
+document.getElementById('sub_total').value=sub_total;
+var mt=parseInt(newhash[row.type1]);
+tax_total=parseInt(row.Price)/mt+parseInt(tax_total);
+money_tax[row.Desc]=parseInt(row.Price)/mt;
+document.getElementById('tax_per').value=tax_total;
+document.getElementById('Total').value=tax_total+sub_total;
 var accountname= myHash[row.type];
-console.log("inter"+accountname);
 var taxcode=TUID;
 row_count++;
 hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountname},TaxCode:{UID:taxcode}}
@@ -76,10 +95,17 @@ hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountna
 }
 
 function onAfterDeleteRow(rowKeys) {
-
-
+var tr=parseInt(money[rowKeys]);
+sub_total=sub_total-tr;
+document.getElementById('sub_total').value=sub_total;
+money[rowKeys]=0;
+tax_total=tax_total-parseInt(money_tax[rowKeys])
+money_tax[rowKeys]=0;
+document.getElementById('tax_per').value=tax_total;
+document.getElementById('Total').value=tax_total+sub_total;
   alert('The sale you are deleting is: ' + rowKeys);
 delete hashitems[rowKeys];
+
 row_count--;
 
 }
@@ -146,12 +172,13 @@ var fre_tax=document.getElementById("freight_code").value;
 var del_status=document.getElementById('dev_status').value;
 var paid=document.getElementById('paid_due').value;
 var pm_date = document.getElementById("promise_date").value;
+var tttax=document.getElementById('tax_per').value;
 this.setState ( { loaded: false});
 var klk=Lines.details;
 console.log("yes"+ supplier);
 console.log("no"+date);
 this.setState ( { loaded: true});
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date})
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date})
   .then(function (response) {
   // console.log(response);
      window.location.assign('/purchase');
@@ -334,7 +361,7 @@ this.setState({salesheads:heads})
    <select name="cars" id="comment" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
                       {this.state.pots}
    </select>
-       <input type="text" className=" col-md-2 form-control" style={{ 'margin-left':'20'}} id="sub total"   placeholder="Sub  Total"/>
+       <input type="text" className=" col-md-2 form-control" disabled="disabled" style={{ 'margin-left':'20'}} id="sub_total"   placeholder="Sub  Total"/>
 <input type="text" className="col-md-2 form-control" style={{"margin-left":"60"}}   id="freight"   placeholder="Freight"/>
    <select name="cars" id="freight_code" className="form-control col-md-2" style={{"margin-left":"100"}} >
                       {this.state.fi}
@@ -349,7 +376,7 @@ this.setState({salesheads:heads})
 <input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="tax_per"   placeholder="Tax"/>
 <label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
 <input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'25'}} placeholder="Select Date" type="date" min={p}/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="Total"   placeholder="Total Amount"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"20"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
 </div>
 <br></br>
 <div className="row">
