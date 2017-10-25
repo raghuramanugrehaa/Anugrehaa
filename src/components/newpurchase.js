@@ -322,43 +322,37 @@ this.setState({salesheads:heads})
 
 </BootstrapTable>
 <br></br>
-<div className="col-md-2" style={{ 'margin-left':'870'}}>
-    <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Sub  Total"/>
-     </div>
 <br></br>
-
 <div className="row">
-<label for="customer">Comment:</label>
-<select name="cars" id="supplier" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
-                   {this.state.pots}
-</select>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"210"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
-<select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"120"}} >
-                   {this.state.fi}
-</select>
-</div>
-<br></br>
+   <label for="customer">Comment:</label>
+   <select name="cars" id="supplier" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
+                      {this.state.pots}
+   </select>
+       <input type="text" className=" col-md-2 form-control" style={{ 'margin-left':'20'}} id="SupplierInvoiceNumber"   placeholder="Sub  Total"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"60"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
+   <select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"100"}} >
+                      {this.state.fi}
+   </select>
+   </div>
+   <br></br>
 <div className="row">
 <label for="customer">Ship Via:</label>
 <select name="cars" id="supplier" className="form-control col-md-3"  style={{ 'margin-left':'20'}}>
                    {this.state.ship}
 </select>
-<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"500"}}   id="SupplierInvoiceNumber"   placeholder="Tax"/>
-</div>
-<br></br>
-<div className="row">
-<label for="customer">Promise date:</label>
-<input className=" col-md-2 form-control" id="date"  style={{ 'margin-left':'85'}} placeholder="Select Date" type="date" min={p}/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"490"}}   id="SupplierInvoiceNumber"   placeholder="Total Amount"/>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="SupplierInvoiceNumber"   placeholder="Tax"/>
+<label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
+<input className=" col-md-2 form-control" id="date"  style={{ 'margin-left':'25'}} placeholder="Select Date" type="date" min={p}/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="SupplierInvoiceNumber"   placeholder="Total Amount"/>
 </div>
 <br></br>
 <div className="row">
 <label for="customer">Bill Delivery Status:</label>
-<select name="cars" id="supplier" className="form-control col-md-3">
+<select name="cars" id="supplier" className="form-control col-md-2">
                    {this.state.posts}
 </select>
 <input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Paid Today"/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"110"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
 </div>
 </div>
 </Loader>

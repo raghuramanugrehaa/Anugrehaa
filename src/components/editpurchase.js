@@ -375,8 +375,8 @@ console.log("ftr "+typeof(da))
 
  <div className="container">
  <div className="row">
- <label for="note" style={{'padding-top':'40'}}>Invoice Details:</label>
-    <textarea id="note" className="form-control col-md-4" style={{"height":"100px","width":"280"} } value={"Customer Name:"+this.state.cusname+"\nInvoice Number:"+this.state.invoiceid+"\nInvoice Date:"+this.state.datem+"\nTotal Amount:"+this.state.tamount} /><br></br>
+ <label for="note" style={{'padding-top':'40'}}>Purchase Details:</label>
+    <textarea id="note" className="form-control col-md-4" style={{"height":"100px","width":"280"} } value={"Supplier Name:"+this.state.cusname+"\nPurchase Number:"+this.state.invoiceid+"\nInvoice Date:"+this.state.datem+"\nTotal Amount:"+this.state.tamount} /><br></br>
 
 <div>
 <table>
@@ -405,12 +405,45 @@ console.log("ftr "+typeof(da))
               <br></br>
               <br></br>
 
-     <BootstrapTable data={ this.state.account } cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow deleteRow >
+     <BootstrapTable data={ this.state.account }  maxHeight="200px" cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow deleteRow >
 
    <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={true }  placeholder="enter description" >Description</TableHeaderColumn>
                <TableHeaderColumn width="30%"  dataField='Account'  editable={ { type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
                 <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >ORDER  Amount</TableHeaderColumn>
            </BootstrapTable>
+           <br></br>
+   <div className="row">
+   <label for="customer">Comment:</label>
+   <select name="cars" id="supplier" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
+                      {this.state.pots}
+   </select>
+       <input type="text" className=" col-md-2 form-control" style={{ 'margin-left':'20'}} id="SupplierInvoiceNumber"   placeholder="Sub  Total"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"60"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
+   <select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"100"}} >
+                      {this.state.fi}
+   </select>
+   </div>
+   <br></br>
+<div className="row">
+<label for="customer">Ship Via:</label>
+<select name="cars" id="supplier" className="form-control col-md-3"  style={{ 'margin-left':'20'}}>
+                   {this.state.ship}
+</select>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="SupplierInvoiceNumber"   placeholder="Tax"/>
+<label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
+<input className=" col-md-2 form-control" id="date"  style={{ 'margin-left':'25'}} placeholder="Select Date" type="date" min={p}/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="SupplierInvoiceNumber"   placeholder="Total Amount"/>
+</div>
+<br></br>
+<div className="row">
+<label for="customer">Bill Delivery Status:</label>
+<select name="cars" id="supplier" className="form-control col-md-3">
+                   {this.state.posts}
+</select>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Paid Today"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
+</div>
+
       </div>
       </Loader>
 
