@@ -12,6 +12,7 @@ var hashacct ={};
 var hashitems={};
 var myHash = {};
 var checkHash = {};
+var newhash={};
 var taxhash={};
 var hashtax={};
 var row_count=0;
@@ -99,7 +100,10 @@ class Newpurchase extends React.Component {
        posts: [],
        accounts: [],
        salesheads:[],
-       txt:[]
+       txt:[],
+       pots:[],
+       fi:[],
+       ship:[]
 
 
      };
@@ -143,7 +147,7 @@ console.log("no"+date);
 this.setState ( { loaded: true});
 axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},Lines:klk})
   .then(function (response) {
-   console.log(response);
+  // console.log(response);
      window.location.assign('/purchase');
 
   })
@@ -162,18 +166,34 @@ axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439d
      ).then(res => {
 		             this.setState  ({ loaded: true});
 var arrTen = [];
+var comment = [];
+var shipping = [];
+var taxc =[];
  //console.log("ji"+JSON.stringify(res.data));
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
         arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
     }
+
+var result1=res.data.Comments;
+console.log("checkk"+result1);
+for (var l =0;l < result1.length;l++){
+ comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
+}
+
+var result3=res.data.Shipping;
+for(var l=0;l < result3.length;l++){
+shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
+}
        //  const posts = res.data.Items;
 
        this.setState({posts: arrTen});
+       this.setState({pots :comment});
+       this.setState({ship:shipping});
 //account detail fetching
 var acc=res.data.Account
 var tax=res.data.TaxCode
-console.log(JSON.stringify(acc))
+//console.log(JSON.stringify(acc))
 var accnt=[];
 var taxt=[];
 
@@ -183,13 +203,18 @@ for ( k = 0; k < acc.length; k++) {
        // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
 
     }
+    var fri=[];
 for ( k = 0; k < tax.length; k++) {
         taxt.push(tax[k].Name);
         taxhash[tax[k].Name]=tax[k].UID;
+        newhash[tax[k].Name]=tax[k].Rate;
+ //taxc.push(<option key={result2[l].name} value={result1[l].name}> {result1[l].name} </option>);
+        fri.push(<option key={tax[k].Name} value={tax[k].UID}> {tax[k].Name} {tax[k].Rate}% </option>);
        // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
 
     }
 
+this.setState({fi:fri})
 
 
 
@@ -304,27 +329,27 @@ this.setState({salesheads:heads})
 
 <div className="row">
 <label for="customer">Comment:</label>
-<select name="cars" id="supplier" className="form-control col-md-3">
-                   {this.state.posts}
+<select name="cars" id="supplier" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
+                   {this.state.pots}
 </select>
 <input type="text" className="col-md-2 form-control" style={{"margin-left":"210"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
 <select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"120"}} >
-                   {this.state.posts}
+                   {this.state.fi}
 </select>
 </div>
 <br></br>
 <div className="row">
 <label for="customer">Ship Via:</label>
-<select name="cars" id="supplier" className="form-control col-md-3">
-                   {this.state.posts}
+<select name="cars" id="supplier" className="form-control col-md-3"  style={{ 'margin-left':'20'}}>
+                   {this.state.ship}
 </select>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"530"}}   id="SupplierInvoiceNumber"   placeholder="Tax"/>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"500"}}   id="SupplierInvoiceNumber"   placeholder="Tax"/>
 </div>
 <br></br>
 <div className="row">
 <label for="customer">Promise date:</label>
-<input className=" col-md-2 form-control" id="date" placeholder="Select Date" type="date" min={p}/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"590"}}   id="SupplierInvoiceNumber"   placeholder="Total Amount"/>
+<input className=" col-md-2 form-control" id="date"  style={{ 'margin-left':'85'}} placeholder="Select Date" type="date" min={p}/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"490"}}   id="SupplierInvoiceNumber"   placeholder="Total Amount"/>
 </div>
 <br></br>
 <div className="row">
@@ -335,7 +360,6 @@ this.setState({salesheads:heads})
 <input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Paid Today"/>
 <input type="text" className="col-md-2 form-control" style={{"margin-left":"110"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
 </div>
-
 </div>
 </Loader>
 
