@@ -273,7 +273,7 @@ this.setState ( { loaded: false});
         var acc = invoice.data.Lines;
         RV=invoice.data.RowVersion;
         SI=invoice.data.SupplierInvoiceNumber;
-console.log("invocice "+SI)
+console.log("invocice "+JSON.stringify(invoice))
         cname=invoice.data.Supplier.Name;
         Supplier=invoice.data.Supplier.UID;
         invoiceID=invoice.data.Number;

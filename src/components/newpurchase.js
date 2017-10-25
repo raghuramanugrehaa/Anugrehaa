@@ -26,7 +26,7 @@ const cellEditProp = {
 };
 
 function onAfterSaveCell(row,cellName,cellValue){
-console.log("sixth senes"+JSON.stringify(taxhash))
+//console.log("sixth senes"+JSON.stringify(taxhash))
 if(row.Price!=="0")
 {
 console.log("i got price "+row.Price)
@@ -36,8 +36,8 @@ console.log("i got price "+row.Price)
 if(typeof row.type !== "undefined") {
 console.log("i got the account")
 
-   var taxname= taxhash[row.type];
-   var taxcodes=taxname.UID;
+   var taxname= taxhash[row.type1];
+   var taxcodes=taxname;
 
    var account_uid=myHash[row.type];
   // console.log(taxcodes)
@@ -63,11 +63,11 @@ checkHash[row.Name]=accrecv
 }
 function onAfterInsertRow(row) {
 
-var TUID=taxhash[row.type];
+var TUID=taxhash[row.type1];
 
 var accountname= myHash[row.type];
 console.log("inter"+accountname);
-var taxcode=TUID.UID;
+var taxcode=TUID;
 row_count++;
 hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountname},TaxCode:{UID:taxcode}}
 
@@ -139,13 +139,19 @@ Object.keys(hashitems).forEach(function (key) {
 
     // iteration code
 })
-
+var com=document.getElementById('comment').value;
+var ship=document.getElementById('ship').value;
+var fre_amount=document.getElementById('freight').value;
+var fre_tax=document.getElementById("freight_code").value;
+var del_status=document.getElementById('dev_status').value;
+var paid=document.getElementById('paid_due').value;
+var pm_date = document.getElementById("promise_date").value;
 this.setState ( { loaded: false});
 var klk=Lines.details;
 console.log("yes"+ supplier);
 console.log("no"+date);
 this.setState ( { loaded: true});
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},Lines:klk})
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date})
   .then(function (response) {
   // console.log(response);
      window.location.assign('/purchase');
@@ -209,7 +215,7 @@ for ( k = 0; k < tax.length; k++) {
         taxhash[tax[k].Name]=tax[k].UID;
         newhash[tax[k].Name]=tax[k].Rate;
  //taxc.push(<option key={result2[l].name} value={result1[l].name}> {result1[l].name} </option>);
-        fri.push(<option key={tax[k].Name} value={tax[k].UID}> {tax[k].Name} {tax[k].Rate}% </option>);
+        fri.push(<option key={tax[k].Name} value={tax[k].UID}>{tax[k].Name}</option>);
        // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
 
     }
@@ -325,34 +331,34 @@ this.setState({salesheads:heads})
 <br></br>
 <div className="row">
    <label for="customer">Comment:</label>
-   <select name="cars" id="supplier" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
+   <select name="cars" id="comment" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
                       {this.state.pots}
    </select>
-       <input type="text" className=" col-md-2 form-control" style={{ 'margin-left':'20'}} id="SupplierInvoiceNumber"   placeholder="Sub  Total"/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"60"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
-   <select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"100"}} >
+       <input type="text" className=" col-md-2 form-control" style={{ 'margin-left':'20'}} id="sub total"   placeholder="Sub  Total"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"60"}}   id="freight"   placeholder="Freight"/>
+   <select name="cars" id="freight_code" className="form-control col-md-2" style={{"margin-left":"100"}} >
                       {this.state.fi}
    </select>
    </div>
    <br></br>
 <div className="row">
 <label for="customer">Ship Via:</label>
-<select name="cars" id="supplier" className="form-control col-md-3"  style={{ 'margin-left':'20'}}>
+<select name="cars" id="ship" className="form-control col-md-3"  style={{ 'margin-left':'20'}}>
                    {this.state.ship}
 </select>
-<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="SupplierInvoiceNumber"   placeholder="Tax"/>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="tax_per"   placeholder="Tax"/>
 <label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
-<input className=" col-md-2 form-control" id="date"  style={{ 'margin-left':'25'}} placeholder="Select Date" type="date" min={p}/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="SupplierInvoiceNumber"   placeholder="Total Amount"/>
+<input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'25'}} placeholder="Select Date" type="date" min={p}/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="Total"   placeholder="Total Amount"/>
 </div>
 <br></br>
 <div className="row">
 <label for="customer">Bill Delivery Status:</label>
-<select name="cars" id="supplier" className="form-control col-md-2">
-                   {this.state.posts}
+<select name="cars" id="dev_status" className="form-control col-md-2">
+                   <option value="to be printed">to be printed</option>
 </select>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Paid Today"/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="paid_due"   placeholder="Paid Today"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="Bal_amount"   placeholder="Balance Due Amount"/>
 </div>
 </div>
 </Loader>
