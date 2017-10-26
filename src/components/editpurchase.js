@@ -14,6 +14,8 @@ var hashitems={};
 var RV="";
 var SI="";
 var Supplier="";
+var newhash={};
+var taxhash={};
 var invoiceID="";
 var invoiceid="";
 var row_count=0;
@@ -242,7 +244,7 @@ class Editpurchase extends React.Component {
          va:"",
          cusname:"",
          si:"",
-		 invoiceid:"",
+        invoiceid:"",
 		 tamount:"",
          };
        }
@@ -291,7 +293,11 @@ console.log("invocice "+JSON.stringify(invoice))
 row_count=acc.length;
 //console.log("count of rows"+row_count)
        // document.getElementById('datenow').defaultValue='2017-02-03'
+
+        var comment = [];
+        var shipping = [];
         var accnt =[];
+
         for (var k = 0; k < acc.length; k++) {
 
 var details={Description:acc[k].Description,Account:acc[k].Account.Name,Total:acc[k].Total}
@@ -316,7 +322,10 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total
 
 
         var acnames = dependencies.data.Account;
+        var tax=dependencies.data.TaxCode
+
         var acn=[];
+        var taxt=[];
 
   for (k = 0; k < acnames.length; k++) {
                 acn.push(acnames[k].Name);
@@ -324,8 +333,32 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total
             hashacct[acnames[k].Name]=acnames[k].UID
            hashtax[acnames[k].Name]=acnames[k].TaxCodeUID
             }
+var result1=dependencies.data.Comments;
+console.log("checkk"+result1);
+for (var l =0;l < result1.length;l++){
+ comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
+}
+var result3=dependencies.data.Shipping;
+for(var l=0;l < result3.length;l++){
+shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
+}
+ var fri=[];
+for ( k = 0; k < tax.length; k++) {
+        taxt.push(tax[k].Name);
+        taxhash[tax[k].Name]=tax[k].UID;
+        newhash[tax[k].Name]=tax[k].Rate;
+ //taxc.push(<option key={result2[l].name} value={result1[l].name}> {result1[l].name} </option>);
+        fri.push(<option key={tax[k].Name} value={tax[k].UID}>{tax[k].Name}</option>);
+       // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
 
-        this.setState({acco:acn})
+    }
+
+this.setState({fi:fri})
+
+        this.setState({acco:acn});
+        this.setState({pots :comment});
+        this .setState({txt:taxt})
+        this.setState({ship:shipping});
         var g=hashtax['Freight Collected'];
         console.log("iam acouint "+g.UID)
         console.log(dependencies.data)
@@ -410,6 +443,8 @@ console.log("ftr "+typeof(da))
    <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={true }  placeholder="enter description" >Description</TableHeaderColumn>
                <TableHeaderColumn width="30%"  dataField='Account'  editable={ { type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
                 <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >ORDER  Amount</TableHeaderColumn>
+                      <TableHeaderColumn width="30%" dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.txt } } }>TAX NAME</TableHeaderColumn>
+
            </BootstrapTable>
            <br></br>
    <div className="row">
