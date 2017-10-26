@@ -413,36 +413,42 @@ console.log("ftr "+typeof(da))
            </BootstrapTable>
            <br></br>
    <div className="row">
-   <label for="customer">Comment:</label>
-   <select name="cars" id="supplier" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
-                      {this.state.pots}
+      <label for="customer">Comment:</label>
+      <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'10'}} >
+                         {this.state.pots}
+      </select>
+             <label for="customer" style={{ 'margin-left':'10'}}>Sub Total:</label>
+           <input type="text" className=" col-md-2 form-control" disabled="disabled" style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
+      <label for="customer" style={{ 'margin-left':'10'}}>Freight:</label>
+   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="freight"   placeholder="Freight"/>
+      <select name="cars" id="freight_code" className="form-control col-md-2" style={{"margin-left":"100"}} >
+                         {this.state.fi}
+      </select>
+      </div>
+      <br></br>
+   <div className="row">
+   <label for="customer">Ship Via:</label>
+   <select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'10'}}>
+                      {this.state.ship}
    </select>
-       <input type="text" className=" col-md-2 form-control" style={{ 'margin-left':'20'}} id="SupplierInvoiceNumber"   placeholder="Sub  Total"/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"60"}}   id="SupplierInvoiceNumber"   placeholder="Freight"/>
-   <select name="cars" id="supplier" className="form-control col-md-2" style={{"margin-left":"100"}} >
-                      {this.state.fi}
-   </select>
+   <label for="customer" style={{"margin-left":"10"}} >Tax:</label>
+   <input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
+   <label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
+   <input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'15'}} placeholder="Select Date" type="date" min={p}/>
+   <label for="customer" style={{"margin-left":"10"}}>Total Amount:</label>
+   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
    </div>
    <br></br>
-<div className="row">
-<label for="customer">Ship Via:</label>
-<select name="cars" id="supplier" className="form-control col-md-3"  style={{ 'margin-left':'20'}}>
-                   {this.state.ship}
-</select>
-<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="SupplierInvoiceNumber"   placeholder="Tax"/>
-<label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
-<input className=" col-md-2 form-control" id="date"  style={{ 'margin-left':'25'}} placeholder="Select Date" type="date" min={p}/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="SupplierInvoiceNumber"   placeholder="Total Amount"/>
-</div>
-<br></br>
-<div className="row">
-<label for="customer">Bill Delivery Status:</label>
-<select name="cars" id="supplier" className="form-control col-md-3">
-                   {this.state.posts}
-</select>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Paid Today"/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="SupplierInvoiceNumber"   placeholder="Balance Due Amount"/>
-</div>
+   <div className="row">
+   <label for="customer">Bill Delivery Status:</label>
+   <select name="cars" id="dev_status" className="form-control col-md-2">
+                      <option value="to be printed">to be printed</option>
+   </select>
+   <label for="customer" style={{"margin-left":"30"}} >Paid Today:</label>
+   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="paid_due"   placeholder="Paid Today"/>
+   <label for="customer" style={{"margin-left":"30"}} >Balance Due Amount:</label>
+   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="Bal_amount"   placeholder="Balance Due Amount"/>
+   </div>
 
       </div>
       </Loader>

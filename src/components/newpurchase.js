@@ -172,7 +172,7 @@ var fre_tax=document.getElementById("freight_code").value;
 var del_status=document.getElementById('dev_status').value;
 var paid=document.getElementById('paid_due').value;
 var pm_date = document.getElementById("promise_date").value;
-var tttax=document.getElementById('tax_per').value;
+var tttax=parseInt(document.getElementById('tax_per').value);
 this.setState ( { loaded: false});
 var klk=Lines.details;
 console.log("yes"+ supplier);
@@ -358,11 +358,13 @@ this.setState({salesheads:heads})
 <br></br>
 <div className="row">
    <label for="customer">Comment:</label>
-   <select name="cars" id="comment" className="form-control col-md-3" style={{ 'margin-left':'10'}} >
+   <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'10'}} >
                       {this.state.pots}
    </select>
-       <input type="text" className=" col-md-2 form-control" disabled="disabled" style={{ 'margin-left':'20'}} id="sub_total"   placeholder="Sub  Total"/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"60"}}   id="freight"   placeholder="Freight"/>
+          <label for="customer" style={{ 'margin-left':'10'}}>Sub Total:</label>
+        <input type="text" className=" col-md-2 form-control" disabled="disabled" style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
+   <label for="customer" style={{ 'margin-left':'10'}}>Freight:</label>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="freight"   placeholder="Freight"/>
    <select name="cars" id="freight_code" className="form-control col-md-2" style={{"margin-left":"100"}} >
                       {this.state.fi}
    </select>
@@ -370,13 +372,15 @@ this.setState({salesheads:heads})
    <br></br>
 <div className="row">
 <label for="customer">Ship Via:</label>
-<select name="cars" id="ship" className="form-control col-md-3"  style={{ 'margin-left':'20'}}>
+<select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'10'}}>
                    {this.state.ship}
 </select>
-<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"20"}}   id="tax_per"   placeholder="Tax"/>
+<label for="customer" style={{"margin-left":"10"}} >Tax:</label>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
 <label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
-<input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'25'}} placeholder="Select Date" type="date" min={p}/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"20"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
+<input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'15'}} placeholder="Select Date" type="date" min={p}/>
+<label for="customer" style={{"margin-left":"10"}}>Total Amount:</label>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
 </div>
 <br></br>
 <div className="row">
@@ -384,8 +388,10 @@ this.setState({salesheads:heads})
 <select name="cars" id="dev_status" className="form-control col-md-2">
                    <option value="to be printed">to be printed</option>
 </select>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="paid_due"   placeholder="Paid Today"/>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"150"}}   id="Bal_amount"   placeholder="Balance Due Amount"/>
+<label for="customer" style={{"margin-left":"30"}} >Paid Today:</label>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="paid_due"   placeholder="Paid Today"/>
+<label for="customer" style={{"margin-left":"30"}} >Balance Due Amount:</label>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="Bal_amount"   placeholder="Balance Due Amount"/>
 </div>
 </div>
 </Loader>
