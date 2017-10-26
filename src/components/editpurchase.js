@@ -5,6 +5,10 @@ import { Button} from 'react-bootstrap';
 import axios from "axios";
 const queryString = require('query-string');
 var ids="";
+var sub_total=0;
+var tax_total=0;
+var money={};
+var money_tax={};
 var url="";
 var raccnames = {};
 var total_amount="";
@@ -80,8 +84,15 @@ Object.keys(hashitems).forEach(function (key) {
 var klk=Lines.details;
 console.log(klk);
 console.log("yes"+Supplier);
-
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV})
+var com=document.getElementById('comment').value;
+var ship=document.getElementById('ship').value;
+var fre_amount=document.getElementById('freight').value;
+var fre_tax=document.getElementById("freight_code").value;
+var del_status=document.getElementById('dev_status').value;
+var paid=document.getElementById('paid_due').value;
+var pm_date = document.getElementById("promise_date").value;
+var tttax=parseInt(document.getElementById('tax_per').value);
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date})
   .then(function (response) {
    console.log(response);
      window.location.assign('/purchase');
@@ -100,10 +111,28 @@ alert("enter sales correctly");
 
 function onAfterSaveCell(row,cellName,cellValue){
 console.log(row)
-
+  //  document.getElementById('sub_total').value="1";
 var TUID=hashtax[row.Account];
 var accountname= hashacct[row.Account];
-var taxcode=TUID.UID;
+var TUID=taxhash[row.tax];
+var taxcode=TUID;
+
+//auto call of amount
+var tr=parseInt(money[row.Description]);
+sub_total=sub_total-tr;
+sub_total=parseInt(row.Total)+sub_total;
+document.getElementById('sub_total').value=sub_total;
+money[row.Desc]=row.Total;
+
+//auto call of tax
+var mt=parseInt(newhash[row.tax]);
+tax_total=tax_total-parseInt(money_tax[row.Description])
+money_tax[row.Description]=parseInt(row.Total)/mt;
+tax_total=tax_total+parseInt(row.Total)/mt;
+document.getElementById('tax_per').value=tax_total;
+document.getElementById('Total').value=tax_total+sub_total;
+
+
 if("ACCOUNT SALES"==row.Description)
 {
 if(row.Total<0){
@@ -131,10 +160,28 @@ hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:
 
 
 function onAfterInsertRow(row) {
-var TUID=hashtax[row.Account];
+var TUID=taxhash[row.tax];
 var accountname= hashacct[row.Account];
-var taxcode=TUID.UID;
+var taxcode=TUID;
 row_count++;
+
+//auto call total
+money[row.Description]=row.Total;
+sub_total=parseInt(row.Total)+parseInt(sub_total);
+document.getElementById('sub_total').value=sub_total;
+document.getElementById('Total').value=tax_total+sub_total;
+
+//auto call tax
+var mt=parseInt(newhash[row.tax]);
+mt=parseInt(row.Total)/parseInt(mt);
+money_tax[row.Desc]=mt;
+tax_total=mt+tax_total;
+document.getElementById('tax_per').value=tax_total;
+document.getElementById('Total').value=tax_total+sub_total;
+
+
+
+
 if("ACCOUNT SALES"==row.Description)
 {
 hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
@@ -152,7 +199,14 @@ hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:
 }
 function onAfterDeleteRow(rowKeys) {
 
-
+  var tr=parseInt(money[rowKeys]);
+  sub_total=sub_total-tr;
+  document.getElementById('sub_total').value=sub_total;
+  money[rowKeys]=0;
+  tax_total=tax_total-parseInt(money_tax[rowKeys])
+  money_tax[rowKeys]=0;
+  document.getElementById('tax_per').value=tax_total;
+  document.getElementById('Total').value=tax_total+sub_total;
   alert('The sale you are deleting is: ' + rowKeys);
 delete hashitems[rowKeys];
 row_count--;
@@ -166,57 +220,6 @@ const selectRowProp = {
   mode: 'checkbox'
 };
 
-class PriceEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.updateData = this.updateData.bind(this);
-    this.state = { amount: props.defaultValue.amount, currency: props.defaultValue.currency };
-  }
-  focus() {
-    this.refs.inputRef.focus();
-  }
-  updateData() {
-    this.props.onUpdate({ amount: this.state.amount, currency: this.state.currency });
-  }
-  render() {
-    return (
-      <span>
-        <input
-          ref='inputRef'
-          className={ ( this.props.editorClass || '') + ' form-control editor edit-text' }
-          style={ { display: 'inline', width: '50%' } }
-          type='text'
-          value={ this.state.amount }
-          onKeyDown={ this.props.onKeyDown }
-          onChange={ (ev) => { this.setState({ amount: parseInt(ev.currentTarget.value, 10) }); } } />
-        <select
-          value={ this.state.currency }
-          onKeyDown={ this.props.onKeyDown }
-          onChange={ (ev) => { this.setState({ currency: ev.currentTarget.value }); } } >
-          { currencies.map(currency => (<option key={ currency } value={ currency }>{ currency }</option>)) }
-        </select>
-        <button
-          className='btn btn-info btn-xs textarea-save-btn'
-          onClick={ this.updateData }>
-          save
-        </button>
-      </span>
-    );
-  }
-}
-
-function priceFormatter(cell, row) {
-
-   var oo={cell};
-                     var pp=oo.cell.Name;
-
-                      console.log("name is"+pp)
-
-                      return pp||cell.currency ;
-}
-
-const createPriceEditor = (onUpdate, props) => (<PriceEditor onUpdate={ onUpdate } {...props}/>);
-
 
 
 
@@ -228,6 +231,7 @@ class Editpurchase extends React.Component {
           //document.getElementById("datenow").value = "2014-02-09";
 
     this.handleChange = this.handleChange.bind(this);
+      this.handleChange1 = this.handleChange1.bind(this);
 
 
   ids=parsed.id;
@@ -260,7 +264,9 @@ class Editpurchase extends React.Component {
     this.setState({datem: event.target.value});
   }
 
-
+  handleChange1(event) {
+     this.setState({prom: event.target.value});
+   }
 
 
     componentDidMount() {
@@ -280,6 +286,18 @@ console.log("invocice "+JSON.stringify(invoice))
         Supplier=invoice.data.Supplier.UID;
         invoiceID=invoice.data.Number;
          da=invoice.data.Date;
+         sub_total=invoice.data.BalanceDueAmount;
+         tax_total=invoice.data.TotalTax;
+         var g=invoice.data.TotalAmount;
+         var yu=invoice.data.BalanceDueAmount;
+         var mm=invoice.data.PromisedDate;
+         var resm = mm.split("T");
+
+         console.log("uch"+mm);
+         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:resm[0]});
+        //
+            //    document.getElementById('sub_total').value="1s";
+        // document.getElementById('Total').value=tax_total+sub_total;
 		 total_amount=invoice.data.TotalAmount;
          var res = da.split("T");
         this.setState({datem:res[0]});
@@ -291,16 +309,30 @@ console.log("invocice "+JSON.stringify(invoice))
         da=res[0];
  this.setState  ({ loaded: true});
 row_count=acc.length;
+var taxt=[];
 //console.log("count of rows"+row_count)
        // document.getElementById('datenow').defaultValue='2017-02-03'
+    var tax=dependencies.data.TaxCode
+       var fri=[];
+      for ( k = 0; k < tax.length; k++) {
+              taxt.push(tax[k].Name);
+              taxhash[tax[k].Name]=tax[k].UID;
+              newhash[tax[k].Name]=tax[k].Rate;
+       //taxc.push(<option key={result2[l].name} value={result1[l].name}> {result1[l].name} </option>);
+              fri.push(<option key={tax[k].Name} value={tax[k].UID}>{tax[k].Name}</option>);
+             // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
 
+          }
         var comment = [];
         var shipping = [];
         var accnt =[];
 
         for (var k = 0; k < acc.length; k++) {
+money[acc[k].Description]=acc[k].Total;
+var mt=parseInt(newhash[acc[k].TaxCode.Code]);
+money_tax[acc[k].Description]=parseInt(acc[k].Total)/mt;
 
-var details={Description:acc[k].Description,Account:acc[k].Account.Name,Total:acc[k].Total}
+var details={Description:acc[k].Description,Account:acc[k].Account.Name,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
 hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);
                 console.log(JSON.stringify(acc[k]))
@@ -322,10 +354,11 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total
 
 
         var acnames = dependencies.data.Account;
-        var tax=dependencies.data.TaxCode
 
+var cm=invoice.data.Comment;
+var sp=invoice.data.ShippingMethod;
         var acn=[];
-        var taxt=[];
+
 
   for (k = 0; k < acnames.length; k++) {
                 acn.push(acnames[k].Name);
@@ -336,22 +369,22 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total
 var result1=dependencies.data.Comments;
 console.log("checkk"+result1);
 for (var l =0;l < result1.length;l++){
- comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
+  if(cm==result1[l].name)
+ comment.push(<option key={result1[l].name} value={result1[l].name} selected="selected"> {result1[l].name} </option>);
+ else
+  comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
 }
 var result3=dependencies.data.Shipping;
+console.log("shj"+sp);
 for(var l=0;l < result3.length;l++){
+  //console.log("shj  "+sp+" kndfvs  "+result3[l].name);
+  if(sp==result3[l].name){
+  //  console.log("shj  "+sp+" kndfvs  "+result3[l].name);
+ shipping.push(<option key={result3[l].name} value={result3[l].name} selected="selected"> {result3[l].name} </option>);}
+ else
 shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
 }
- var fri=[];
-for ( k = 0; k < tax.length; k++) {
-        taxt.push(tax[k].Name);
-        taxhash[tax[k].Name]=tax[k].UID;
-        newhash[tax[k].Name]=tax[k].Rate;
- //taxc.push(<option key={result2[l].name} value={result1[l].name}> {result1[l].name} </option>);
-        fri.push(<option key={tax[k].Name} value={tax[k].UID}>{tax[k].Name}</option>);
-       // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
 
-    }
 
 this.setState({fi:fri})
 
@@ -360,7 +393,7 @@ this.setState({fi:fri})
         this .setState({txt:taxt})
         this.setState({ship:shipping});
         var g=hashtax['Freight Collected'];
-        console.log("iam acouint "+g.UID)
+      //  console.log("iam acouint "+g.UID)
         console.log(dependencies.data)
         }))
         .catch(error => console.log(error));
@@ -443,7 +476,7 @@ console.log("ftr "+typeof(da))
    <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={true }  placeholder="enter description" >Description</TableHeaderColumn>
                <TableHeaderColumn width="30%"  dataField='Account'  editable={ { type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
                 <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >ORDER  Amount</TableHeaderColumn>
-                      <TableHeaderColumn width="30%" dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.txt } } }>TAX NAME</TableHeaderColumn>
+                      <TableHeaderColumn width="30%" dataField='tax'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.txt } } }>TAX NAME</TableHeaderColumn>
 
            </BootstrapTable>
            <br></br>
@@ -452,8 +485,8 @@ console.log("ftr "+typeof(da))
       <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'10'}} >
                          {this.state.pots}
       </select>
-             <label for="customer" style={{ 'margin-left':'10'}}>Sub Total:</label>
-           <input type="text" className=" col-md-2 form-control" disabled="disabled" style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
+             <label for="customer"  style={{ 'margin-left':'10'}}>Sub Total:</label>
+           <input type="text" className=" col-md-2 form-control" value={this.state.stotal} disabled="disabled" style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
       <label for="customer" style={{ 'margin-left':'10'}}>Freight:</label>
    <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="freight"   placeholder="Freight"/>
       <select name="cars" id="freight_code" className="form-control col-md-2" style={{"margin-left":"100"}} >
@@ -467,11 +500,11 @@ console.log("ftr "+typeof(da))
                       {this.state.ship}
    </select>
    <label for="customer" style={{"margin-left":"10"}} >Tax:</label>
-   <input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
+   <input type="text"  disabled="disabled" value={this.state.totx} className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
    <label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
-   <input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'15'}} placeholder="Select Date" type="date" min={p}/>
+   <input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'15'}} onChange={this.handleChange1} value={this.state.prom} placeholder="Select Date" type="date" min={p}/>
    <label for="customer" style={{"margin-left":"10"}}>Total Amount:</label>
-   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
+   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} value={this.state.tmo} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
    </div>
    <br></br>
    <div className="row">

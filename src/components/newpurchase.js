@@ -38,11 +38,15 @@ if(row.Price!=="0")
 
 if(typeof row.type !== "undefined") {
 //console.log("i got the accou//nt")
+
+//auto total call
 var tr=parseInt(money[row.Desc]);
 sub_total=sub_total-tr;
 sub_total=parseInt(row.Price)+sub_total;
 document.getElementById('sub_total').value=sub_total;
 money[row.Desc]=row.Price;
+
+//auto tax
 var mt=parseInt(newhash[row.type1]);
 tax_total=tax_total-parseInt(money_tax[row.Desc])
 money_tax[row.Desc]=parseInt(row.Price)/mt;
