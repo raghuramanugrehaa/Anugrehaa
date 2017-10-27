@@ -40,7 +40,7 @@ var acc=[];
 	   }
 		   }
 	  
-		   var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr};
+		   var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr,UID:data[i].Employee.UID};
 
 		   acc.push(em);
 	   }
@@ -158,7 +158,7 @@ var acc=[];
                    <TableHeaderColumn width="14%"  dataAlign="center" dataField='StartDate'>Timesheet StartDate</TableHeaderColumn>
                    <TableHeaderColumn  width="14%" dataAlign="center" dataField='EndDate'>Timesheet EndDate</TableHeaderColumn>
 				   <TableHeaderColumn width="10%"  dataAlign="center" dataField='hour'>Total Hours</TableHeaderColumn>
-				   <TableHeaderColumn  width="10%"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Invoice</TableHeaderColumn>
+				   <TableHeaderColumn  width="10%"  dataAlign="center" dataField='UID' dataFormat={this.cellButton.bind(this)}>Edit Invoice</TableHeaderColumn>
 
                     
       </BootstrapTable>

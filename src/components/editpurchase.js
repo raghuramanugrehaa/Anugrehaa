@@ -89,7 +89,7 @@ var ship=document.getElementById('ship').value;
 var fre_amount=document.getElementById('freight').value;
 var fre_tax=document.getElementById("freight_code").value;
 var del_status=document.getElementById('dev_status').value;
-var paid=document.getElementById('paid_due').value;
+//var paid=document.getElementById('paid_due').value;
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
 axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date})
@@ -291,11 +291,15 @@ console.log("invocice "+JSON.stringify(invoice))
          var g=invoice.data.TotalAmount;
          var yu=invoice.data.BalanceDueAmount;
          var mm=invoice.data.PromisedDate;
-         var resm = mm.split("T");
+         if(mm==null){
+         //var resm = mm.split("T");
+         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:null});
+        }
+        else{
+        var resm = mm.split("T");
+                 this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:resm[0]});
 
-         console.log("uch"+mm);
-         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:resm[0]});
-        //
+        }
             //    document.getElementById('sub_total').value="1s";
         // document.getElementById('Total').value=tax_total+sub_total;
 		 total_amount=invoice.data.TotalAmount;
@@ -480,43 +484,53 @@ console.log("ftr "+typeof(da))
 
            </BootstrapTable>
            <br></br>
-   <div className="row">
-      <label for="customer">Comment:</label>
-      <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'10'}} >
-                         {this.state.pots}
-      </select>
-             <label for="customer"  style={{ 'margin-left':'10'}}>Sub Total:</label>
-           <input type="text" className=" col-md-2 form-control" value={this.state.stotal} disabled="disabled" style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
-      <label for="customer" style={{ 'margin-left':'10'}}>Freight:</label>
-   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="freight"   placeholder="Freight"/>
-      <select name="cars" id="freight_code" className="form-control col-md-2" style={{"margin-left":"100"}} >
-                         {this.state.fi}
-      </select>
-      </div>
-      <br></br>
-   <div className="row">
-   <label for="customer">Ship Via:</label>
-   <select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'10'}}>
-                      {this.state.ship}
+<div className="row">
+
+   <label for="customer">Comment:</label>
+   <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'6%'}} >
+                      {this.state.pots}
    </select>
-   <label for="customer" style={{"margin-left":"10"}} >Tax:</label>
-   <input type="text"  disabled="disabled" value={this.state.totx} className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
-   <label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
-   <input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'15'}} onChange={this.handleChange1} value={this.state.prom} placeholder="Select Date" type="date" min={p}/>
-   <label for="customer" style={{"margin-left":"10"}}>Total Amount:</label>
-   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} value={this.state.tmo} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
+          <label for="customer" style={{ 'margin-left':'33%'}}>Sub Total:</label>
+        <input type="text" className=" col-md-2 col-md-offset-7 form-control" disabled="disabled" value={this.state.stotal} style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
+
    </div>
-   <br></br>
+
+<br/>
    <div className="row">
-   <label for="customer">Bill Delivery Status:</label>
-   <select name="cars" id="dev_status" className="form-control col-md-2">
-                      <option value="to be printed">to be printed</option>
+<label for="customer">Ship Via:</label>
+<select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'7%'}}>
+                   {this.state.ship}
+</select>
+
+<label for="freight" style={{ 'margin-left':'35%'}}>Freight:</label>
+<input type="text" className="col-md-2 form-control"    id="freight"   placeholder="Freight"/>
+   <select name="cars" id="freight_code" className="form-control col-md-1" style={{"margin-left":"4%"}} >
+                      {this.state.fi}
    </select>
-   <label for="customer" style={{"margin-left":"30"}} >Paid Today:</label>
-   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="paid_due"   placeholder="Paid Today"/>
-   <label for="customer" style={{"margin-left":"30"}} >Balance Due Amount:</label>
-   <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="Bal_amount"   placeholder="Balance Due Amount"/>
+
    </div>
+   <br/>
+<div className="row">
+
+<label for="customer" >Promise date:</label>
+<input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'3%'}} onChange={this.handleChange1} value={this.state.prom} placeholder="Select Date" type="date" min={p}/>
+
+<label for="customer" style={{"margin-left":"38%"}} >Tax:</label>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}  value={this.state.totx} id="tax_per"   placeholder="Tax"/>
+
+</div>
+<br/>
+
+<div className="row">
+
+<label for="customer">Bill Delivery Status:</label>
+<select name="cars" id="dev_status" className="form-control col-md-2">
+                   {this.state.dstatus}
+</select>
+
+<label for="customer" style={{"margin-left":"31%"}}>Total Amount:</label>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} value={this.state.tmo} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
+</div>
 
       </div>
       </Loader>

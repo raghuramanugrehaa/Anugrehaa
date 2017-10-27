@@ -38,15 +38,11 @@ if(row.Price!=="0")
 
 if(typeof row.type !== "undefined") {
 //console.log("i got the accou//nt")
-
-//auto total call
 var tr=parseInt(money[row.Desc]);
 sub_total=sub_total-tr;
 sub_total=parseInt(row.Price)+sub_total;
 document.getElementById('sub_total').value=sub_total;
 money[row.Desc]=row.Price;
-
-//auto tax
 var mt=parseInt(newhash[row.type1]);
 tax_total=tax_total-parseInt(money_tax[row.Desc])
 money_tax[row.Desc]=parseInt(row.Price)/mt;
@@ -174,7 +170,7 @@ var ship=document.getElementById('ship').value;
 var fre_amount=document.getElementById('freight').value;
 var fre_tax=document.getElementById("freight_code").value;
 var del_status=document.getElementById('dev_status').value;
-var paid=document.getElementById('paid_due').value;
+//var paid=document.getElementById('paid_due').value;
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
 this.setState ( { loaded: false});
@@ -182,7 +178,7 @@ var klk=Lines.details;
 console.log("yes"+ supplier);
 console.log("no"+date);
 this.setState ( { loaded: true});
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date})
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date})
   .then(function (response) {
   // console.log(response);
      window.location.assign('/purchase');
@@ -206,6 +202,7 @@ var arrTen = [];
 var comment = [];
 var shipping = [];
 var taxc =[];
+var de=[];
  //console.log("ji"+JSON.stringify(res.data));
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
@@ -218,6 +215,12 @@ for (var l =0;l < result1.length;l++){
  comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
 }
 
+var re=res.data.delivery_status;
+console.log("checkk"+re);
+for (var l =0;l < re.length;l++){
+ de.push(<option key={re[l].name} value={re[l].name}> {re[l].name} </option>);
+}
+
 var result3=res.data.Shipping;
 for(var l=0;l < result3.length;l++){
 shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
@@ -226,7 +229,7 @@ shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l]
 
        this.setState({posts: arrTen});
        this.setState({pots :comment});
-       this.setState({ship:shipping});
+       this.setState({ship:shipping,dstatus:de});
 //account detail fetching
 var acc=res.data.Account
 var tax=res.data.TaxCode
@@ -361,43 +364,59 @@ this.setState({salesheads:heads})
 <br></br>
 <br></br>
 <div className="row">
+
    <label for="customer">Comment:</label>
-   <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'10'}} >
+   <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'6%'}} >
                       {this.state.pots}
    </select>
-          <label for="customer" style={{ 'margin-left':'10'}}>Sub Total:</label>
-        <input type="text" className=" col-md-2 form-control" disabled="disabled" style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
-   <label for="customer" style={{ 'margin-left':'10'}}>Freight:</label>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="freight"   placeholder="Freight"/>
-   <select name="cars" id="freight_code" className="form-control col-md-2" style={{"margin-left":"100"}} >
-                      {this.state.fi}
-   </select>
+          <label for="customer" style={{ 'margin-left':'33%'}}>Sub Total:</label>
+        <input type="text" className=" col-md-2 col-md-offset-7 form-control" disabled="disabled" style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
+
    </div>
-   <br></br>
-<div className="row">
+
+<br/>
+   <div className="row">
 <label for="customer">Ship Via:</label>
-<select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'10'}}>
+<select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'7%'}}>
                    {this.state.ship}
 </select>
-<label for="customer" style={{"margin-left":"10"}} >Tax:</label>
-<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
-<label for="customer" style={{"margin-left":"20"}} >Promise date:</label>
-<input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'15'}} placeholder="Select Date" type="date" min={p}/>
-<label for="customer" style={{"margin-left":"10"}}>Total Amount:</label>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
-</div>
-<br></br>
+
+<label for="freight" style={{ 'margin-left':'35%'}}>Freight:</label>
+<input type="text" className="col-md-2 form-control"    id="freight"   placeholder="Freight"/>
+   <select name="cars" id="freight_code" className="form-control col-md-1" style={{"margin-left":"4%"}} >
+                      {this.state.fi}
+   </select>
+
+   </div>
+   <br/>
 <div className="row">
+
+<label for="customer" >Promise date:</label>
+<input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'3%'}} placeholder="Select Date" type="date" min={p}/>
+
+<label for="customer" style={{"margin-left":"38%"}} >Tax:</label>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
+
+</div>
+<br/>
+
+<div className="row">
+
 <label for="customer">Bill Delivery Status:</label>
 <select name="cars" id="dev_status" className="form-control col-md-2">
-                   <option value="to be printed">to be printed</option>
+                   {this.state.dstatus}
 </select>
-<label for="customer" style={{"margin-left":"30"}} >Paid Today:</label>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="paid_due"   placeholder="Paid Today"/>
-<label for="customer" style={{"margin-left":"30"}} >Balance Due Amount:</label>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="Bal_amount"   placeholder="Balance Due Amount"/>
+
+<label for="customer" style={{"margin-left":"31%"}}>Total Amount:</label>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
 </div>
+
 </div>
+
+
+
+
+
 </Loader>
 
     );

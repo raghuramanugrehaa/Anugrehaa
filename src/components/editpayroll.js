@@ -4,58 +4,56 @@ import {Button} from 'react-bootstrap';
 import axios from "axios";
 import Loader from 'react-loader';
 
-
-
+const queryString = require('query-string');
+var start;
+var end;
 var url="";
 var accrecv;
-
+var wage=[];
+var mcat=[];
 var myHash = {};
-var checkHash = {};
+var catHash = {};
+var checkHash={};
 var taxhash={};
+var ids;
 var Lines = {
     details: []
 };
 const cellEditProp = {
   mode: 'click',
+
   blurToSave: true,
   afterSaveCell: onAfterSaveCell
 };
 
+function squash(arr){
+    var tmp = [];
+    for(var i = 0; i < arr.length; i++){
+        if(tmp.indexOf(arr[i]) == -1){
+        tmp.push(arr[i]);
+        }
+    }
+    return tmp;
+}
+
 function onAfterSaveCell(row,cellName,cellValue){
-console.log("sixth senes"+JSON.stringify(taxhash))
-if(row.Price!=="0")
-{
-console.log("i got price "+row.Price)
+var g=row.name+cellName
 
-
-
-if(typeof row.type !== "undefined") {
-console.log("i got the account")
-
-   var taxname= taxhash[row.type];
-   var taxcodes=taxname.UID;
-
-   var account_uid=myHash[row.type];
-   console.log(taxcodes)
-   var gvf=""+account_uid
-if("ACCOUNT SALES"===row.Name)
-{
-accrecv={Description:row.Name,Total:-row.Price,Account:{UID:gvf},TaxCode:{UID:taxcodes}}
-}
+if(typeof row.cellName=="undefined"){
+console.log("im un"+cellValue+" m "+cellName)
+checkHash[g]=cellValue;
+if(typeof row.Hours=="undefined")
+row.Hours=parseInt(cellValue);
 else
-{
-accrecv={Description:row.Name,Total:row.Price,Account:{UID:gvf},TaxCode:{UID:taxcodes}}
+row.Hours=parseInt(cellValue)+parseInt(row.Hours);
 }
-
-checkHash[row.Name]={}
-checkHash[row.Name]=accrecv
-
-
-
-
-
-}}
-
+else{
+var kl=parseInt(checkHash[g]);
+console.log("lop"+kl)
+var t=parseInt(row.Hours)-kl;
+row.Hours=t+parseInt(cellValue);
+checkHash[g]=cellValue
+}
 }
 
 class Newinvoice extends React.Component {
@@ -65,7 +63,8 @@ class Newinvoice extends React.Component {
   constructor(props) {
      super(props);
      this.handleClick = this.handleClick.bind(this);
-     url= "http://13.126.189.91:4001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/";
+    const parsed = queryString.parse(this.props.location.search);
+      ids=parsed.id;
      this.state = {
        posts: [],
        accounts: [],
@@ -137,97 +136,103 @@ axios.post('http://13.126.189.91:4001/sales/e3152784-4811-4f2e-9a4f-884f3439db90
 }
 
   componentDidMount() {
-  this.setState ( { loaded: false});
-       axios.get(url
-     ).then(res => {
+  this.setState ({ loaded: false});
+       axios.all([
+
+       axios.get('http://13.126.189.91:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet/'+ids),
+       axios.get('http://13.126.189.91:4001/timesheet/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90')
+     ]).then(axios.spread((res,dep) =>{
 		             this.setState  ({ loaded: true});
-var arrTen = [];
-var result=res.data.customer;
- for (var k = 0; k < result.length; k++) {
-        arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
-    }
-       //  const posts = res.data.Items;
-      console.log(res.data);
-       this.setState({posts: arrTen});
-//account detail fetching
-var acc=res.data.Account
-var accnt=[];
+console.log("data"+JSON.stringify(res));
+var name=res.data.Employee.Name;
+start=res.data.StartDate;
+end=res.data.EndDate;
 
-for ( k = 0; k < acc.length; k++) {
-        accnt.push(acc[k].Name);
-        myHash[acc[k].Name]=[acc[k].UID];
-        taxhash[acc[k].Name]=acc[k].TaxCodeUID
-    }
+console.log("data"+start+" "+end)
+this.setState({name:name,start:start,end:end});
 
 
+//filtering wage categories
 
-this.setState({accounts:accnt})
+var m=dep.data.employeePayrollDetails;
+for(var i=0;i<m.length;i++){
 
-var acc1=res.data.salesheads
-var heads=[];
+if(ids==m[i].Employee.UID)
+{
 
-for ( k = 0; k < acc1.length; k++) {
-        heads.push(acc1[k]);
+var ll=m[i].WageCategories;
+wage=[];
+mcat=[];
+for(var k=0;k<ll.length;k++){
 
-    }
+catHash[ll[k].Name]=ll[k].UID;
 
+wage.push(ll[k].Name);
+var er={name:ll[k].Name}
+mcat.push(er);
 
-
-this.setState({salesheads:heads})
-
-
-
-
-
-
-console.log("im hash table"+myHash)
+}
 
 
-                                     /* use key/value for intended purpose */
+}
+
+}
+var r=new Date(start);
+var n = r.getDate();
+console.log("lo"+n)
+this.setState({wage1:wage,mcat1:mcat})
+this.setState({day1:n})
+
+  }));
 
 
 
-  });
  }
 
   render() {
- var valu = new Date().toISOString();
-              var re = valu.split("T");
-              var p =re[0];
+
 
     return (
 	          <Loader loaded={this.state.loaded}>
 
 <div className="container">
-<div className="form-inline">
-<div className="row col-md-4">
-<label for="customer">Select Store:</label>
-     <select name="cars" id="customer" className="form-control">
-                   {this.state.posts}
+ <div className="row">
+ <label for="note" style={{'padding-top':'40'}}>Employee Details:</label>
+    <textarea id="note" className="form-control col-md-4" style={{"height":"100px","width":"280"} } value={"Employee Name:"+this.state.name+"\nStart Date:"+this.state.start+"\nEndDate:"+this.state.end}/>
 
-                 </select>
-                 </div>
-<div className="row col-md-4">
+<div>
+<table>
+<tr>
 
-     <label for="date">Select Date:</label>
-<input className="form-control" id="date" placeholder="Select Date" type="date" max={p}/>
+</tr>
+<tr>
+<td>
+ <div style={{'margin-left':'150','padding-top':'10'}}>
+  <input className="form-control" id="datenow" type="date"   onChange={this.handleChange} value={this.state.datem}/>
+ </div>
+ </td>
+ </tr>
+ </table>
+ </div>
 </div>
-
-</div>
-
                                <br></br>
                                <br></br>
-<BootstrapTable data={ this.state.salesheads } cellEdit={ cellEditProp } insertRow={ false  }>
-          <TableHeaderColumn width="30%" dataField='Name' isKey={true} editable={false }  >Sale Heads</TableHeaderColumn>
-          <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
-           <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center">SALE AMOUNT</TableHeaderColumn>
+<BootstrapTable data={ this.state.mcat1 } cellEdit={ cellEditProp }>
+          <TableHeaderColumn width="60%" dataField='name' isKey={true} editable={ { type: 'select', options: {values: this.state.wage1} } } >Wage   Type</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day1' >Day {this.state.day1}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day2' >Day {this.state.day1+1}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day3' >Day {this.state.day1+2}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day4' >Day {this.state.day1+3}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day5' >Day {this.state.day1+4}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day6' >Day {this.state.day1+5}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day7' >Day {this.state.day1+6}</TableHeaderColumn>
+           <TableHeaderColumn width="30%" dataField='Hours' editable={true } dataAlign="Center">Total HRS</TableHeaderColumn>
 
 
       </BootstrapTable>
 	  
-	  <div className="row col-md-offset-8">
-<Button bsStyle="success" onClick={this.handleClick}>Submit</Button>
-</div>
+
+
 </div>
 </Loader>
 

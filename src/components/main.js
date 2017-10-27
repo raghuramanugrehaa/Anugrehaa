@@ -9,7 +9,7 @@ import Newpurchase from './newpurchase';
 import Editpurchase from './editpurchase';
 import Purchasepayment from './purchasepayment';
 import Payroll from './payroll';
-
+import editPayroll from './editpayroll'
 
 
 // The Main component renders one of the three provided
@@ -32,6 +32,7 @@ export class Main extends React.Component{
       <Route exact path='/Editpurchase' component={Editpurchase}/>
       <Route exact path='/Purchasepayment' component={Purchasepayment}/>
 	  <Route path='/Payroll' component={Payroll}/>
+	  <Route path='/editPayroll' component={editPayroll}/>
 
 
 
