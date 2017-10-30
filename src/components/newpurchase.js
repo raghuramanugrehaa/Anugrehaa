@@ -18,6 +18,7 @@ var checkHash = {};
 var newhash={};
 var taxhash={};
 var hashtax={};
+var jobshash={};
 var row_count=0;
 var Lines = {
     details: []
@@ -38,6 +39,9 @@ if(row.Price!=="0")
 
 if(typeof row.type !== "undefined") {
 //console.log("i got the accou//nt")
+//getting job
+var juid=jobshash[row.type2];
+
 var tr=parseInt(money[row.Desc]);
 sub_total=sub_total-tr;
 sub_total=parseInt(row.Price)+sub_total;
@@ -57,7 +61,7 @@ document.getElementById('Total').value=tax_total+sub_total;
    var gvf=""+account_uid
 if("ACCOUNT SALES"==row.Name)
 {
-accrecv={Description:row.Name,Total:-row.Price,Account:{UID:gvf},TaxCode:{UID:taxcodes}}
+accrecv={Description:row.Name,Total:-row.Price,Account:{UID:gvf},Job:{UID:juid},TaxCode:{UID:taxcodes}}
 }
 else
 {
@@ -76,7 +80,12 @@ checkHash[row.Name]=accrecv
 }
 function onAfterInsertRow(row) {
 
+//getting jobs
+var juid=jobshash[row.type2];
+
+
 var TUID=taxhash[row.type1];
+
 money[row.Desc]=row.Price;
 sub_total=parseInt(row.Price)+parseInt(sub_total);
 document.getElementById('sub_total').value=sub_total;
@@ -88,7 +97,7 @@ document.getElementById('Total').value=tax_total+sub_total;
 var accountname= myHash[row.type];
 var taxcode=TUID;
 row_count++;
-hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountname},TaxCode:{UID:taxcode}}
+hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
 
   console.log('onAftersavecell'+JSON.stringify(hashitems[row.Desc]));
 
@@ -167,6 +176,7 @@ Object.keys(hashitems).forEach(function (key) {
 })
 var com=document.getElementById('comment').value;
 var ship=document.getElementById('ship').value;
+var addr = document.getElementById("note").value;
 var fre_amount=document.getElementById('freight').value;
 var fre_tax=document.getElementById("freight_code").value;
 var del_status=document.getElementById('dev_status').value;
@@ -178,7 +188,7 @@ var klk=Lines.details;
 console.log("yes"+ supplier);
 console.log("no"+date);
 this.setState ( { loaded: true});
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date})
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr})
   .then(function (response) {
   // console.log(response);
      window.location.assign('/purchase');
@@ -203,6 +213,7 @@ var comment = [];
 var shipping = [];
 var taxc =[];
 var de=[];
+var jobs=[];
  //console.log("ji"+JSON.stringify(res.data));
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
@@ -221,6 +232,16 @@ for (var l =0;l < re.length;l++){
  de.push(<option key={re[l].name} value={re[l].name}> {re[l].name} </option>);
 }
 
+
+var job=res.data.Job;
+console.log("lm"+JSON.stringify(job));
+for (var l =0;l < job.length;l++){
+ jobs.push(job[l].Name);
+ jobshash[job[l].Name]= job[l].UID;
+
+}
+
+
 var result3=res.data.Shipping;
 for(var l=0;l < result3.length;l++){
 shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
@@ -230,6 +251,7 @@ shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l]
        this.setState({posts: arrTen});
        this.setState({pots :comment});
        this.setState({ship:shipping,dstatus:de});
+       this.setState({jobsb:jobs});
 //account detail fetching
 var acc=res.data.Account
 var tax=res.data.TaxCode
@@ -290,12 +312,12 @@ this.setState({salesheads:heads})
 
  createCustomInsertButton = (openModal) => {
      return (
-      <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Sale</button>
+      <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Purchase</button>
      );
  }
  createCustomDeleteButton = (onBtnClick) => {
      return (
-            <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Sale</button>
+            <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Purchase</button>
 
      );
    }
@@ -319,32 +341,36 @@ this.setState({salesheads:heads})
 <div className="container">
 <div className="form-inline">
 <div className="row col-md-4">
-<label for="customer">Select Supplier:</label>
-     <select name="cars" id="supplier" className="form-control col-md-8">
+<label for="customer" style={{ "height":"18","size":"30" }}>Select Supplier:</label>
+     <select name="cars" id="supplier" className="form-control col-md-8"  style={{"height":"30","size":"30"}}>
                    {this.state.posts}
 
                  </select>
                  </div>
 <div className="row col-md-4" style={{'margin-left':'10'}}>
 
-     <label for="date">Select Date:</label>
-<input className="form-control" id="date" placeholder="Select Date" type="date" max={p}/>
+     <label for="date" maxlength="5"  style={{"height":"20"}}>Select Date:</label>
+<input className="form-control" id="date" placeholder="Select Date" type="date" max={p}  style={{"height":"30"}}/>
 </div>
-<div className="col-md-4" style={{ 'margin-left':'-20'}}>
-    <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Supplier Invoice Number"/>
+<div className="col-md-4" style={{ 'margin-left':'-20'}} maxlength="5">
+    <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Supplier Invoice Number"  style={{"height":"30"}}/>
      </div>
 <div className="row col-md-offset-8" style={{ 'margin-left':'-20'}}>
-<Button bsStyle="success" onClick={this.handleClick}>Submit</Button>
+<Button bsStyle="success" onClick={this.handleClick}  style={{"height":"40"}}>Submit</Button>
 </div>
 </div>
 <br></br>
+<div className="row">
+<label for="note" style={{'padding-top':'10'}}>Ship To:</label>
+    <textarea id="note" className="form-control col-md-3" style={{"height":"50px",'width':'10%'} } />
+    <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>
+    <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"   placeholder="TERMS" />
+
+<label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" checked />Tax Inclusive</label>
+<label for="Journal Memo" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>
+<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"   placeholder="Purchase" />
 
 
-
-
-
-<div className="checkbox" style={{"margin-left":"910"}}>
-  <label><input type="checkbox" value=""/>Tax Inclusive</label>
 </div>
 
 
@@ -357,6 +383,7 @@ this.setState({salesheads:heads})
           <TableHeaderColumn width="30%" height="1" dataField='Desc' isKey={true} editable={ true } placeholder="enter description" >Description</TableHeaderColumn>
           <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
            <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center"> ORDER AMOUNT</TableHeaderColumn>
+           <TableHeaderColumn width="30%" dataField='type2'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.jobsb } } }>JOB</TableHeaderColumn>
            <TableHeaderColumn width="30%" dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.txt } } }>TAX NAME</TableHeaderColumn>
 
 
@@ -366,24 +393,24 @@ this.setState({salesheads:heads})
 <div className="row">
 
    <label for="customer">Comment:</label>
-   <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'6%'}} >
+   <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'6%',"height":"30"}}  >
                       {this.state.pots}
    </select>
-          <label for="customer" style={{ 'margin-left':'33%'}}>Sub Total:</label>
-        <input type="text" className=" col-md-2 col-md-offset-7 form-control" disabled="disabled" style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
+          <label for="customer" style={{ 'margin-left':'33%',"height":"30"}}>Sub Total:</label>
+        <input type="text" className=" col-md-2 col-md-offset-7 form-control" disabled="disabled" style={{ 'margin-left':'10',"height":"30"}} id="sub_total"   placeholder="Sub  Total"/>
 
    </div>
 
 <br/>
    <div className="row">
 <label for="customer">Ship Via:</label>
-<select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'7%'}}>
+<select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'7%',"height":"30"}}>
                    {this.state.ship}
 </select>
 
 <label for="freight" style={{ 'margin-left':'35%'}}>Freight:</label>
-<input type="text" className="col-md-2 form-control"    id="freight"   placeholder="Freight"/>
-   <select name="cars" id="freight_code" className="form-control col-md-1" style={{"margin-left":"4%"}} >
+<input type="text" className="col-md-2 form-control"    id="freight"   placeholder="Freight" style={{"height":"30"}}/>
+   <select name="cars" id="freight_code" className="form-control col-md-1" style={{"margin-left":"4%","height":"30"}} >
                       {this.state.fi}
    </select>
 
@@ -392,10 +419,10 @@ this.setState({salesheads:heads})
 <div className="row">
 
 <label for="customer" >Promise date:</label>
-<input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'3%'}} placeholder="Select Date" type="date" min={p}/>
+<input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'3%',"height":"30"}} placeholder="Select Date" type="date" min={p}/>
 
-<label for="customer" style={{"margin-left":"38%"}} >Tax:</label>
-<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
+<label for="customer" style={{"margin-left":"38%","height":"30"}} >Tax:</label>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10","height":"30"}}   id="tax_per"   placeholder="Tax"/>
 
 </div>
 <br/>
@@ -403,12 +430,12 @@ this.setState({salesheads:heads})
 <div className="row">
 
 <label for="customer">Bill Delivery Status:</label>
-<select name="cars" id="dev_status" className="form-control col-md-2">
+<select name="cars" id="dev_status" className="form-control col-md-2" style={{"height":"30"}}>
                    {this.state.dstatus}
 </select>
 
 <label for="customer" style={{"margin-left":"31%"}}>Total Amount:</label>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10","height":"30"}} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
 </div>
 
 </div>

@@ -20,6 +20,7 @@ var SI="";
 var Supplier="";
 var newhash={};
 var taxhash={};
+var jobshash={};
 var invoiceID="";
 var invoiceid="";
 var row_count=0;
@@ -70,6 +71,8 @@ if(Object.keys(hashitems).length==row_count)
 console.log(Supplier);
 console.log("im final"+JSON.stringify(hashitems));
 var date = document.getElementById("datenow").value;
+var addr = document.getElementById("note1").value;
+console.log("am addr"+addr);
 Object.keys(hashitems).forEach(function (key) {
     var value = hashitems[key]
     var ll=value
@@ -92,7 +95,7 @@ var del_status=document.getElementById('dev_status').value;
 //var paid=document.getElementById('paid_due').value;
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date})
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr})
   .then(function (response) {
    console.log(response);
      window.location.assign('/purchase');
@@ -111,6 +114,7 @@ alert("enter sales correctly");
 
 function onAfterSaveCell(row,cellName,cellValue){
 console.log(row)
+var juid=jobshash[row.type2];
   //  document.getElementById('sub_total').value="1";
 var TUID=hashtax[row.Account];
 var accountname= hashacct[row.Account];
@@ -133,25 +137,15 @@ document.getElementById('tax_per').value=tax_total;
 document.getElementById('Total').value=tax_total+sub_total;
 
 
-if("ACCOUNT SALES"==row.Description)
-{
-if(row.Total<0){
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
+
+
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
-}
-else{
-hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
- console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
-}
 
-}
-else
-{
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
 
-  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 
-}
+
+
 // pay+=parseInt(row.price);
 
 
@@ -162,6 +156,7 @@ hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:
 function onAfterInsertRow(row) {
 var TUID=taxhash[row.tax];
 var accountname= hashacct[row.Account];
+var juid=jobshash[row.type2];
 var taxcode=TUID;
 row_count++;
 
@@ -184,7 +179,7 @@ document.getElementById('Total').value=tax_total+sub_total;
 
 if("ACCOUNT SALES"==row.Description)
 {
-hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
+hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
 
   console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 }
@@ -255,7 +250,7 @@ class Editpurchase extends React.Component {
 
  createCustomDeleteButton = (onBtnClick) => {
     return (
-           <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Sale</button>
+           <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Purchase</button>
 
     );
   }
@@ -279,6 +274,8 @@ this.setState ( { loaded: false});
         ])
         .then(axios.spread((invoice,dependencies) => {
         var acc = invoice.data.Lines;
+        var myadd = invoice.data.ShipToAddress;
+        console.log("myadd"+myadd);
         RV=invoice.data.RowVersion;
         SI=invoice.data.SupplierInvoiceNumber;
 console.log("invocice "+JSON.stringify(invoice))
@@ -309,6 +306,7 @@ console.log("invocice "+JSON.stringify(invoice))
         this.setState({si:SI});
 		this.setState({invoiceid:invoiceID});
 		this.setState({tamount:total_amount});
+		this.setState({adds:myadd});
         console.log("iam date"+res[0]);
         da=res[0];
  this.setState  ({ loaded: true});
@@ -330,14 +328,15 @@ var taxt=[];
         var comment = [];
         var shipping = [];
         var accnt =[];
+        var jobs=[];
 
         for (var k = 0; k < acc.length; k++) {
 money[acc[k].Description]=acc[k].Total;
 var mt=parseInt(newhash[acc[k].TaxCode.Code]);
 money_tax[acc[k].Description]=parseInt(acc[k].Total)/mt;
 
-var details={Description:acc[k].Description,Account:acc[k].Account.Name,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
-hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
+var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
+hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);
                 console.log(JSON.stringify(acc[k]))
                 raccnames[acc[k].Description]=acc[k].Account.Name;
@@ -378,6 +377,14 @@ for (var l =0;l < result1.length;l++){
  else
   comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
 }
+var job=dependencies.data.Job;
+console.log("lm"+JSON.stringify(job));
+for (var l =0;l < job.length;l++){
+ jobs.push(job[l].Name);
+ jobshash[job[l].Name]= job[l].UID;
+
+}
+
 var result3=dependencies.data.Shipping;
 console.log("shj"+sp);
 for(var l=0;l < result3.length;l++){
@@ -396,6 +403,7 @@ this.setState({fi:fri})
         this.setState({pots :comment});
         this .setState({txt:taxt})
         this.setState({ship:shipping});
+               this.setState({jobsb:jobs});
         var g=hashtax['Freight Collected'];
       //  console.log("iam acouint "+g.UID)
         console.log(dependencies.data)
@@ -417,7 +425,7 @@ this.setState({fi:fri})
 
   createCustomInsertButton = (openModal) => {
     return (
-     <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Sale</button>
+     <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Purchase</button>
     );
 }
     render() {
@@ -470,16 +478,26 @@ console.log("ftr "+typeof(da))
  <Button bsStyle="success" onClick={handleClick}>Save</Button>
       </div>
               </div>
+<br></br>
+<div className="row">
+<label for="note" style={{'padding-top':'10'}}>Ship To:</label>
+<textarea id="note1" className="form-control col-md-2" style={{"height":"50px","width":"10%"} } value={this.state.adds} />
+<label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>
+    <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"   placeholder="TERMS" />
+<label style={{'margin-left':'40','padding-top':'10'}}><input type="checkbox" checked />Tax Inclusive</label>
+<label for="Journal Memo" style={{ 'margin-left':'50','padding-top':'10'}}>Journal Memo:</label>
+<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"   placeholder="Purchase" />
 
+
+</div>
 
               <br></br>
-              <br></br>
-
-     <BootstrapTable data={ this.state.account }  maxHeight="200px" cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow deleteRow >
+<BootstrapTable data={ this.state.account }  maxHeight="200px" cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow deleteRow >
 
    <TableHeaderColumn width="30%" dataField='Description' isKey={true}  editable={true }  placeholder="enter description" >Description</TableHeaderColumn>
                <TableHeaderColumn width="30%"  dataField='Account'  editable={ { type: 'select', options: {values: this.state.acco} } } >Account Name</TableHeaderColumn>
                 <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >ORDER  Amount</TableHeaderColumn>
+                                <TableHeaderColumn width="30%" dataField='type2'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.jobsb} } }>JOB</TableHeaderColumn>
                       <TableHeaderColumn width="30%" dataField='tax'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.txt } } }>TAX NAME</TableHeaderColumn>
 
            </BootstrapTable>

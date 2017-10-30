@@ -12,7 +12,6 @@ export class App extends React.Component {
                <Header/>
                </div>
 			   <br></br>
-			   <br></br>
 
              <Main/>
             </div>
