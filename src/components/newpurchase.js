@@ -17,6 +17,7 @@ var myHash = {};
 var checkHash = {};
 var newhash={};
 var taxhash={};
+var termhash={};
 var hashtax={};
 var jobshash={};
 var row_count=0;
@@ -130,6 +131,7 @@ class Newpurchase extends React.Component {
   constructor(props) {
      super(props);
      this.handleClick = this.handleClick.bind(this);
+     this.handleChange = this.handleChange.bind(this);
      url= "http://13.126.189.91:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/";
      this.state = {
        posts: [],
@@ -175,7 +177,10 @@ Object.keys(hashitems).forEach(function (key) {
     // iteration code
 })
 var com=document.getElementById('comment').value;
+var mem= document.getElementById("Memo").value;
+var ter=document.getElementById('Terms').value;
 var ship=document.getElementById('ship').value;
+var dev=document.getElementById("dev_status").value;
 var addr = document.getElementById("note").value;
 var fre_amount=document.getElementById('freight').value;
 var fre_tax=document.getElementById("freight_code").value;
@@ -188,7 +193,7 @@ var klk=Lines.details;
 console.log("yes"+ supplier);
 console.log("no"+date);
 this.setState ( { loaded: true});
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr})
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
   .then(function (response) {
   // console.log(response);
      window.location.assign('/purchase');
@@ -200,6 +205,21 @@ axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439d
 
 }
 }
+
+ handleChange(event) {
+ console.log("ji"+event.target.key)
+
+  var e = document.getElementById("supplier");
+  var strUser = e.options[e.selectedIndex].text;
+   console.log("hi"+event.target.value)
+  var k=termhash[event.target.value]
+  console.log("am"+strUser)
+  document.getElementById('Terms').value=k;
+  document.getElementById("Memo").value="purchase,"+strUser
+  //this.setState({supterm: event.target.value});
+  }
+
+
 
 
   componentDidMount() {
@@ -214,10 +234,12 @@ var shipping = [];
 var taxc =[];
 var de=[];
 var jobs=[];
+var terms=[];
  //console.log("ji"+JSON.stringify(res.data));
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
         arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
+                termhash[result[k].UID]=result[k].PaymentIsDue;
     }
 
 var result1=res.data.Comments;
@@ -229,7 +251,7 @@ for (var l =0;l < result1.length;l++){
 var re=res.data.delivery_status;
 console.log("checkk"+re);
 for (var l =0;l < re.length;l++){
- de.push(<option key={re[l].name} value={re[l].name}> {re[l].name} </option>);
+ de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
 }
 
 
@@ -249,6 +271,7 @@ shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l]
        //  const posts = res.data.Items;
 
        this.setState({posts: arrTen});
+       this.setState({term:terms});
        this.setState({pots :comment});
        this.setState({ship:shipping,dstatus:de});
        this.setState({jobsb:jobs});
@@ -342,9 +365,8 @@ this.setState({salesheads:heads})
 <div className="form-inline">
 <div className="row col-md-4">
 <label for="customer" style={{ "height":"18","size":"30" }}>Select Supplier:</label>
-     <select name="cars" id="supplier" className="form-control col-md-8"  style={{"height":"30","size":"30"}}>
+     <select name="cars" id="supplier" className="form-control col-md-8"  style={{"height":"40","size":"30"}} onChange={this.handleChange} >
                    {this.state.posts}
-
                  </select>
                  </div>
 <div className="row col-md-4" style={{'margin-left':'10'}}>
@@ -363,8 +385,8 @@ this.setState({salesheads:heads})
 <div className="row">
 <label for="note" style={{'padding-top':'10'}}>Ship To:</label>
     <textarea id="note" className="form-control col-md-3" style={{"height":"50px",'width':'10%'} } />
-    <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>
-    <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"   placeholder="TERMS" />
+    <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
+    <input type="text" disabled='disabled' className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"  />
 
 <label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" checked />Tax Inclusive</label>
 <label for="Journal Memo" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>
@@ -393,7 +415,7 @@ this.setState({salesheads:heads})
 <div className="row">
 
    <label for="customer">Comment:</label>
-   <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'6%',"height":"30"}}  >
+   <select name="cars" id="comment" className="form-control col-md-2" style={{ 'margin-left':'6%',"height":"40"}}  >
                       {this.state.pots}
    </select>
           <label for="customer" style={{ 'margin-left':'33%',"height":"30"}}>Sub Total:</label>
@@ -404,13 +426,13 @@ this.setState({salesheads:heads})
 <br/>
    <div className="row">
 <label for="customer">Ship Via:</label>
-<select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'7%',"height":"30"}}>
+<select name="cars" id="ship" className="form-control col-md-2"  style={{ 'margin-left':'7%',"height":"40"}}>
                    {this.state.ship}
 </select>
 
 <label for="freight" style={{ 'margin-left':'35%'}}>Freight:</label>
 <input type="text" className="col-md-2 form-control"    id="freight"   placeholder="Freight" style={{"height":"30"}}/>
-   <select name="cars" id="freight_code" className="form-control col-md-1" style={{"margin-left":"4%","height":"30"}} >
+   <select name="cars" id="freight_code" className="form-control col-md-1" style={{"margin-left":"4%","height":"40"}} >
                       {this.state.fi}
    </select>
 
@@ -430,7 +452,7 @@ this.setState({salesheads:heads})
 <div className="row">
 
 <label for="customer">Bill Delivery Status:</label>
-<select name="cars" id="dev_status" className="form-control col-md-2" style={{"height":"30"}}>
+<select name="cars" id="dev_status" className="form-control col-md-2" style={{"height":"40"}}>
                    {this.state.dstatus}
 </select>
 

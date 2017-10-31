@@ -20,6 +20,7 @@ var SI="";
 var Supplier="";
 var newhash={};
 var taxhash={};
+var termhash={};
 var jobshash={};
 var invoiceID="";
 var invoiceid="";
@@ -72,6 +73,12 @@ console.log(Supplier);
 console.log("im final"+JSON.stringify(hashitems));
 var date = document.getElementById("datenow").value;
 var addr = document.getElementById("note1").value;
+var dev=document.getElementById("dev_status").value;
+var mo= document.getElementById("Memo").value;
+var te =document.getElementById("Terms").value;
+var ds=document.getElementById("dev_status").value;
+
+
 console.log("am addr"+addr);
 Object.keys(hashitems).forEach(function (key) {
     var value = hashitems[key]
@@ -93,9 +100,10 @@ var fre_amount=document.getElementById('freight').value;
 var fre_tax=document.getElementById("freight_code").value;
 var del_status=document.getElementById('dev_status').value;
 //var paid=document.getElementById('paid_due').value;
+console.log(del_status);
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
-axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:"Print",AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr})
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
   .then(function (response) {
    console.log(response);
      window.location.assign('/purchase');
@@ -165,6 +173,8 @@ money[row.Description]=row.Total;
 sub_total=parseInt(row.Total)+parseInt(sub_total);
 document.getElementById('sub_total').value=sub_total;
 document.getElementById('Total').value=tax_total+sub_total;
+var dev=document.getElementById("dev_status").value;
+
 
 //auto call tax
 var mt=parseInt(newhash[row.tax]);
@@ -262,8 +272,6 @@ class Editpurchase extends React.Component {
   handleChange1(event) {
      this.setState({prom: event.target.value});
    }
-
-
     componentDidMount() {
 
 this.setState ( { loaded: false});
@@ -286,6 +294,9 @@ console.log("invocice "+JSON.stringify(invoice))
          sub_total=invoice.data.BalanceDueAmount;
          tax_total=invoice.data.TotalTax;
          var g=invoice.data.TotalAmount;
+         var term=invoice.data.Terms.PaymentIsDue;
+         var memo=invoice.data.JournalMemo;
+         console.log("iam"+memo);
          var yu=invoice.data.BalanceDueAmount;
          var mm=invoice.data.PromisedDate;
          if(mm==null){
@@ -302,6 +313,8 @@ console.log("invocice "+JSON.stringify(invoice))
 		 total_amount=invoice.data.TotalAmount;
          var res = da.split("T");
         this.setState({datem:res[0]});
+        this.setState({mem:memo});
+        this.setState({ter:term});
         this.setState({cusname:cname});
         this.setState({si:SI});
 		this.setState({invoiceid:invoiceID});
@@ -329,6 +342,7 @@ var taxt=[];
         var shipping = [];
         var accnt =[];
         var jobs=[];
+        var de=[];
 
         for (var k = 0; k < acc.length; k++) {
 money[acc[k].Description]=acc[k].Total;
@@ -360,6 +374,7 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total
 
 var cm=invoice.data.Comment;
 var sp=invoice.data.ShippingMethod;
+var ds=invoice.data.OrderDeliveryStatus;
         var acn=[];
 
 
@@ -369,6 +384,18 @@ var sp=invoice.data.ShippingMethod;
             hashacct[acnames[k].Name]=acnames[k].UID
            hashtax[acnames[k].Name]=acnames[k].TaxCodeUID
             }
+var re=dependencies.data.delivery_status;
+console.log("checkk"+re);
+for (var l =0;l < re.length;l++){
+if(ds==re[l].value){
+console.log("matched"+ds)
+ de.push(<option key={re[l].value} value={re[l].value} selected="selected"> {re[l].name} </option>);
+}
+else{
+ de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
+
+}
+}
 var result1=dependencies.data.Comments;
 console.log("checkk"+result1);
 for (var l =0;l < result1.length;l++){
@@ -398,7 +425,7 @@ shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l]
 
 
 this.setState({fi:fri})
-
+this.setState({dstatus:de});
         this.setState({acco:acn});
         this.setState({pots :comment});
         this .setState({txt:taxt})
@@ -482,11 +509,11 @@ console.log("ftr "+typeof(da))
 <div className="row">
 <label for="note" style={{'padding-top':'10'}}>Ship To:</label>
 <textarea id="note1" className="form-control col-md-2" style={{"height":"50px","width":"10%"} } value={this.state.adds} />
-<label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>
-    <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"   placeholder="TERMS" />
+<label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
+    <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"    value={this.state.ter}placeholder="TERMS" />
 <label style={{'margin-left':'40','padding-top':'10'}}><input type="checkbox" checked />Tax Inclusive</label>
 <label for="Journal Memo" style={{ 'margin-left':'50','padding-top':'10'}}>Journal Memo:</label>
-<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"   placeholder="Purchase" />
+<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"  value={this.state.mem} />
 
 
 </div>
