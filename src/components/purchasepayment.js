@@ -37,7 +37,7 @@ else
 {
 
 
-axios.post('http://13.126.189.91:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments',{PayFrom:"Account",Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Supplier:{UID:cuid},Lines:[{Type:"order",Purchase:{UID:ids},AmountApplied:k}]})
+axios.post('http://13.126.134.204:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments',{PayFrom:"Account",Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Supplier:{UID:cuid},Lines:[{Type:"order",Purchase:{UID:ids},AmountApplied:k}]})
   .then(function (response) {
     console.log(response);
     if(x==k)
@@ -77,7 +77,7 @@ this.onChange = this.onChange.bind(this)
   ids=parsed.id;
    nameid=parsed.name;
   console.log("second "+nameid);
-  url= "http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order/"+ids;
+  url= "http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order/"+ids;
   console.log(ids);
        this.state = {
          posts: [],
@@ -103,8 +103,8 @@ this.onChange = this.onChange.bind(this)
 
          axios.all([
                  axios.get(url),
-                 axios.get('http://13.126.189.91:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/'),
-                 axios.get('http://13.126.189.91:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments/'+nameid+'/'+ids)
+                 axios.get('http://13.126.134.204:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/'),
+                 axios.get('http://13.126.134.204:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments/'+nameid+'/'+ids)
                  ]).then(axios.spread((invoice,dependencies,history) =>{
 var data=invoice.data;
 var data1=history.data.history;

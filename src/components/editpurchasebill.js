@@ -64,57 +64,6 @@ addProducts(5);
 function handleClick(e){
 e.preventDefault();
 //var date = document.getElementById("date").value;
-
-
-console.log(Supplier);
-console.log("im final"+JSON.stringify(hashitems));
-var date = document.getElementById("datenow").value;
-var addr = document.getElementById("note1").value;
-var dev=document.getElementById("dev_status").value;
-var mo= document.getElementById("Memo").value;
-var te =document.getElementById("Terms").value;
-var ds=document.getElementById("dev_status").value;
-
-
-console.log("am addr"+addr);
-Object.keys(hashitems).forEach(function (key) {
-    var value = hashitems[key]
-    var ll=value
-
-    console.log("jhg"+value)
-    Lines.details.push(ll)
-
-    // iteration code
-})
-
-
-var klk=Lines.details;
-console.log(klk);
-console.log("yes"+Supplier);
-var com=document.getElementById('comment').value;
-var ship=document.getElementById('ship').value;
-var fre_amount=document.getElementById('freight').value;
-var fre_tax=document.getElementById("freight_code").value;
-var del_status=document.getElementById('dev_status').value;
-//var paid=document.getElementById('paid_due').value;
-console.log(del_status);
-var pm_date = document.getElementById("promise_date").value;
-var tttax=parseInt(document.getElementById('tax_per').value);
-axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
-  .then(function (response) {
-   console.log(response);
-     window.location.assign('/purchase');
-  })
-  .catch(function (error) {
-    console.log(error.response);
-  });
-
-
-}
-
-function handleClick1(e){
-e.preventDefault();
-//var date = document.getElementById("date").value;
 console.log(Object.keys(hashitems).length);
 console.log(row_count);
 if(Object.keys(hashitems).length==row_count)
@@ -154,10 +103,10 @@ var del_status=document.getElementById('dev_status').value;
 console.log(del_status);
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
-axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill/'+ids,{Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te},Order:{UID:ids,Number:invoiceID}})
+axios.post('http://13.127.4.251:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
   .then(function (response) {
    console.log(response);
-    window.location.assign('/purchase');
+     window.location.assign('/purchase');
   })
   .catch(function (error) {
     console.log(error.response);
@@ -168,6 +117,8 @@ else{
 alert("enter sales correctly");
 }
 }
+
+
 
 function onAfterSaveCell(row,cellName,cellValue){
 console.log(row)
@@ -289,7 +240,7 @@ class Editpurchase extends React.Component {
 
 
   ids=parsed.id;
-  url= "http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order/"+ids;
+  url= "http://13.127.4.251:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order/"+ids;
   console.log(ids);
        this.state = {
          posts: [],
@@ -309,7 +260,7 @@ class Editpurchase extends React.Component {
 
  createCustomDeleteButton = (onBtnClick) => {
     return (
-           <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Item</button>
+           <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Purchase</button>
 
     );
   }
@@ -327,7 +278,7 @@ this.setState ( { loaded: false});
    // document.getElem  entById("date").value = "2014-02-09";
         axios.all([
         axios.get(url),
-        axios.get('http://13.126.134.204:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
+        axios.get('http://13.127.4.251:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
         ])
         .then(axios.spread((invoice,dependencies) => {
         var acc = invoice.data.Lines;
@@ -501,7 +452,7 @@ this.setState({dstatus:de});
 
   createCustomInsertButton = (openModal) => {
     return (
-     <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>Add Item</button>
+     <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Purchase</button>
     );
 }
     render() {
@@ -624,7 +575,6 @@ console.log("ftr "+typeof(da))
 
 <label for="customer" style={{"margin-left":"26%"}}>Total Amount:</label>
 <input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} value={this.state.tmo} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
- <Button bsStyle="warning" onClick={handleClick1} style={{"margin-left":"8%"}}>Change to Bill</Button>
 
 
 </div>

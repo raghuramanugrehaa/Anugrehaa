@@ -5,11 +5,12 @@ import invoice from './editsale';
 import payment from './Payment';
 import newinvoice from './newsale';
 import Purchase from './purchase';
+import Purchasebill from './purchasebill';
 import Newpurchase from './newpurchase';
 import Editpurchase from './editpurchase';
 import Purchasepayment from './purchasepayment';
 import Payroll from './payroll';
-import editPayroll from './editpayroll'
+import editPayroll from './editpayroll';
 
 
 // The Main component renders one of the three provided
@@ -28,6 +29,7 @@ export class Main extends React.Component{
       <Route path='/payment' component={payment}/>
       <Route path='/newinvoice' component={newinvoice}/>
       <Route exact path='/purchase' component={Purchase}/>
+      <Route exact path='/bill-purchase' component={Purchasebill}/>
       <Route exact path='/Newpurchase' component={Newpurchase}/>
       <Route exact path='/Editpurchase' component={Editpurchase}/>
       <Route exact path='/Purchasepayment' component={Purchasepayment}/>

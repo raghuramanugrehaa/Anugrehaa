@@ -48,36 +48,32 @@ sub_total=sub_total-tr;
 sub_total=parseInt(row.Price)+sub_total;
 document.getElementById('sub_total').value=sub_total;
 money[row.Desc]=row.Price;
-var mt;
-if(row.type1=="GST"){
-  mt=11;
-}
-else{
- mt=parseInt(newhash[row.type1]);
-}
-console.log("before"+tax_total);
-tax_total=parseInt(tax_total)-parseInt(money_tax[row.Desc])
-console.log("after"+tax_total-money_tax[row.Desc]);
-money_tax[row.Desc]=(parseInt(row.Price)/mt).toFixed(2);
-tax_total=(tax_total+(parseInt(row.Price)/mt)).toFixed(2);
+var mt=parseInt(newhash[row.type1]);
+tax_total=tax_total-parseInt(money_tax[row.Desc])
+money_tax[row.Desc]=parseInt(row.Price)/mt;
+tax_total=tax_total+parseInt(row.Price)/mt;
 document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=parseFloat(tax_total)+parseInt(sub_total);
+document.getElementById('Total').value=tax_total+sub_total;
    var taxname= taxhash[row.type1];
    var taxcodes=taxname;
 
    var account_uid=myHash[row.type];
   // console.log(taxcodes)
    var gvf=""+account_uid
-
-accrecv={Description:row.Name,Total:row.Price,Account:{UID:gvf},Job:{UID:juid},TaxCode:{UID:taxcodes}}
-
-
+if("ACCOUNT SALES"==row.Name)
+{
+accrecv={Description:row.Name,Total:-row.Price,Account:{UID:gvf},Job:{UID:juid},TaxCode:{UID:taxcodes}}
+}
+else
+{
+accrecv={Description:row.Name,Total:row.Price,Account:{UID:gvf},TaxCode:{UID:taxcodes}}
+}
 
 checkHash[row.Name]={}
 checkHash[row.Name]=accrecv
 
 
-console.log("aftersavecell"+JSON.stringify(checkHash[row.name]))
+
 
 
 }}
@@ -85,37 +81,20 @@ console.log("aftersavecell"+JSON.stringify(checkHash[row.name]))
 }
 function onAfterInsertRow(row) {
 
-//checbox odule Inclusive
-
-
 //getting jobs
 var juid=jobshash[row.type2];
 
 
 var TUID=taxhash[row.type1];
-//id_tax[row.Desc]=row.type1;
 
 money[row.Desc]=row.Price;
-
-var mt;
-if(row.type1=="GST"){
-  mt=11;
-}
-else {
-  mt=parseInt(newhash[row.type1]);
-}
-tax_total=(parseInt(row.Price)/mt+parseInt(tax_total)).toFixed(2);
-money_tax[row.Desc]=(parseInt(row.Price)/mt).toFixed(2);
-document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=parseFloat(tax_total)+parseInt(row.Price);
-
-//sub_total
 sub_total=parseInt(row.Price)+parseInt(sub_total);
 document.getElementById('sub_total').value=sub_total;
-
-//var d=document.getElementById('check').value;
-
-
+var mt=parseInt(newhash[row.type1]);
+tax_total=parseInt(row.Price)/mt+parseInt(tax_total);
+money_tax[row.Desc]=parseInt(row.Price)/mt;
+document.getElementById('tax_per').value=tax_total;
+document.getElementById('Total').value=tax_total+sub_total;
 var accountname= myHash[row.type];
 var taxcode=TUID;
 row_count++;
@@ -153,7 +132,7 @@ class Newpurchase extends React.Component {
      super(props);
      this.handleClick = this.handleClick.bind(this);
      this.handleChange = this.handleChange.bind(this);
-     url= "http://13.126.134.204:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/";
+     url= "http://13.127.4.251:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/";
      this.state = {
        posts: [],
        accounts: [],
@@ -174,7 +153,8 @@ var date = document.getElementById("date").value;
 var supplier=document.getElementById("supplier").value;
 var supplierInvoiceNumber=document.getElementById("SupplierInvoiceNumber").value;
 
-console.log("hiiiii"+date);
+console.log(Object.keys(hashitems).length)
+
  if (date=="")
  {
  alert("select date");
@@ -213,7 +193,7 @@ var klk=Lines.details;
 console.log("yes"+ supplier);
 console.log("no"+date);
 this.setState ( { loaded: true});
-axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
+axios.post('http://13.126.189.91:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
   .then(function (response) {
   // console.log(response);
      window.location.assign('/purchase');
@@ -355,12 +335,12 @@ this.setState({salesheads:heads})
 
  createCustomInsertButton = (openModal) => {
      return (
-      <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>Add Item</button>
+      <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Purchase</button>
      );
  }
  createCustomDeleteButton = (onBtnClick) => {
      return (
-            <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Item</button>
+            <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Purchase</button>
 
      );
    }

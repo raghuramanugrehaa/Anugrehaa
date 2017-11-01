@@ -39,7 +39,7 @@ else
 {
 
 
-axios.post('http://13.126.189.91:3001/media/e3152784-4811-4f2e-9a4f-884f3439db90/customerPayments',{DepositTo:"Account",PaymentMethod:type,Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
+axios.post('http://13.126.134.204:3001/media/e3152784-4811-4f2e-9a4f-884f3439db90/customerPayments',{DepositTo:"Account",PaymentMethod:type,Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Customer:{UID:cuid},Invoices:[{UID:ids,AmountApplied:k,Type:"Invoice"}]})
   .then(function (response) {
     console.log(response);
     if(x==k)
@@ -73,7 +73,7 @@ this.onChange = this.onChange.bind(this)
   ids=parsed.id;
    nameid=parsed.name;
   console.log("second "+nameid);
-  url= "http://13.126.189.91:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices/"+ids;
+  url= "http://13.126.134.204:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices/"+ids;
   console.log(ids);
        this.state = {
          posts: [],
@@ -98,8 +98,8 @@ this.onChange = this.onChange.bind(this)
 
          axios.all([
                  axios.get(url),
-                 axios.get('http://13.126.189.91:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/'),
-                  axios.get('http://13.126.189.91:3001/media/e3152784-4811-4f2e-9a4f-884f3439db90/customerPayments/'+nameid+'/'+ids)
+                 axios.get('http://13.126.134.204:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/'),
+                  axios.get('http://13.126.134.204:3001/media/e3152784-4811-4f2e-9a4f-884f3439db90/customerPayments/'+nameid+'/'+ids)
                  ]).then(axios.spread((invoice,dependencies,history) =>{
 var data=invoice.data;
 var data1=history.data.history;
