@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 var p="/payment";
 
-export  class Purchase extends Component {
+export  class Purchasebill extends Component {
 
 
 ///ajax  impeentation
@@ -22,7 +22,7 @@ constructor(props) {
 
 componentDidMount() {
 	this.setState ( { loaded: false});
-   axios.get(`http://13.127.4.251:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order`
+   axios.get('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill'
    ).then(res => {
 
        const posts = res.data.Items;
@@ -133,8 +133,8 @@ componentDidMount() {
 
 
 <div className="col-md-offset-6">
-<div className="text-right">
-              <a><Link to ={"/Newpurchase"} className ><input type="button"  className="btn btn-success col-md-offset-3" value="New Purchase"/></Link></a>
+<div className="text-right" style={ { 'margin-right': '10%'} }>
+              <a><Link to ={"/Newbill"} ><input type="button"  className="btn btn-success col-md-offset-3" value="New Bill"/></Link></a>
 </div>
 </div>
 <div style={{"padding-bottom":"-150px"}}>
@@ -149,7 +149,7 @@ componentDidMount() {
                     <TableHeaderColumn width="16%"  dataAlign="center" dataField='BalanceDueAmount'>Balance Due Amount</TableHeaderColumn>
                     <TableHeaderColumn  width="10%"  dataAlign="center" dataField='Status' >Status</TableHeaderColumn>
                    <TableHeaderColumn  width="16%" dataAlign="center" dataField='Date'> Invoice Date</TableHeaderColumn>
-     <TableHeaderColumn  width="15%"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Purchase</TableHeaderColumn>
+     <TableHeaderColumn  width="15%"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Bill</TableHeaderColumn>
                         <TableHeaderColumn   width="10%" dataAlign="center" dataField='UID'dataFormat={this.cellButton1.bind(this)}>Payment </TableHeaderColumn>
 
 
@@ -165,7 +165,7 @@ componentDidMount() {
     }
   }
   ReactDOM.render(
-    <Purchase subreddit="reactjs"/>,
+    <Purchasebill subreddit="reactjs"/>,
     document.getElementById('root')
   );
-export default Purchase;
+export default Purchasebill;

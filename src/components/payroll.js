@@ -24,7 +24,7 @@ constructor(props) {
 
 componentDidMount() {
 	this.setState ( { loaded: false});
-   axios.get(`http://13.126.189.91:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet`
+   axios.get(`http://13.126.134.204:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet`
    ).then(res => {
 
        var data = res.data.Items;

@@ -26,7 +26,7 @@ export class Header extends React.Component{
                                   <a className="dropdown-toggle" data-toggle="dropdown"><Link to="/purchase">Purchase
                                   <span className="caret"></span></Link></a>
                                   <ul className="dropdown-menu">
-                                    <li><Link to='/purchase' >Bill</Link></li>
+                                    <li><Link to ='/bill'>Bill</Link></li>
                                     <li><Link to ='/purchase'>Order</Link></li>
                                   </ul>
                                 </li>

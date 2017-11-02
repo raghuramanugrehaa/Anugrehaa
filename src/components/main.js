@@ -5,10 +5,11 @@ import invoice from './editsale';
 import payment from './Payment';
 import newinvoice from './newsale';
 import Purchase from './purchase';
-import Purchasebill from './purchasebill';
 import Newpurchase from './newpurchase';
 import Editpurchase from './editpurchase';
 import Purchasepayment from './purchasepayment';
+import Billp from './billpurchase';
+import Newbill from './newbill';
 import Payroll from './payroll';
 import editPayroll from './editpayroll';
 
@@ -29,8 +30,10 @@ export class Main extends React.Component{
       <Route path='/payment' component={payment}/>
       <Route path='/newinvoice' component={newinvoice}/>
       <Route exact path='/purchase' component={Purchase}/>
-      <Route exact path='/bill-purchase' component={Purchasebill}/>
+           <Route exact path='/bill' component={Billp}/>
+        <Route exact path='/Newbill' component={Newbill}/>
       <Route exact path='/Newpurchase' component={Newpurchase}/>
+
       <Route exact path='/Editpurchase' component={Editpurchase}/>
       <Route exact path='/Purchasepayment' component={Purchasepayment}/>
 	  <Route path='/Payroll' component={Payroll}/>

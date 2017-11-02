@@ -171,32 +171,46 @@ alert("enter sales correctly");
 
 function onAfterSaveCell(row,cellName,cellValue){
 console.log(row)
-var juid=jobshash[row.type2];
-  //  document.getElementById('sub_total').value="1";
-var TUID=hashtax[row.Account];
-var accountname= hashacct[row.Account];
-var TUID=taxhash[row.tax];
-var taxcode=TUID;
 
-//auto call of amount
+
+var juid=jobshash[row.type2];
+var t=row.Total;
 var tr=parseInt(money[row.Description]);
 sub_total=sub_total-tr;
 sub_total=parseInt(row.Total)+sub_total;
 document.getElementById('sub_total').value=sub_total;
-money[row.Desc]=row.Total;
+money[row.Description]=row.Total;
+var mt;
+if(row.tax=="GST"){
+  mt=11;
+}
+else{
+ mt=parseInt(newhash[row.tax]);
+}
+console.log("taxing"+money_tax[row.Description]);
+tax_total=parseInt(tax_total)-parseInt(money_tax[row.Description])
 
-//auto call of tax
-var mt=parseInt(newhash[row.tax]);
-tax_total=tax_total-parseInt(money_tax[row.Description])
-money_tax[row.Description]=parseInt(row.Total)/mt;
-tax_total=tax_total+parseInt(row.Total)/mt;
+if(newhash[row.tax]=="0"){
+tax_total=parseInt(tax_total).toFixed(2);
+money_tax[row.Description]=0;
+}
+else{
+tax_total=(parseInt(row.Total)/mt+parseInt(tax_total)).toFixed(2);
+money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
+}
+
 document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=tax_total+sub_total;
+document.getElementById('Total').value=parseFloat(tax_total)+parseInt(sub_total);
+   var taxname= taxhash[row.tax];
+   var taxcodes=taxname;
+
+   var account_uid=hashacct[row.Account];
+  // console.log(taxcodes)
+   var gvf=""+account_uid
 
 
 
-
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:account_uid},Job:{UID:juid},TaxCode:{UID:taxcodes}}
  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 
 
@@ -211,44 +225,48 @@ hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:
 
 
 function onAfterInsertRow(row) {
-var TUID=taxhash[row.tax];
-var accountname= hashacct[row.Account];
-var juid=jobshash[row.type2];
-var taxcode=TUID;
-row_count++;
 
-//auto call total
-money[row.Description]=row.Total;
-sub_total=parseInt(row.Total)+parseInt(sub_total);
-document.getElementById('sub_total').value=sub_total;
-document.getElementById('Total').value=tax_total+sub_total;
-var dev=document.getElementById("dev_status").value;
+  //getting jobs
+  var juid=jobshash[row.type2];
 
 
-//auto call tax
-var mt=parseInt(newhash[row.tax]);
-mt=parseInt(row.Total)/parseInt(mt);
-money_tax[row.Desc]=mt;
-tax_total=mt+tax_total;
-document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=tax_total+sub_total;
+  var TUID=taxhash[row.tax];
+  //id_tax[row.Desc]=row.type1;
+  var t=row.Total;
+  money[row.Description]=row.Total;
+
+  var mt=0;
+  if(row.tax=="GST"){
+    mt=11;
+  }
+
+  else {
+    mt=parseInt(newhash[row.tax]);
+  }
+  if(newhash[row.tax]=="0"){
+  tax_total=parseInt(tax_total).toFixed(2);
+  money_tax[row.Description]=0;
+  }
+  else{
+  tax_total=(parseInt(row.Total)/mt+parseInt(tax_total)).toFixed(2);
+  money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
+  }
+  document.getElementById('tax_per').value=tax_total;
+  document.getElementById('Total').value=parseFloat(tax_total)+parseInt(row.Total);
+
+  //sub_total
+  sub_total=parseInt(row.Total)+parseInt(sub_total);
+  document.getElementById('sub_total').value=sub_total;
+
+  //var d=document.getElementById('check').value;
+  var accountname= hashacct[row.Account];
+  var taxcode=TUID;
+  row_count++;
+  hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
+
+    console.log('onAftersavecell'+JSON.stringify(hashitems[row.Desc]));
 
 
-
-
-if("ACCOUNT SALES"==row.Description)
-{
-hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
-
-  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
-}
-else
-{
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
-
-  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
-
-}
 
 }
 function onAfterDeleteRow(rowKeys) {
@@ -348,13 +366,15 @@ console.log("invocice "+JSON.stringify(invoice))
          console.log("iam"+memo);
          var yu=invoice.data.BalanceDueAmount;
          var mm=invoice.data.PromisedDate;
+         var inc=invoice.data.IsTaxInclusive;
+
          if(mm==null){
          //var resm = mm.split("T");
-         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:null});
+         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:null,incl:inc});
         }
         else{
         var resm = mm.split("T");
-                 this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:resm[0]});
+                 this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:resm[0],incl:inc});
 
         }
             //    document.getElementById('sub_total').value="1s";
@@ -396,7 +416,10 @@ var taxt=[];
         for (var k = 0; k < acc.length; k++) {
 money[acc[k].Description]=acc[k].Total;
 var mt=parseInt(newhash[acc[k].TaxCode.Code]);
-money_tax[acc[k].Description]=parseInt(acc[k].Total)/mt;
+if(mt=="GST")
+mt=11;
+
+money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt)-1;
 
 var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
 hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
@@ -560,7 +583,7 @@ console.log("ftr "+typeof(da))
 <textarea id="note1" className="form-control col-md-2" style={{"height":"50px","width":"10%"} } value={this.state.adds} />
 <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
     <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"    value={this.state.ter}placeholder="TERMS" />
-<label style={{'margin-left':'40','padding-top':'10'}}><input type="checkbox" checked />Tax Inclusive</label>
+<label style={{'margin-left':'40','padding-top':'10'}}> <input type="check" checked={this.state.incl} />Tax Inclusive</label>
 <label for="Journal Memo" style={{ 'margin-left':'50','padding-top':'10'}}>Journal Memo:</label>
 <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"  value={this.state.mem} />
 
