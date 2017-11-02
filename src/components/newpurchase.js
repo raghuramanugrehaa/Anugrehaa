@@ -10,6 +10,7 @@ var tax_total=0;
 var url="";
 var accrecv;
 var money={};
+var exclusive={};
 var money_tax={};
 var hashacct ={};
 var hashitems={};
@@ -22,6 +23,9 @@ var hashtax={};
 var jobshash={};
 var row_count=0;
 var Lines = {
+    details: []
+};
+var texclusive = {
     details: []
 };
 const cellEditProp = {
@@ -42,7 +46,7 @@ if(typeof row.type !== "undefined") {
 //console.log("i got the accou//nt")
 //getting job
 var juid=jobshash[row.type2];
-
+var t=row.Price;
 var tr=parseInt(money[row.Desc]);
 sub_total=sub_total-tr;
 sub_total=parseInt(row.Price)+sub_total;
@@ -52,14 +56,21 @@ var mt;
 if(row.type1=="GST"){
   mt=11;
 }
+
 else{
  mt=parseInt(newhash[row.type1]);
 }
-console.log("before"+tax_total);
+
 tax_total=parseInt(tax_total)-parseInt(money_tax[row.Desc])
-console.log("after"+tax_total-money_tax[row.Desc]);
+
+if(newhash[row.type1]=="0"){
+tax_total=parseInt(tax_total).toFixed(2);
+money_tax[row.Desc]=0;
+}
+else{
+tax_total=(parseInt(row.Price)/mt+parseInt(tax_total)).toFixed(2);
 money_tax[row.Desc]=(parseInt(row.Price)/mt).toFixed(2);
-tax_total=(tax_total+(parseInt(row.Price)/mt)).toFixed(2);
+}
 document.getElementById('tax_per').value=tax_total;
 document.getElementById('Total').value=parseFloat(tax_total)+parseInt(sub_total);
    var taxname= taxhash[row.type1];
@@ -69,15 +80,24 @@ document.getElementById('Total').value=parseFloat(tax_total)+parseInt(sub_total)
   // console.log(taxcodes)
    var gvf=""+account_uid
 
-accrecv={Description:row.Name,Total:row.Price,Account:{UID:gvf},Job:{UID:juid},TaxCode:{UID:taxcodes}}
+hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:gvf},Job:{UID:juid},TaxCode:{UID:taxcodes}}
 
 
+ //exclusive module
+  var r=document.getElementById('check').checked;
+  if(r==true){
+  row.Price=parseInt(row.Price)+parseFloat(money_tax[row.Desc]);
 
-checkHash[row.Name]={}
-checkHash[row.Name]=accrecv
+  //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,}
+
+  }
+  else
+  row.Price=row.Price;
+
+   exclusive[row.Desc]={Desc:row.Desc,Price:t,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 
 
-console.log("aftersavecell"+JSON.stringify(checkHash[row.name]))
+console.log("aftersavecell"+JSON.stringify(hashitems[row.name]))
 
 
 }}
@@ -94,18 +114,25 @@ var juid=jobshash[row.type2];
 
 var TUID=taxhash[row.type1];
 //id_tax[row.Desc]=row.type1;
-
+var t=row.Price;
 money[row.Desc]=row.Price;
 
-var mt;
+var mt=0;
 if(row.type1=="GST"){
   mt=11;
 }
+
 else {
   mt=parseInt(newhash[row.type1]);
 }
+if(newhash[row.type1]=="0"){
+tax_total=parseInt(tax_total).toFixed(2);
+money_tax[row.Desc]=0;
+}
+else{
 tax_total=(parseInt(row.Price)/mt+parseInt(tax_total)).toFixed(2);
 money_tax[row.Desc]=(parseInt(row.Price)/mt).toFixed(2);
+}
 document.getElementById('tax_per').value=tax_total;
 document.getElementById('Total').value=parseFloat(tax_total)+parseInt(row.Price);
 
@@ -114,14 +141,30 @@ sub_total=parseInt(row.Price)+parseInt(sub_total);
 document.getElementById('sub_total').value=sub_total;
 
 //var d=document.getElementById('check').value;
-
-
 var accountname= myHash[row.type];
 var taxcode=TUID;
 row_count++;
 hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
 
   console.log('onAftersavecell'+JSON.stringify(hashitems[row.Desc]));
+
+
+
+  //exclusive module
+  var r=document.getElementById('check').checked;
+  if(r==true){
+  row.Price=parseInt(row.Price)+parseFloat(money_tax[row.Desc]);
+
+  //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
+
+  }
+  else
+  row.Price=row.Price;
+
+
+
+   exclusive[row.Desc]={Desc:row.Desc,Price:t,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+
 
 }
 
@@ -136,7 +179,7 @@ document.getElementById('tax_per').value=tax_total;
 document.getElementById('Total').value=tax_total+sub_total;
   alert('The sale you are deleting is: ' + rowKeys);
 delete hashitems[rowKeys];
-
+delete exclusive[rowKeys];
 row_count--;
 
 }
@@ -152,6 +195,7 @@ class Newpurchase extends React.Component {
   constructor(props) {
      super(props);
      this.handleClick = this.handleClick.bind(this);
+     this.handleClick1 = this.handleClick1.bind(this);
      this.handleChange = this.handleChange.bind(this);
      url= "http://13.126.134.204:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/";
      this.state = {
@@ -167,9 +211,29 @@ class Newpurchase extends React.Component {
      };
   }
 
+ handleClick1(){
 
+
+var g=document.getElementById("check").checked;
+
+texclusive.details=[];
+Object.keys(exclusive).forEach(function (key) {
+    var value = exclusive[key]
+    if(g==true){
+    var Q=parseInt(value.Price)+parseFloat(value.tax);
+  texclusive.details.push({Desc:value.Desc,Price:Q,type:value.type,type1:value.type1,type2:value.type2})
+  }
+  else
+  texclusive.details.push({Desc:value.Desc,Price:value.Price,type:value.type,type1:value.type1,type2:value.type2})
+})
+var e=texclusive.details;
+console.log("konnect"+JSON.stringify(e));
+this.setState({taxdata:e} );
+
+ }
  handleClick(){
 //e.preventDefault();
+    Lines.details=[];
 var date = document.getElementById("date").value;
 var supplier=document.getElementById("supplier").value;
 var supplierInvoiceNumber=document.getElementById("SupplierInvoiceNumber").value;
@@ -211,11 +275,13 @@ var tttax=parseInt(document.getElementById('tax_per').value);
 this.setState ( { loaded: false});
 var klk=Lines.details;
 console.log("yes"+ supplier);
-console.log("no"+date);
+console.log("no"+JSON.stringify(klk));
 this.setState ( { loaded: true});
-axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : true,Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
+var g=document.getElementById("check").checked;
+
+axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : g,Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
   .then(function (response) {
-  // console.log(response);
+   console.log(response);
      window.location.assign('/purchase');
 
   })
@@ -408,7 +474,7 @@ this.setState({salesheads:heads})
     <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
     <input type="text" disabled='disabled' className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"  />
 
-<label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" checked />Tax Inclusive</label>
+<label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" id="check" onClick={this.handleClick1}  />Tax Inclusive</label>
 <label for="Journal Memo" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>
 <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"   placeholder="Purchase" />
 
@@ -421,7 +487,7 @@ this.setState({salesheads:heads})
 
                                <br></br>
 
-<BootstrapTable maxHeight="200px" cellEdit={ cellEditProp }  options={ options } selectRow={ selectRowProp } insertRow deleteRow >
+<BootstrapTable maxHeight="200px" data={this.state.taxdata} cellEdit={ cellEditProp }  options={ options } selectRow={ selectRowProp } insertRow deleteRow >
           <TableHeaderColumn width="30%" height="1" dataField='Desc' isKey={true} editable={ true } placeholder="enter description" >Description</TableHeaderColumn>
           <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
            <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center"> ORDER AMOUNT</TableHeaderColumn>
