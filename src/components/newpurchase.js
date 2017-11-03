@@ -50,7 +50,7 @@ var t=row.Price;
 var tr=parseInt(money[row.Desc]);
 sub_total=sub_total-tr;
 sub_total=parseInt(row.Price)+sub_total;
-document.getElementById('sub_total').value=sub_total;
+
 money[row.Desc]=row.Price;
 var mt;
 if(row.type1=="GST"){
@@ -72,7 +72,7 @@ tax_total=(parseInt(row.Price)/mt+parseInt(tax_total)).toFixed(2);
 money_tax[row.Desc]=(parseInt(row.Price)/mt).toFixed(2);
 }
 document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=parseFloat(tax_total)+parseInt(sub_total);
+document.getElementById('Total').value=parseInt(sub_total);
    var taxname= taxhash[row.type1];
    var taxcodes=taxname;
 
@@ -86,15 +86,15 @@ hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:gvf},Job:
  //exclusive module
   var r=document.getElementById('check').checked;
   if(r==true){
-  row.Price=parseInt(row.Price)+parseFloat(money_tax[row.Desc]);
-
+  row.Price=row.Price;
+document.getElementById('sub_total').value=sub_total;
   //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,}
 
   }
   else
-  row.Price=row.Price;
-
-   exclusive[row.Desc]={Desc:row.Desc,Price:t,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+  row.Price=parseFloat(row.Price)-parseFloat(money_tax[row.Desc]).toFixed(2);
+document.getElementById('sub_total').value=sub_total-parseFloat(money_tax[row.Desc]);
+   exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 
 
 console.log("aftersavecell"+JSON.stringify(hashitems[row.name]))
@@ -134,11 +134,11 @@ tax_total=(parseInt(row.Price)/mt+parseInt(tax_total)).toFixed(2);
 money_tax[row.Desc]=(parseInt(row.Price)/mt).toFixed(2);
 }
 document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=parseFloat(tax_total)+parseInt(row.Price);
+document.getElementById('Total').value=parseInt(row.Price);
 
 //sub_total
 sub_total=parseInt(row.Price)+parseInt(sub_total);
-document.getElementById('sub_total').value=sub_total;
+document.getElementById('sub_total').value=parseInt(sub_total)-(parseInt(row.Price)/mt).toFixed(2);
 
 //var d=document.getElementById('check').value;
 var accountname= myHash[row.type];
@@ -153,17 +153,17 @@ hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountna
   //exclusive module
   var r=document.getElementById('check').checked;
   if(r==true){
-  row.Price=parseInt(row.Price)+parseFloat(money_tax[row.Desc]);
+  row.Price=row.Price;
 
   //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
 
   }
   else
-  row.Price=row.Price;
+  row.Price=parseFloat(row.Price)-parseFloat(money_tax[row.Desc]);
 
 
 
-   exclusive[row.Desc]={Desc:row.Desc,Price:t,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+   exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 
 
 }
@@ -220,7 +220,7 @@ texclusive.details=[];
 Object.keys(exclusive).forEach(function (key) {
     var value = exclusive[key]
     if(g==true){
-    var Q=parseInt(value.Price)+parseFloat(value.tax);
+    var Q=parseFloat(value.Price)+parseFloat(value.tax);
   texclusive.details.push({Desc:value.Desc,Price:Q,type:value.type,type1:value.type1,type2:value.type2})
   }
   else
@@ -279,8 +279,8 @@ console.log("no"+JSON.stringify(klk));
 this.setState ( { loaded: true});
 var g=document.getElementById("check").checked;
 
-axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},IsTaxInclusive : g,Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
-  .then(function (response) {
+axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
+.then(function (response) {
    console.log(response);
      window.location.assign('/purchase');
 

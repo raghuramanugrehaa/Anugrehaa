@@ -9,6 +9,7 @@ import Newpurchase from './newpurchase';
 import Editpurchase from './editpurchase';
 import Purchasepayment from './purchasepayment';
 import Billp from './billpurchase';
+import Editbill from './editpurchasebill';
 import Newbill from './newbill';
 import Payroll from './payroll';
 import editPayroll from './editpayroll';
@@ -32,6 +33,7 @@ export class Main extends React.Component{
       <Route exact path='/purchase' component={Purchase}/>
            <Route exact path='/bill' component={Billp}/>
         <Route exact path='/Newbill' component={Newbill}/>
+        <Route exact path='/Editbill' component={Editbill}/>
       <Route exact path='/Newpurchase' component={Newpurchase}/>
 
       <Route exact path='/Editpurchase' component={Editpurchase}/>

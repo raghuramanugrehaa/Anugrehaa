@@ -279,7 +279,7 @@ console.log("no"+JSON.stringify(klk));
 this.setState ( { loaded: true});
 var g=document.getElementById("check").checked;
 
-axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},Lines:klk,Freight:"0",FreightTaxCode:{UID:fre_tax }})
+axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber ,Supplier:{UID:supplier},Lines:klk,Freight:"0",FreightTaxCode:{UID:fre_tax },ShipToAddress:addr,Comment:com,ShippingMethod:ship,BillDeliveryStatus:"Print",PromisedDate:pm_date})
   .then(function (response) {
    console.log(response);
     window.location.assign('/bill');
@@ -490,7 +490,7 @@ this.setState({salesheads:heads})
 <BootstrapTable maxHeight="200px" data={this.state.taxdata} cellEdit={ cellEditProp }  options={ options } selectRow={ selectRowProp } insertRow deleteRow >
           <TableHeaderColumn width="30%" height="1" dataField='Desc' isKey={true} editable={ true } placeholder="enter description" >Description</TableHeaderColumn>
           <TableHeaderColumn width="30%" dataField='type'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.accounts } } }>ACCOUNT NAME</TableHeaderColumn>
-           <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center"> ORDER AMOUNT</TableHeaderColumn>
+           <TableHeaderColumn width="30%" dataField='Price' editable={true } dataAlign="Center"> BILL AMOUNT</TableHeaderColumn>
            <TableHeaderColumn width="30%" dataField='type2'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.jobsb } } }>JOB</TableHeaderColumn>
            <TableHeaderColumn width="30%" dataField='type1'dataAlign="Center" editable={ { type: 'select', options: {values: this.state.txt } } }>TAX NAME</TableHeaderColumn>
 

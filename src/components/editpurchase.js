@@ -5,6 +5,8 @@ import { Button} from 'react-bootstrap';
 import axios from "axios";
 const queryString = require('query-string');
 var ids="";
+var exclusive={};
+
 var sub_total=0;
 var tax_total=0;
 var money={};
@@ -31,7 +33,9 @@ var cname="";
 
 
 const products = [];
-
+var texclusive = {
+    details: []
+};
 var Lines = {
     details: []
 };
@@ -43,23 +47,7 @@ const cellEditProp = {
 };
 
 
-function addProducts(quantity) {
-  const startId = products.length;
-  for (let i = 0; i < quantity; i++) {
-    const id = startId + i;
-    products.push({
-      id: id,
-      name: 'Item name ' + id,
-      price: {
-        amount: 2100 + i,
-        currency: currencies[i % currencies.length]
-      },
-      //regions: regions.slice(0, (i % regions.length) + 1)
-    });
-  }
-}
 
-addProducts(5);
 
 function handleClick(e){
 e.preventDefault();
@@ -170,54 +158,63 @@ alert("enter sales correctly");
 }
 
 function onAfterSaveCell(row,cellName,cellValue){
-console.log(row)
+
+ //getting jobs
+var TUID=taxhash[row.tax];
+ var juid=jobshash[row.type2];
+console.log("tot"+money[row.Description]+"sub"+sub_total)
+sub_total=(parseFloat(money[row.Description])-parseFloat(sub_total)).toFixed(2);
+
+ money[row.Description]=row.Total;
+ var mt;
+ if(row.tax=="GST"){
+   mt=11;
+ }
+
+ else{
+  mt=parseInt(newhash[row.tax]);
+ }
+
+ tax_total=parseFloat(tax_total)-parseFloat(money_tax[row.Description])
+  if(newhash[row.tax]=="0"){
+  tax_total=parseFloat(tax_total).toFixed(2);
+  money_tax[row.Description]=0;
+  }
+  else{
+  tax_total=(parseFloat(row.Total)/mt+parseFloat(tax_total)).toFixed(2);
+  money_tax[row.Description]=(parseFloat(row.Total)/mt).toFixed(2);
+  }
+
+console.log("taxy"+money_tax[row.Description]+"vbdx"+sub_total)
+  sub_total=((parseFloat(row.Total)-parseFloat(money_tax[row.Description]))+parseFloat(sub_total)).toFixed(2);
+  document.getElementById('tax_per').value=tax_total;
+  document.getElementById('Total').value=parseFloat(tax_total)+parseFloat(sub_total);
+  document.getElementById('sub_total').value=sub_total;
+  var accountname= hashacct[row.Account];
+  var taxcode=TUID;
+  row_count++;
+  hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
+
+    console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+
+    //exclusive module
+var inc=document.getElementById('check').checked;
+    if(inc==true){
+    row.Total=row.Total;
+
+    //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
+
+    }
+    else
+    row.Total=parseFloat(row.Total)-parseFloat(money_tax[row.Description]);
 
 
-var juid=jobshash[row.type2];
-var t=row.Total;
-var tr=parseInt(money[row.Description]);
-sub_total=sub_total-tr;
-sub_total=parseInt(row.Total)+sub_total;
-document.getElementById('sub_total').value=sub_total;
-money[row.Description]=row.Total;
-var mt;
-if(row.tax=="GST"){
-  mt=11;
-}
-else{
- mt=parseInt(newhash[row.tax]);
-}
-console.log("taxing"+money_tax[row.Description]);
-tax_total=parseInt(tax_total)-parseInt(money_tax[row.Description])
 
-if(newhash[row.tax]=="0"){
-tax_total=parseInt(tax_total).toFixed(2);
-money_tax[row.Description]=0;
-}
-else{
-tax_total=(parseInt(row.Total)/mt+parseInt(tax_total)).toFixed(2);
-money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
-}
-
-document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=parseFloat(tax_total)+parseInt(sub_total);
-   var taxname= taxhash[row.tax];
-   var taxcodes=taxname;
-
-   var account_uid=hashacct[row.Account];
-  // console.log(taxcodes)
-   var gvf=""+account_uid
-
-
-
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:account_uid},Job:{UID:juid},TaxCode:{UID:taxcodes}}
- console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+     exclusive[row.Description]={Description:row.Description,Total:row.Total,Account:row.Account,type2:row.type2,tax:row.tax,rate:money_tax[row.Description]}
 
 
 
 
-
-// pay+=parseInt(row.price);
 
 
 }
@@ -252,19 +249,34 @@ function onAfterInsertRow(row) {
   money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
   }
   document.getElementById('tax_per').value=tax_total;
-  document.getElementById('Total').value=parseFloat(tax_total)+parseInt(row.Total);
+
 
   //sub_total
-  sub_total=parseInt(row.Total)+parseInt(sub_total);
-  document.getElementById('sub_total').value=sub_total;
-
+  sub_total=parseInt(sub_total)+(parseInt(row.Total)-parseFloat(money_tax[row.Description]));
+  document.getElementById('sub_total').value=parseFloat(sub_total);
+document.getElementById('Total').value=(parseFloat(tax_total)+parseFloat(sub_total)).toFixed(2);
   //var d=document.getElementById('check').value;
   var accountname= hashacct[row.Account];
   var taxcode=TUID;
   row_count++;
   hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
 
-    console.log('onAftersavecell'+JSON.stringify(hashitems[row.Desc]));
+    console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+
+    //exclusive module
+var inc=document.getElementById('check').checked;
+    if(inc==true){
+    row.Total=row.Total;
+
+    //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
+
+    }
+    else
+    row.Total=parseFloat(row.Total)-parseFloat(money_tax[row.Description]);;
+
+
+
+     exclusive[row.Description]={Description:row.Description,Total:row.Total,Account:row.Account,type2:row.type2,tax:row.tax,rate:money_tax[row.Description]}
 
 
 
@@ -281,6 +293,7 @@ function onAfterDeleteRow(rowKeys) {
   document.getElementById('Total').value=tax_total+sub_total;
   alert('The sale you are deleting is: ' + rowKeys);
 delete hashitems[rowKeys];
+delete exclusive[rowKeys];
 row_count--;
 
 }
@@ -304,6 +317,7 @@ class Editpurchase extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
       this.handleChange1 = this.handleChange1.bind(this);
+        this.handleCheck = this.handleCheck.bind(this);
 
 
   ids=parsed.id;
@@ -339,6 +353,39 @@ class Editpurchase extends React.Component {
   handleChange1(event) {
      this.setState({prom: event.target.value});
    }
+
+handleCheck(event){
+var inc=document.getElementById('check').checked;
+
+
+  texclusive.details=[];
+  Object.keys(exclusive).forEach(function (key) {
+      var value = exclusive[key]
+    //  console.log(value.Total);
+      if(inc==true){
+      //  inc=false
+
+      var Q=parseFloat(value.Total)+parseFloat(value.rate);
+    texclusive.details.push({Description:value.Description,Total:Q,tax:value.tax,Account:value.Account,type2:value.type2,rate:value.rate})
+    }
+    else{
+    //    this.setState({incl:true})
+  //    inc=true
+    texclusive.details.push({Description:value.Description,Total:value.Total,tax:value.tax,Account:value.Account,type2:value.type2,rate:value.rate})
+  }
+  })
+  var e=texclusive.details;
+  console.log("konnect"+JSON.stringify(e));
+  this.setState({account:e} );
+
+
+
+
+
+
+
+
+}
     componentDidMount() {
 
 this.setState ( { loaded: false});
@@ -366,15 +413,15 @@ console.log("invocice "+JSON.stringify(invoice))
          console.log("iam"+memo);
          var yu=invoice.data.BalanceDueAmount;
          var mm=invoice.data.PromisedDate;
-         var inc=invoice.data.IsTaxInclusive;
+//          inc=invoice.data.IsTaxInclusive;
 
          if(mm==null){
          //var resm = mm.split("T");
-         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:null,incl:inc});
+         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g,prom:null});
         }
         else{
         var resm = mm.split("T");
-                 this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:resm[0],incl:inc});
+                 this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:resm[0]});
 
         }
             //    document.getElementById('sub_total').value="1s";
@@ -415,22 +462,39 @@ var taxt=[];
 
         for (var k = 0; k < acc.length; k++) {
 money[acc[k].Description]=acc[k].Total;
-var mt=parseInt(newhash[acc[k].TaxCode.Code]);
-if(mt=="GST")
+var mt=acc[k].TaxCode.Code;
+console.log("got hit"+mt)
+if(mt=="GST"){
 mt=11;
+console.log("got hit"+mt)
+money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
+sub_total=parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])
+money[acc[k].Description]=parseFloat(sub_total);
+var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])
+var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
+exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code,rate:money_tax[acc[k].Description]};
+hashitems[acc[k].Description]={Description:acc[k].Description,Total:tr,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
+                accnt.push(details);
+                console.log(JSON.stringify(acc[k]))
+                raccnames[acc[k].Description]=acc[k].Account.Name;
+              }
+else{
 
-money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt)-1;
 
-var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
-hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
+  money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
+       sub_total=parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])
+var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])
+var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
+exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code,rate:newhash[acc[k].TaxCode.Code]};
+hashitems[acc[k].Description]={Description:acc[k].Description,Total:tr,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);
                 console.log(JSON.stringify(acc[k]))
                 raccnames[acc[k].Description]=acc[k].Account.Name;
 //currencies.push(acc[k].Account.Name)
-                }
+          }      }
 
 
-          this.setState({account:accnt})
+          this.setState({account:accnt,stotal:sub_total})
 
 
           var acc1 = dependencies.data.salesheads;
@@ -483,7 +547,9 @@ for (var l =0;l < job.length;l++){
  jobshash[job[l].Name]= job[l].UID;
 
 }
-
+document.getElementById("Total").value=g;
+document.getElementById("sub_total").value=sub_total;
+document.getElementById("tax_per").value=tax_total;
 var result3=dependencies.data.Shipping;
 console.log("shj"+sp);
 for(var l=0;l < result3.length;l++){
@@ -583,9 +649,9 @@ console.log("ftr "+typeof(da))
 <textarea id="note1" className="form-control col-md-2" style={{"height":"50px","width":"10%"} } value={this.state.adds} />
 <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
     <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"    value={this.state.ter}placeholder="TERMS" />
-<label style={{'margin-left':'40','padding-top':'10'}}> <input type="check" checked={this.state.incl} />Tax Inclusive</label>
-<label for="Journal Memo" style={{ 'margin-left':'50','padding-top':'10'}}>Journal Memo:</label>
-<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"  value={this.state.mem} />
+    <label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" id="check" onClick={this.handleCheck}  />Tax Inclusive</label>
+<label for="Journal Memo" style={{ 'margin-left':'30','padding-top':'10'}}>Journal Memo:</label>
+<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'20'}} id="Memo"  value={this.state.mem} />
 
 
 </div>
@@ -608,7 +674,7 @@ console.log("ftr "+typeof(da))
                       {this.state.pots}
    </select>
           <label for="customer" style={{ 'margin-left':'29%'}}>Sub Total:</label>
-        <input type="text" className=" col-md-2 col-md-offset-7 form-control" disabled="disabled" value={this.state.stotal} style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
+        <input type="text" className=" col-md-2 col-md-offset-7 form-control" disabled="disabled"  style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
 
    </div>
 
@@ -633,7 +699,7 @@ console.log("ftr "+typeof(da))
 <input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'3%'}} onChange={this.handleChange1} value={this.state.prom} placeholder="Select Date" type="date" min={p}/>
 
 <label for="customer" style={{"margin-left":"33%"}} >Tax:</label>
-<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}  value={this.state.totx} id="tax_per"   placeholder="Tax"/>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
 
 </div>
 <br/>
@@ -646,7 +712,7 @@ console.log("ftr "+typeof(da))
 </select>
 
 <label for="customer" style={{"margin-left":"26%"}}>Total Amount:</label>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} value={this.state.tmo} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}  disabled="disabled"  id="Total"   placeholder="Total Amount"/>
  <Button bsStyle="warning" onClick={handleClick1} style={{"margin-left":"8%"}}>Change to Bill</Button>
 
 

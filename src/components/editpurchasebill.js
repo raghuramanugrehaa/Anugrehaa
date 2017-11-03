@@ -5,6 +5,8 @@ import { Button} from 'react-bootstrap';
 import axios from "axios";
 const queryString = require('query-string');
 var ids="";
+var exclusive={};
+
 var sub_total=0;
 var tax_total=0;
 var money={};
@@ -31,7 +33,9 @@ var cname="";
 
 
 const products = [];
-
+var texclusive = {
+    details: []
+};
 var Lines = {
     details: []
 };
@@ -43,31 +47,12 @@ const cellEditProp = {
 };
 
 
-function addProducts(quantity) {
-  const startId = products.length;
-  for (let i = 0; i < quantity; i++) {
-    const id = startId + i;
-    products.push({
-      id: id,
-      name: 'Item name ' + id,
-      price: {
-        amount: 2100 + i,
-        currency: currencies[i % currencies.length]
-      },
-      //regions: regions.slice(0, (i % regions.length) + 1)
-    });
-  }
-}
 
-addProducts(5);
 
 function handleClick(e){
 e.preventDefault();
 //var date = document.getElementById("date").value;
-console.log(Object.keys(hashitems).length);
-console.log(row_count);
-if(Object.keys(hashitems).length==row_count)
-{
+
 
 console.log(Supplier);
 console.log("im final"+JSON.stringify(hashitems));
@@ -103,56 +88,78 @@ var del_status=document.getElementById('dev_status').value;
 console.log(del_status);
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
-axios.post('http://13.127.4.251:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
+axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill/'+ids,{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
   .then(function (response) {
    console.log(response);
-     window.location.assign('/purchase');
+     window.location.assign('/bill');
   })
   .catch(function (error) {
     console.log(error.response);
   });
 
-}
-else{
-alert("enter sales correctly");
-}
+
 }
 
 
 
 function onAfterSaveCell(row,cellName,cellValue){
 console.log(row)
-var juid=jobshash[row.type2];
-  //  document.getElementById('sub_total').value="1";
-var TUID=hashtax[row.Account];
-var accountname= hashacct[row.Account];
-var TUID=taxhash[row.tax];
-var taxcode=TUID;
 
-//auto call of amount
+
+var juid=jobshash[row.type2];
+var t=row.Total;
 var tr=parseInt(money[row.Description]);
 sub_total=sub_total-tr;
 sub_total=parseInt(row.Total)+sub_total;
 document.getElementById('sub_total').value=sub_total;
-money[row.Desc]=row.Total;
+money[row.Description]=row.Total;
+var mt;
+if(row.tax=="GST"){
+  mt=11;
+}
+else{
+ mt=parseInt(newhash[row.tax]);
+}
+console.log("taxing"+money_tax[row.Description]);
+tax_total=parseInt(tax_total)-parseInt(money_tax[row.Description])
 
-//auto call of tax
-var mt=parseInt(newhash[row.tax]);
-tax_total=tax_total-parseInt(money_tax[row.Description])
-money_tax[row.Description]=parseInt(row.Total)/mt;
-tax_total=tax_total+parseInt(row.Total)/mt;
+if(newhash[row.tax]=="0"){
+tax_total=parseInt(tax_total).toFixed(2);
+money_tax[row.Description]=0;
+}
+else{
+tax_total=(parseInt(row.Total)/mt+parseInt(tax_total)).toFixed(2);
+money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
+}
+
 document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=tax_total+sub_total;
+document.getElementById('Total').value=parseFloat(tax_total)+parseInt(sub_total);
+   var taxname= taxhash[row.tax];
+   var taxcodes=taxname;
+
+   var account_uid=hashacct[row.Account];
+  // console.log(taxcodes)
+   var gvf=""+account_uid
 
 
 
-
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:account_uid},type2:{UID:juid},TaxCode:{UID:taxcodes}}
  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 
 
+var inc=document.getElementById('check').checked;
+ if(inc==true){
+ row.Total=parseInt(row.Total)+parseFloat(money_tax[row.Description]);
+
+ //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
+
+ }
+ else
+ row.Total=row.Total;
 
 
+
+  exclusive[row.Description]={Description:row.Description,Total:t,Account:row.Account,type2:row.type2,tax:row.tax,rate:money_tax[row.Description]}
 
 // pay+=parseInt(row.price);
 
@@ -162,44 +169,63 @@ hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:
 
 
 function onAfterInsertRow(row) {
-var TUID=taxhash[row.tax];
-var accountname= hashacct[row.Account];
-var juid=jobshash[row.type2];
-var taxcode=TUID;
-row_count++;
 
-//auto call total
-money[row.Description]=row.Total;
-sub_total=parseInt(row.Total)+parseInt(sub_total);
-document.getElementById('sub_total').value=sub_total;
-document.getElementById('Total').value=tax_total+sub_total;
-var dev=document.getElementById("dev_status").value;
+  //getting jobs
+  var juid=jobshash[row.type2];
 
 
-//auto call tax
-var mt=parseInt(newhash[row.tax]);
-mt=parseInt(row.Total)/parseInt(mt);
-money_tax[row.Desc]=mt;
-tax_total=mt+tax_total;
-document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=tax_total+sub_total;
+  var TUID=taxhash[row.tax];
+  //id_tax[row.Desc]=row.type1;
+  var t=row.Total;
+  money[row.Description]=row.Total;
+
+  var mt=0;
+  if(row.tax=="GST"){
+    mt=11;
+  }
+
+  else {
+    mt=parseInt(newhash[row.tax]);
+  }
+  if(newhash[row.tax]=="0"){
+  tax_total=parseInt(tax_total).toFixed(2);
+  money_tax[row.Description]=0;
+  }
+  else{
+  tax_total=(parseInt(row.Total)/mt+parseInt(tax_total)).toFixed(2);
+  money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
+  }
+  document.getElementById('tax_per').value=tax_total;
+  document.getElementById('Total').value=parseFloat(tax_total)+parseInt(row.Total);
+
+  //sub_total
+  sub_total=parseInt(row.Total)+parseInt(sub_total);
+  document.getElementById('sub_total').value=sub_total;
+
+  //var d=document.getElementById('check').value;
+  var accountname= hashacct[row.Account];
+  var taxcode=TUID;
+  row_count++;
+  hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
+
+    console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+
+    //exclusive module
+var inc=document.getElementById('check').checked;
+    if(inc==true){
+    row.Total=parseInt(row.Total)+parseFloat(money_tax[row.Description]);
+
+    //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
+
+    }
+    else
+    row.Total=row.Total;
 
 
 
+     exclusive[row.Description]={Description:row.Description,Total:t,Account:row.Account,type2:row.type2,tax:row.tax,rate:money_tax[row.Description]}
 
-if("ACCOUNT SALES"==row.Description)
-{
-hashitems[row.Description]={Description:row.Description,Total:-row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
 
-  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
-}
-else
-{
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},TaxCode:{UID:taxcode}}
-
-  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
-
-}
 
 }
 function onAfterDeleteRow(rowKeys) {
@@ -214,6 +240,7 @@ function onAfterDeleteRow(rowKeys) {
   document.getElementById('Total').value=tax_total+sub_total;
   alert('The sale you are deleting is: ' + rowKeys);
 delete hashitems[rowKeys];
+delete exclusive[rowKeys];
 row_count--;
 
 }
@@ -228,7 +255,7 @@ const selectRowProp = {
 
 
 
-class Editpurchase extends React.Component {
+class Editbill extends React.Component {
 
     constructor(props) {
        super(props);
@@ -237,10 +264,11 @@ class Editpurchase extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
       this.handleChange1 = this.handleChange1.bind(this);
+        this.handleCheck = this.handleCheck.bind(this);
 
 
   ids=parsed.id;
-  url= "http://13.127.4.251:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order/"+ids;
+  url= "http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill/"+ids;
   console.log(ids);
        this.state = {
          posts: [],
@@ -260,7 +288,7 @@ class Editpurchase extends React.Component {
 
  createCustomDeleteButton = (onBtnClick) => {
     return (
-           <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Purchase</button>
+           <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Item</button>
 
     );
   }
@@ -272,13 +300,46 @@ class Editpurchase extends React.Component {
   handleChange1(event) {
      this.setState({prom: event.target.value});
    }
+
+handleCheck(event){
+var inc=document.getElementById('check').checked;
+
+
+  texclusive.details=[];
+  Object.keys(exclusive).forEach(function (key) {
+      var value = exclusive[key]
+      console.log(value.Total);
+      if(inc==true){
+      //  inc=false
+
+      var Q=parseInt(value.Total)+parseFloat(value.rate);
+    texclusive.details.push({Description:value.Description,Total:Q,tax:value.tax,Account:value.Account,type2:value.type2,rate:value.rate})
+    }
+    else{
+    //    this.setState({incl:true})
+  //    inc=true
+    texclusive.details.push({Description:value.Description,Total:value.Total,tax:value.tax,Account:value.Account,type2:value.type2,rate:value.rate})
+  }
+  })
+  var e=texclusive.details;
+  console.log("konnect"+JSON.stringify(e));
+  this.setState({account:e} );
+
+
+
+
+
+
+
+
+}
     componentDidMount() {
 
 this.setState ( { loaded: false});
    // document.getElem  entById("date").value = "2014-02-09";
         axios.all([
         axios.get(url),
-        axios.get('http://13.127.4.251:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
+        axios.get('http://13.126.134.204:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
         ])
         .then(axios.spread((invoice,dependencies) => {
         var acc = invoice.data.Lines;
@@ -299,6 +360,8 @@ console.log("invocice "+JSON.stringify(invoice))
          console.log("iam"+memo);
          var yu=invoice.data.BalanceDueAmount;
          var mm=invoice.data.PromisedDate;
+//          inc=invoice.data.IsTaxInclusive;
+
          if(mm==null){
          //var resm = mm.split("T");
          this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:null});
@@ -346,16 +409,28 @@ var taxt=[];
 
         for (var k = 0; k < acc.length; k++) {
 money[acc[k].Description]=acc[k].Total;
-var mt=parseInt(newhash[acc[k].TaxCode.Code]);
-money_tax[acc[k].Description]=parseInt(acc[k].Total)/mt;
-
+var mt=acc[k].TaxCode.Code;
+console.log("got hit"+mt)
+if(mt=="GST"){
+mt=11;
+console.log("got hit"+mt)
+money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
 var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
+exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code,rate:money_tax[acc[k].Description]};
+hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
+                accnt.push(details);
+                console.log(JSON.stringify(acc[k]))
+                raccnames[acc[k].Description]=acc[k].Account.Name;
+              }
+else{
+var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
+exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code,rate:newhash[acc[k].TaxCode.Code]};
 hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);
                 console.log(JSON.stringify(acc[k]))
                 raccnames[acc[k].Description]=acc[k].Account.Name;
 //currencies.push(acc[k].Account.Name)
-                }
+          }      }
 
 
           this.setState({account:accnt})
@@ -452,7 +527,7 @@ this.setState({dstatus:de});
 
   createCustomInsertButton = (openModal) => {
     return (
-     <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>New Purchase</button>
+     <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal }>Add Item</button>
     );
 }
     render() {
@@ -511,9 +586,9 @@ console.log("ftr "+typeof(da))
 <textarea id="note1" className="form-control col-md-2" style={{"height":"50px","width":"10%"} } value={this.state.adds} />
 <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
     <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"    value={this.state.ter}placeholder="TERMS" />
-<label style={{'margin-left':'40','padding-top':'10'}}><input type="checkbox" checked />Tax Inclusive</label>
-<label for="Journal Memo" style={{ 'margin-left':'50','padding-top':'10'}}>Journal Memo:</label>
-<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"  value={this.state.mem} />
+    <label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" id="check" onClick={this.handleCheck}  />Tax Inclusive</label>
+<label for="Journal Memo" style={{ 'margin-left':'30','padding-top':'10'}}>Journal Memo:</label>
+<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'20'}} id="Memo"  value={this.state.mem} />
 
 
 </div>
@@ -588,4 +663,4 @@ console.log("ftr "+typeof(da))
 
 
 
-export default Editpurchase;
+export default Editbill;
