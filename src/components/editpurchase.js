@@ -159,124 +159,175 @@ alert("enter sales correctly");
 
 function onAfterSaveCell(row,cellName,cellValue){
 
- //getting jobs
+sub_total=(parseFloat(sub_total)-parseFloat(money[row.Description])).toFixed(2);
+tax_total=(parseFloat(tax_total)-parseFloat(money_tax[row.Description])).toFixed(2);
+
+if(cellName=="tax"){
+
+
+
+var tem=newhash[row.tax];
+if(row.tax=="GST")
+tem=11
+
+
+var PR=parseFloat(money_tax[row.Description])+parseFloat(money[row.Description])
+var tax_tem=(parseFloat(PR)/parseFloat(tem)).toFixed(2);
+console.log(row.Total +" l "+tax_tem)
+money_tax[row.Description]=parseFloat(tax_tem);
+
+tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
+
+sub_total=((parseFloat(PR)-parseFloat(tax_tem))+parseFloat(sub_total)).toFixed(2);
+document.getElementById("sub_total").value=sub_total;
+document.getElementById("tax_per").value=tax_total;
+document.getElementById("Total").value=(parseFloat(sub_total)+parseFloat(tax_total)).toFixed(2)
+
+
+
+var juid=jobshash[row.type2];
+
+
 var TUID=taxhash[row.tax];
- var juid=jobshash[row.type2];
-console.log("tot"+money[row.Description]+"sub"+sub_total)
-sub_total=(parseFloat(money[row.Description])-parseFloat(sub_total)).toFixed(2);
+//id_tax[row.Desc]=row.type1;
 
- money[row.Description]=row.Total;
- var mt;
- if(row.tax=="GST"){
-   mt=11;
- }
+//var d=document.getElementById('check').value;
+var accountname= hashacct[row.Account];
+hashitems[row.Description]={Description:row.Description,Total:PR,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
+  var r=document.getElementById('check').checked;
+  var ff=(parseFloat(PR)-parseFloat(tax_tem)).toFixed(2);
+  money[row.Description]=ff;
+   exclusive[row.Description]={Description:row.Description,Total:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Desc]}
 
- else{
-  mt=parseInt(newhash[row.tax]);
- }
+  if(r==false){
+   row.Total=(parseFloat(PR)-parseFloat(tax_tem)).toFixed(2);
 
- tax_total=parseFloat(tax_total)-parseFloat(money_tax[row.Description])
-  if(newhash[row.tax]=="0"){
-  tax_total=parseFloat(tax_total).toFixed(2);
-  money_tax[row.Description]=0;
-  }
-  else{
-  tax_total=(parseFloat(row.Total)/mt+parseFloat(tax_total)).toFixed(2);
-  money_tax[row.Description]=(parseFloat(row.Total)/mt).toFixed(2);
-  }
-
-console.log("taxy"+money_tax[row.Description]+"vbdx"+sub_total)
-  sub_total=((parseFloat(row.Total)-parseFloat(money_tax[row.Description]))+parseFloat(sub_total)).toFixed(2);
-  document.getElementById('tax_per').value=tax_total;
-  document.getElementById('Total').value=parseFloat(tax_total)+parseFloat(sub_total);
-  document.getElementById('sub_total').value=sub_total;
-  var accountname= hashacct[row.Account];
-  var taxcode=TUID;
-  row_count++;
-  hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
-
-    console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
-
-    //exclusive module
-var inc=document.getElementById('check').checked;
-    if(inc==true){
-    row.Total=row.Total;
-
-    //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
-
-    }
-    else
-    row.Total=parseFloat(row.Total)-parseFloat(money_tax[row.Description]);
-
-
-
-     exclusive[row.Description]={Description:row.Description,Total:row.Total,Account:row.Account,type2:row.type2,tax:row.tax,rate:money_tax[row.Description]}
-
-
-
-
+}
+else{
+row.Total=PR;
+ //  exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+}
 
 
 }
 
 
 
+
+if(cellName==="Total"){
+
+
+
+
+var tem=newhash[row.tax];
+if(row.type1=="GST")
+tem=11
+
+
+
+var tax_tem=(parseFloat(row.Total)/parseFloat(tem)).toFixed(2);
+console.log(row.Price +" l "+tax_tem)
+money_tax[row.Description]=parseFloat(tax_tem);
+
+tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
+
+sub_total=((parseFloat(row.Total)-parseFloat(tax_tem))+parseFloat(sub_total)).toFixed(2);
+document.getElementById("sub_total").value=sub_total;
+document.getElementById("tax_per").value=tax_total;
+document.getElementById("Total").value=(parseFloat(sub_total)+parseFloat(tax_total)).toFixed(2)
+
+
+
+var juid=jobshash[row.type2];
+
+
+var TUID=taxhash[row.tax];
+//id_tax[row.Desc]=row.type1;
+
+//var d=document.getElementById('check').value;
+var accountname= hashacct[row.Account];
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
+  var r=document.getElementById('check').checked;
+  var ff=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
+  money[row.Description]=ff;
+   exclusive[row.Description]={Description:row.Description,Total:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Description]}
+
+  if(r==false){
+   row.Total=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
+
+}
+else{
+row.Total=row.Total;
+ //  exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+}
+
+}
+else{
+
+var juid=jobshash[row.type2];
+
+
+var TUID=taxhash[row.tax];
+//id_tax[row.Desc]=row.type1;
+
+//var d=document.getElementById('check').value;
+var accountname= hashacct[row.tax];
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
+}
+}
+
 function onAfterInsertRow(row) {
 
-  //getting jobs
-  var juid=jobshash[row.type2];
+
+var tem=newhash[row.tax];
+if(row.tax=="GST")
+tem=11
 
 
-  var TUID=taxhash[row.tax];
-  //id_tax[row.Desc]=row.type1;
-  var t=row.Total;
-  money[row.Description]=row.Total;
+var tax_tem=(parseFloat(row.Total)/parseFloat(tem)).toFixed(2);
+console.log("tax"+tem+"fdv"+tax_tem);
+money_tax[row.Description]=tax_tem;
+tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
 
-  var mt=0;
-  if(row.tax=="GST"){
-    mt=11;
-  }
-
-  else {
-    mt=parseInt(newhash[row.tax]);
-  }
-  if(newhash[row.tax]=="0"){
-  tax_total=parseInt(tax_total).toFixed(2);
-  money_tax[row.Description]=0;
-  }
-  else{
-  tax_total=(parseInt(row.Total)/mt+parseInt(tax_total)).toFixed(2);
-  money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
-  }
-  document.getElementById('tax_per').value=tax_total;
+console.log("iop"+tax_tem+" trax"+tax_total+" ")
+sub_total=((parseFloat(row.Total)-parseFloat(tax_tem))+parseFloat(sub_total)).toFixed(2);
+document.getElementById("sub_total").value=sub_total;
+document.getElementById("tax_per").value=tax_total;
+document.getElementById("Total").value=(parseFloat(sub_total)+parseFloat(tax_total)).toFixed(2)
 
 
-  //sub_total
-  sub_total=parseInt(sub_total)+(parseInt(row.Total)-parseFloat(money_tax[row.Description]));
-  document.getElementById('sub_total').value=parseFloat(sub_total);
-document.getElementById('Total').value=(parseFloat(tax_total)+parseFloat(sub_total)).toFixed(2);
-  //var d=document.getElementById('check').value;
-  var accountname= hashacct[row.Account];
-  var taxcode=TUID;
-  row_count++;
-  hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
+//getting jobs
+var juid=jobshash[row.type2];
 
-    console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 
-    //exclusive module
-var inc=document.getElementById('check').checked;
-    if(inc==true){
-    row.Total=row.Total;
+var TUID=taxhash[row.tax];
+//id_tax[row.Desc]=row.type1;
 
-    //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
 
-    }
-    else
-    row.Total=parseFloat(row.Total)-parseFloat(money_tax[row.Description]);;
+//var d=document.getElementById('check').value;
+var accountname= hashacct[row.Account];
+
+row_count++;
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
+
+  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 
 
 
-     exclusive[row.Description]={Description:row.Description,Total:row.Total,Account:row.Account,type2:row.type2,tax:row.tax,rate:money_tax[row.Description]}
+  //exclusive module
+  var r=document.getElementById('check').checked;
+  var ff=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
+  money[row.Description]=ff;
+   exclusive[row.Description]={Desc:row.Description,Price:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Description]}
+
+  if(r==false){
+   row.Total=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
+
+}
+else{
+row.Total=row.Total;
+ //  exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+}
 
 
 
@@ -366,6 +417,7 @@ var inc=document.getElementById('check').checked;
       //  inc=false
 
       var Q=parseFloat(value.Total)+parseFloat(value.rate);
+      console.log("cpo"+value.Total+" fdv "+value.rate)
     texclusive.details.push({Description:value.Description,Total:Q,tax:value.tax,Account:value.Account,type2:value.type2,rate:value.rate})
     }
     else{
@@ -479,9 +531,9 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:tr,Account:{
                 raccnames[acc[k].Description]=acc[k].Account.Name;
               }
 else{
-
-
-  money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
+mt=newhash[mt];
+ money_tax[acc[k].Description]=0;
+ // money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
        sub_total=parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])
 var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])
 var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}

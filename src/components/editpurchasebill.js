@@ -88,10 +88,10 @@ var del_status=document.getElementById('dev_status').value;
 console.log(del_status);
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
-axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill/'+ids,{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,AppliedToDate:12,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
+axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
   .then(function (response) {
    console.log(response);
-     window.location.assign('/bill');
+     window.location.assign('/purchase');
   })
   .catch(function (error) {
     console.log(error.response);
@@ -100,130 +100,177 @@ axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f343
 
 }
 
-
-
 function onAfterSaveCell(row,cellName,cellValue){
-console.log(row)
+
+sub_total=(parseFloat(sub_total)-parseFloat(money[row.Description])).toFixed(2);
+tax_total=(parseFloat(tax_total)-parseFloat(money_tax[row.Description])).toFixed(2);
+
+if(cellName=="tax"){
+
+
+
+var tem=newhash[row.tax];
+if(row.tax=="GST")
+tem=11
+
+
+var PR=parseFloat(money_tax[row.Description])+parseFloat(money[row.Description])
+var tax_tem=(parseFloat(PR)/parseFloat(tem)).toFixed(2);
+console.log(row.Total +" l "+tax_tem)
+money_tax[row.Description]=parseFloat(tax_tem);
+
+tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
+
+sub_total=((parseFloat(PR)-parseFloat(tax_tem))+parseFloat(sub_total)).toFixed(2);
+document.getElementById("sub_total").value=sub_total;
+document.getElementById("tax_per").value=tax_total;
+document.getElementById("Total").value=(parseFloat(sub_total)+parseFloat(tax_total)).toFixed(2)
+
 
 
 var juid=jobshash[row.type2];
-var t=row.Total;
-var tr=parseInt(money[row.Description]);
-sub_total=sub_total-tr;
-sub_total=parseInt(row.Total)+sub_total;
-document.getElementById('sub_total').value=sub_total;
-money[row.Description]=row.Total;
-var mt;
-if(row.tax=="GST"){
-  mt=11;
+
+
+var TUID=taxhash[row.tax];
+//id_tax[row.Desc]=row.type1;
+
+//var d=document.getElementById('check').value;
+var accountname= hashacct[row.Account];
+hashitems[row.Description]={Description:row.Description,Total:PR,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
+  var r=document.getElementById('check').checked;
+  var ff=(parseFloat(PR)-parseFloat(tax_tem)).toFixed(2);
+  money[row.Description]=ff;
+   exclusive[row.Description]={Desc:row.Description,Price:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Desc]}
+
+  if(r==false){
+   row.Total=(parseFloat(PR)-parseFloat(tax_tem)).toFixed(2);
+
 }
 else{
- mt=parseInt(newhash[row.tax]);
+row.Total=PR;
+ //  exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 }
-console.log("taxing"+money_tax[row.Description]);
-tax_total=parseInt(tax_total)-parseInt(money_tax[row.Description])
 
-if(newhash[row.tax]=="0"){
-tax_total=parseInt(tax_total).toFixed(2);
-money_tax[row.Description]=0;
+
+}
+
+
+
+
+if(cellName==="Total"){
+
+
+
+
+var tem=newhash[row.tax];
+if(row.type1=="GST")
+tem=11
+
+
+
+var tax_tem=(parseFloat(row.Total)/parseFloat(tem)).toFixed(2);
+console.log(row.Price +" l "+tax_tem)
+money_tax[row.Description]=parseFloat(tax_tem);
+
+tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
+
+sub_total=((parseFloat(row.Total)-parseFloat(tax_tem))+parseFloat(sub_total)).toFixed(2);
+document.getElementById("sub_total").value=sub_total;
+document.getElementById("tax_per").value=tax_total;
+document.getElementById("Total").value=(parseFloat(sub_total)+parseFloat(tax_total)).toFixed(2)
+
+
+
+var juid=jobshash[row.type2];
+
+
+var TUID=taxhash[row.tax];
+//id_tax[row.Desc]=row.type1;
+
+//var d=document.getElementById('check').value;
+var accountname= hashacct[row.Account];
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
+  var r=document.getElementById('check').checked;
+  var ff=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
+  money[row.Description]=ff;
+   exclusive[row.Description]={Description:row.Description,Total:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Description]}
+
+  if(r==false){
+   row.Total=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
+
 }
 else{
-tax_total=(parseInt(row.Total)/mt+parseInt(tax_total)).toFixed(2);
-money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
+row.Total=row.Total;
+ //  exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 }
 
-document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=parseFloat(tax_total)+parseInt(sub_total);
-   var taxname= taxhash[row.tax];
-   var taxcodes=taxname;
-
-   var account_uid=hashacct[row.Account];
-  // console.log(taxcodes)
-   var gvf=""+account_uid
-
-
-
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:account_uid},type2:{UID:juid},TaxCode:{UID:taxcodes}}
- console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
-
-
-var inc=document.getElementById('check').checked;
- if(inc==true){
- row.Total=parseInt(row.Total)+parseFloat(money_tax[row.Description]);
-
- //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
-
- }
- else
- row.Total=row.Total;
-
-
-
-  exclusive[row.Description]={Description:row.Description,Total:t,Account:row.Account,type2:row.type2,tax:row.tax,rate:money_tax[row.Description]}
-
-// pay+=parseInt(row.price);
-
-
 }
+else{
+
+var juid=jobshash[row.type2];
 
 
+var TUID=taxhash[row.tax];
+//id_tax[row.Desc]=row.type1;
+
+//var d=document.getElementById('check').value;
+var accountname= hashacct[row.tax];
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
+}
+}
 
 function onAfterInsertRow(row) {
 
-  //getting jobs
-  var juid=jobshash[row.type2];
+
+var tem=newhash[row.tax];
+if(row.tax=="GST")
+tem=11
 
 
-  var TUID=taxhash[row.tax];
-  //id_tax[row.Desc]=row.type1;
-  var t=row.Total;
-  money[row.Description]=row.Total;
+var tax_tem=(parseFloat(row.Total)/parseFloat(tem)).toFixed(2);
+console.log("tax"+tem+"fdv"+tax_tem);
+money_tax[row.Description]=tax_tem;
+tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
 
-  var mt=0;
-  if(row.tax=="GST"){
-    mt=11;
-  }
+console.log("iop"+tax_tem+" trax"+tax_total+" ")
+sub_total=((parseFloat(row.Total)-parseFloat(tax_tem))+parseFloat(sub_total)).toFixed(2);
+document.getElementById("sub_total").value=sub_total;
+document.getElementById("tax_per").value=tax_total;
+document.getElementById("Total").value=(parseFloat(sub_total)+parseFloat(tax_total)).toFixed(2)
 
-  else {
-    mt=parseInt(newhash[row.tax]);
-  }
-  if(newhash[row.tax]=="0"){
-  tax_total=parseInt(tax_total).toFixed(2);
-  money_tax[row.Description]=0;
-  }
-  else{
-  tax_total=(parseInt(row.Total)/mt+parseInt(tax_total)).toFixed(2);
-  money_tax[row.Description]=(parseInt(row.Total)/mt).toFixed(2);
-  }
-  document.getElementById('tax_per').value=tax_total;
-  document.getElementById('Total').value=parseFloat(tax_total)+parseInt(row.Total);
 
-  //sub_total
-  sub_total=parseInt(row.Total)+parseInt(sub_total);
-  document.getElementById('sub_total').value=sub_total;
+//getting jobs
+var juid=jobshash[row.type2];
 
-  //var d=document.getElementById('check').value;
-  var accountname= hashacct[row.Account];
-  var taxcode=TUID;
-  row_count++;
-  hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:taxcode}}
 
-    console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
+var TUID=taxhash[row.tax];
+//id_tax[row.Desc]=row.type1;
 
-    //exclusive module
-var inc=document.getElementById('check').checked;
-    if(inc==true){
-    row.Total=parseInt(row.Total)+parseFloat(money_tax[row.Description]);
 
-    //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,check:true,tax:money_tax[row.Desc]}
+//var d=document.getElementById('check').value;
+var accountname= hashacct[row.Account];
 
-    }
-    else
-    row.Total=row.Total;
+row_count++;
+hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
+
+  console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 
 
 
-     exclusive[row.Description]={Description:row.Description,Total:t,Account:row.Account,type2:row.type2,tax:row.tax,rate:money_tax[row.Description]}
+  //exclusive module
+  var r=document.getElementById('check').checked;
+  var ff=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
+  money[row.Description]=ff;
+   exclusive[row.Description]={Description:row.Description,Total:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Description]}
+
+  if(r==false){
+   row.Total=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
+
+}
+else{
+row.Total=row.Total;
+ //  exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+}
 
 
 
@@ -255,7 +302,7 @@ const selectRowProp = {
 
 
 
-class Editbill extends React.Component {
+class Editpurchase extends React.Component {
 
     constructor(props) {
        super(props);
@@ -308,11 +355,12 @@ var inc=document.getElementById('check').checked;
   texclusive.details=[];
   Object.keys(exclusive).forEach(function (key) {
       var value = exclusive[key]
-      console.log(value.Total);
+    //  console.log(value.Total);
       if(inc==true){
       //  inc=false
 
-      var Q=parseInt(value.Total)+parseFloat(value.rate);
+      var Q=parseFloat(value.Total)+parseFloat(value.rate);
+      console.log("cpo"+value.Total+" fdv "+value.rate)
     texclusive.details.push({Description:value.Description,Total:Q,tax:value.tax,Account:value.Account,type2:value.type2,rate:value.rate})
     }
     else{
@@ -364,7 +412,7 @@ console.log("invocice "+JSON.stringify(invoice))
 
          if(mm==null){
          //var resm = mm.split("T");
-         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g+tax_total,prom:null});
+         this.setState({stotal:sub_total,totx:tax_total,balamount:yu,tmo:g,prom:null});
         }
         else{
         var resm = mm.split("T");
@@ -415,17 +463,25 @@ if(mt=="GST"){
 mt=11;
 console.log("got hit"+mt)
 money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
-var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
-exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code,rate:money_tax[acc[k].Description]};
+sub_total=(parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])).toFixed(2)
+money[acc[k].Description]=parseFloat(sub_total).toFixed(2);
+var tr=(parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])).toFixed(2);
+var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
+exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code,rate:money_tax[acc[k].Description]};
 hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);
                 console.log(JSON.stringify(acc[k]))
                 raccnames[acc[k].Description]=acc[k].Account.Name;
               }
 else{
-var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code}
-exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:acc[k].Total,tax:acc[k].TaxCode.Code,rate:newhash[acc[k].TaxCode.Code]};
-hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
+mt=newhash[mt];
+ money_tax[acc[k].Description]=0;
+ // money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
+       sub_total=parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])
+var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])
+var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
+exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code,rate:newhash[acc[k].TaxCode.Code]};
+hashitems[acc[k].Description]={Description:acc[k].Description,Total:tr,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);
                 console.log(JSON.stringify(acc[k]))
                 raccnames[acc[k].Description]=acc[k].Account.Name;
@@ -433,7 +489,7 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total
           }      }
 
 
-          this.setState({account:accnt})
+          this.setState({account:accnt,stotal:sub_total})
 
 
           var acc1 = dependencies.data.salesheads;
@@ -486,7 +542,9 @@ for (var l =0;l < job.length;l++){
  jobshash[job[l].Name]= job[l].UID;
 
 }
-
+document.getElementById("Total").value=g;
+document.getElementById("sub_total").value=sub_total;
+document.getElementById("tax_per").value=tax_total;
 var result3=dependencies.data.Shipping;
 console.log("shj"+sp);
 for(var l=0;l < result3.length;l++){
@@ -611,7 +669,7 @@ console.log("ftr "+typeof(da))
                       {this.state.pots}
    </select>
           <label for="customer" style={{ 'margin-left':'29%'}}>Sub Total:</label>
-        <input type="text" className=" col-md-2 col-md-offset-7 form-control" disabled="disabled" value={this.state.stotal} style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
+        <input type="text" className=" col-md-2 col-md-offset-7 form-control" disabled="disabled"  style={{ 'margin-left':'10'}} id="sub_total"   placeholder="Sub  Total"/>
 
    </div>
 
@@ -636,7 +694,7 @@ console.log("ftr "+typeof(da))
 <input className=" col-md-2 form-control" id="promise_date"  style={{ 'margin-left':'3%'}} onChange={this.handleChange1} value={this.state.prom} placeholder="Select Date" type="date" min={p}/>
 
 <label for="customer" style={{"margin-left":"33%"}} >Tax:</label>
-<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}  value={this.state.totx} id="tax_per"   placeholder="Tax"/>
+<input type="text"  disabled="disabled" className="col-md-2 form-control" style={{"margin-left":"10"}}   id="tax_per"   placeholder="Tax"/>
 
 </div>
 <br/>
@@ -649,7 +707,8 @@ console.log("ftr "+typeof(da))
 </select>
 
 <label for="customer" style={{"margin-left":"26%"}}>Total Amount:</label>
-<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}} value={this.state.tmo} disabled="disabled"  id="Total"   placeholder="Total Amount"/>
+<input type="text" className="col-md-2 form-control" style={{"margin-left":"10"}}  disabled="disabled"  id="Total"   placeholder="Total Amount"/>
+
 
 
 </div>
@@ -663,4 +722,4 @@ console.log("ftr "+typeof(da))
 
 
 
-export default Editbill;
+export default Editpurchase;
