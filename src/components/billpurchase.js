@@ -119,7 +119,7 @@ componentDidMount() {
         showOnlySelected: true
       };
       const options = {
-		  clearSearch: true,
+
         toolBar: this.createCustomToolBar,
          defaultSortName: 'Status',  // default sort column name
               defaultSortOrder: 'desc'  // default sort order
@@ -140,7 +140,7 @@ componentDidMount() {
 <div style={{"padding-bottom":"-150px"}}>
 
 
-<BootstrapTable data={ this.state.posts } options={ options }     search  searchPlaceholder='search Purchase' pagination  striped hover condensed>
+<BootstrapTable data={ this.state.posts } options={ options }     search  searchPlaceholder='search Bill    ' pagination  striped hover condensed>
          <TableHeaderColumn width="9%"  dataAlign="center" dataField='Number' isKey={ true }>Invoice ID</TableHeaderColumn>
                   <TableHeaderColumn width="12%"  dataAlign="center" dataField='SupplierInvoiceNumber'>Supplier Invoice</TableHeaderColumn>
 

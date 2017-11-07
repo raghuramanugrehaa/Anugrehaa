@@ -119,7 +119,7 @@ componentDidMount() {
         showOnlySelected: true
       };
       const options = {
-		  clearSearch: true,
+
         toolBar: this.createCustomToolBar,
          defaultSortName: 'Status',  // default sort column name
               defaultSortOrder: 'desc'  // default sort order
@@ -145,12 +145,14 @@ componentDidMount() {
                   <TableHeaderColumn width="12%"  dataAlign="center" dataField='SupplierInvoiceNumber'>Supplier Invoice</TableHeaderColumn>
 
                    <TableHeaderColumn width="15%"  dataAlign="center" dataField='Supplier' dataFormat={this.cellButton2.bind(this)}>Supplier  Name</TableHeaderColumn>
-                   <TableHeaderColumn  width="10%" dataAlign="center" dataField='TotalAmount'>Total Sales</TableHeaderColumn>
+                   <TableHeaderColumn  width="10%" dataAlign="center" dataField='TotalAmount'>Total Purchase</TableHeaderColumn>
                     <TableHeaderColumn width="16%"  dataAlign="center" dataField='BalanceDueAmount'>Balance Due Amount</TableHeaderColumn>
                     <TableHeaderColumn  width="10%"  dataAlign="center" dataField='Status' >Status</TableHeaderColumn>
                    <TableHeaderColumn  width="16%" dataAlign="center" dataField='Date'> Invoice Date</TableHeaderColumn>
-     <TableHeaderColumn  width="15%"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Purchase</TableHeaderColumn>
+                    <TableHeaderColumn  width="15%"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Purchase</TableHeaderColumn>
                         <TableHeaderColumn   width="10%" dataAlign="center" dataField='UID'dataFormat={this.cellButton1.bind(this)}>Payment </TableHeaderColumn>
+                         <TableHeaderColumn   width="15%" dataAlign="center" dataField='UID'dataFormat={this.cellButton1.bind(this)}> Convert to Bill </TableHeaderColumn>
+
 
 
 

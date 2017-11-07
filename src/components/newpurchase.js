@@ -195,12 +195,12 @@ hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountna
   //exclusive module
   var r=document.getElementById('check').checked;
   var ff=(parseFloat(row.Price)-parseFloat(tax_tem)).toFixed(2);
-  money[row.Desc]=ff;
-   exclusive[row.Desc]={Desc:row.Desc,Price:ff,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+
 
   if(r==false){
    row.Price=(parseFloat(row.Price)-parseFloat(tax_tem)).toFixed(2);
-
+money[row.Desc]=row.Price;
+   exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 }
 else{
 row.Price=row.Price;
@@ -518,11 +518,11 @@ this.setState({salesheads:heads})
 <label for="note" style={{'padding-top':'10'}}>Ship To:</label>
     <textarea id="note" className="form-control col-md-3" style={{"height":"50px",'width':'10%'} } />
     <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
-    <input type="text" disabled='disabled' className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"  />
+    <input type="text" disabled='disabled' className="col-md-2 form-control"   style={{'height':'40','padding-top':'15','margin-left':'10'}} id="Terms"  />
 
 <label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" id="check" onClick={this.handleClick1}  />Tax Inclusive</label>
 <label for="Journal Memo" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>
-<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Memo"   placeholder="Purchase" />
+<input type="text" className="col-md-2 form-control"   style={{'height':'40','padding-top':'15','margin-left':'10'}} id="Memo"   placeholder="Purchase" />
 
 
 </div>

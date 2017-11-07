@@ -84,14 +84,16 @@ var ship=document.getElementById('ship').value;
 var fre_amount=document.getElementById('freight').value;
 var fre_tax=document.getElementById("freight_code").value;
 var del_status=document.getElementById('dev_status').value;
+var PI=document.getElementById('SupplierInvoiceNumber').value;
+
 //var paid=document.getElementById('paid_due').value;
 console.log(del_status);
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
-axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:SI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
+axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:PI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
   .then(function (response) {
    console.log(response);
-     window.location.assign('/purchase');
+     window.location.assign('/bill');
   })
   .catch(function (error) {
     console.log(error.response);
@@ -436,6 +438,9 @@ console.log("invocice "+JSON.stringify(invoice))
  this.setState  ({ loaded: true});
 row_count=acc.length;
 var taxt=[];
+   document.getElementById('SupplierInvoiceNumber').value=SI;
+       document.getElementById('Memo').value=memo;
+       document.getElementById('note1').value=myadd;
 //console.log("count of rows"+row_count)
        // document.getElementById('datenow').defaultValue='2017-02-03'
     var tax=dependencies.data.TaxCode
@@ -611,6 +616,9 @@ console.log("ftr "+typeof(da))
 
  <Loader loaded={this.state.loaded}>
 
+
+
+
  <div className="container">
  <div className="row">
  <label for="note" style={{'padding-top':'40'}}>Purchase Details:</label>
@@ -619,34 +627,38 @@ console.log("ftr "+typeof(da))
 <div>
 <table>
 <tr>
+         <label for="supinvoice" style={{'padding-top':'10','margin-left':'50'}} >Supplier Invoice Number:</label>
+
 <td>
-<div style={{"margin-left":"150","padding-top":"10"}}>
-    <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Supplier Invoice Number" value={this.state.si}/>
+<div style={{"margin-left":"10","padding-top":"10"}}>
+    <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Supplier Invoice Number" />
      </div>
      </td>
 </tr>
 <tr>
+         <label for="date" style={{'padding-top':'10','margin-left':'50'}}>Select Date:</label>
+
 <td>
- <div style={{'margin-left':'150','padding-top':'10'}}>
+ <div style={{'margin-left':'10','padding-top':'10'}}>
   <input className="form-control" id="datenow" type="date"  max={p} onChange={this.handleChange} value={this.state.datem}/>
  </div>
  </td>
  </tr>
  </table>
  </div>
- <div style={{'margin-left':'200','padding-top':'40'}}>
+ <div style={{'margin-left':'60','padding-top':'40'}}>
  <Button bsStyle="success" onClick={handleClick}>Save</Button>
       </div>
               </div>
 <br></br>
 <div className="row">
 <label for="note" style={{'padding-top':'10'}}>Ship To:</label>
-<textarea id="note1" className="form-control col-md-2" style={{"height":"50px","width":"10%"} } value={this.state.adds} />
+<textarea id="note1" className="form-control col-md-2" style={{"height":"50px","width":"10%"} }  />
 <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
-    <input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'10'}} id="Terms"    value={this.state.ter}placeholder="TERMS" />
+    <input type="text" className="col-md-2 form-control"   style={{'height':'40','padding-top':'10px','margin-left':'10'}} id="Terms"    value={this.state.ter}placeholder="TERMS" />
     <label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" id="check" onClick={this.handleCheck}  />Tax Inclusive</label>
 <label for="Journal Memo" style={{ 'margin-left':'30','padding-top':'10'}}>Journal Memo:</label>
-<input type="text" className="col-md-2 form-control"   style={{'height':'30','padding-top':'10px','margin-left':'20'}} id="Memo"  value={this.state.mem} />
+<input type="text" className="col-md-2 form-control"   style={{'height':'40','padding-top':'10px','margin-left':'20'}} id="Memo"   />
 
 
 </div>
