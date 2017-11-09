@@ -166,15 +166,18 @@ tax_total=(parseFloat(tax_total)-parseFloat(money_tax[row.Description])).toFixed
 
 if(cellName=="tax"){
 
+  var PR=parseFloat(money_tax[row.Description])+parseFloat(money[row.Description])
 
 
-var tem=newhash[row.tax];
-if(row.tax=="GST")
-tem=11
+  var tem=newhash[row.tax];
+  var tax_tem;
+  if(row.tax=="GST")
+  tax_tem=(parseFloat(PR)/parseFloat(11)).toFixed(2);
+  else
+  tax_tem=0;
 
 
-var PR=parseFloat(money_tax[row.Description])+parseFloat(money[row.Description])
-var tax_tem=(parseFloat(PR)/parseFloat(tem)).toFixed(2);
+//var tax_tem=(parseFloat(PR)/parseFloat(tem)).toFixed(2);
 console.log(row.Total +" l "+tax_tem)
 money_tax[row.Description]=parseFloat(tax_tem);
 
@@ -199,7 +202,7 @@ hashitems[row.Description]={Description:row.Description,Total:PR,Account:{UID:ac
   var r=document.getElementById('check').checked;
   var ff=(parseFloat(PR)-parseFloat(tax_tem)).toFixed(2);
   money[row.Description]=ff;
-   exclusive[row.Description]={Description:row.Description,Total:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Desc]}
+   exclusive[row.Description]={Description:row.Description,Total:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Description]}
 
   if(r==false){
    row.Total=(parseFloat(PR)-parseFloat(tax_tem)).toFixed(2);
@@ -220,14 +223,16 @@ if(cellName==="Total"){
 
 
 
+  var tem=newhash[row.tax];
+  var tax_tem;
+  if(row.tax=="GST")
+  tax_tem=(parseFloat(row.Total)/parseFloat(11)).toFixed(2);
+  else
+  tax_tem=0;
 
-var tem=newhash[row.tax];
-if(row.type1=="GST")
-tem=11
 
 
 
-var tax_tem=(parseFloat(row.Total)/parseFloat(tem)).toFixed(2);
 console.log(row.Price +" l "+tax_tem)
 money_tax[row.Description]=parseFloat(tax_tem);
 
@@ -264,29 +269,20 @@ row.Total=row.Total;
 }
 
 }
-else{
 
-var juid=jobshash[row.type2];
-
-
-var TUID=taxhash[row.tax];
-//id_tax[row.Desc]=row.type1;
-
-//var d=document.getElementById('check').value;
-var accountname= hashacct[row.tax];
-hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
-}
 }
 
 function onAfterInsertRow(row) {
 
 
 var tem=newhash[row.tax];
+var tax_tem;
 if(row.tax=="GST")
-tem=11
+tax_tem=(parseFloat(row.Total)/parseFloat(11)).toFixed(2);
+else
+tax_tem=0;
 
 
-var tax_tem=(parseFloat(row.Total)/parseFloat(tem)).toFixed(2);
 console.log("tax"+tem+"fdv"+tax_tem);
 money_tax[row.Description]=tax_tem;
 tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
@@ -320,7 +316,7 @@ hashitems[row.Description]={Description:row.Description,Total:row.Total,Account:
   var r=document.getElementById('check').checked;
   var ff=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
   money[row.Description]=ff;
-   exclusive[row.Description]={Desc:row.Description,Price:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Description]}
+   exclusive[row.Description]={Description:row.Description,Total:ff,tax:row.tax,Account:row.Account,type2:row.type2,rate:money_tax[row.Description]}
 
   if(r==false){
    row.Total=(parseFloat(row.Total)-parseFloat(tax_tem)).toFixed(2);
@@ -335,20 +331,21 @@ row.Total=row.Total;
 
 }
 function onAfterDeleteRow(rowKeys) {
-
-  var tr=parseInt(money[rowKeys]);
-  sub_total=sub_total-tr;
+  for(var q=0;q<rowKeys.length;q++){
+  var tr=(parseFloat(money[rowKeys[q]])-parseFloat(money_tax[rowKeys[q]])).toFixed(2);
+  console.log("sub_total"+sub_total+"tax"+tr);
+  sub_total=(parseFloat(sub_total)-parseFloat(tr)).toFixed(2);
   document.getElementById('sub_total').value=sub_total;
-  money[rowKeys]=0;
-  tax_total=tax_total-parseInt(money_tax[rowKeys])
-  money_tax[rowKeys]=0;
+  money[rowKeys[q]]=0;
+  tax_total=(parseFloat(tax_total)-parseFloat(money_tax[rowKeys[q]])).toFixed(2);
+  money_tax[rowKeys[q]]=0;
   document.getElementById('tax_per').value=tax_total;
-  document.getElementById('Total').value=tax_total+sub_total;
-  alert('The sale you are deleting is: ' + rowKeys);
-delete hashitems[rowKeys];
-delete exclusive[rowKeys];
-row_count--;
-
+  document.getElementById('Total').value=parseFloat(tax_total)+parseFloat(sub_total);
+    //alert('The sale you are deleting is: ' + rowKeys[q]);
+  delete hashitems[rowKeys[q]];
+  delete exclusive[rowKeys[q]];
+  row_count--;
+  }
 }
 
 
@@ -520,17 +517,19 @@ var taxt=[];
         for (var k = 0; k < acc.length; k++) {
 money[acc[k].Description]=acc[k].Total;
 var mt=acc[k].TaxCode.Code;
-console.log("got hit"+mt)
+//console.log("got hit"+mt)
 if(mt=="GST"){
 mt=11;
-console.log("got hit"+mt)
 money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
-sub_total=parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])
-money[acc[k].Description]=parseFloat(sub_total);
+console.log("got hit"+money_tax[acc[k].Description])
+
+sub_total=(parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])).toFixed(2)
+//money[acc[k].Description]=parseFloat(sub_total);
 var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])
+var tr1=parseFloat(acc[k].Total);
 var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
 exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code,rate:money_tax[acc[k].Description]};
-hashitems[acc[k].Description]={Description:acc[k].Description,Total:tr,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
+hashitems[acc[k].Description]={Description:acc[k].Description,Total:tr1,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);
                 console.log(JSON.stringify(acc[k]))
                 raccnames[acc[k].Description]=acc[k].Account.Name;
@@ -572,10 +571,12 @@ var ds=invoice.data.OrderDeliveryStatus;
 
 
   for (k = 0; k < acnames.length; k++) {
+    if(acnames[k].Name!=""){
                 acn.push(acnames[k].Name);
                 currencies.push(acnames[k].Name)
             hashacct[acnames[k].Name]=acnames[k].UID
            hashtax[acnames[k].Name]=acnames[k].TaxCodeUID
+         }
             }
 var re=dependencies.data.delivery_status;
 console.log("checkk"+re);

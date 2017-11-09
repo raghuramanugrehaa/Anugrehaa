@@ -40,16 +40,19 @@ tax_total=(parseFloat(tax_total)-parseFloat(money_tax[row.Desc])).toFixed(2);
 
 if(cellName=="type1"){
 
+  var PR=parseFloat(money_tax[row.Desc])+parseFloat(money[row.Desc])
 
 
 var tem=newhash[row.type1];
+var tax_tem;
 if(row.type1=="GST")
-tem=11
+ tax_tem=(parseFloat(PR)/parseFloat(11)).toFixed(2);
+else
+var tax_tem=0
 
 
-var PR=parseFloat(money_tax[row.Desc])+parseFloat(money[row.Desc])
-var tax_tem=(parseFloat(PR)/parseFloat(tem)).toFixed(2);
-console.log(row.Price +" l "+tax_tem)
+
+console.log(PR +" l "+tax_tem)
 money_tax[row.Desc]=parseFloat(tax_tem);
 
 tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
@@ -96,12 +99,14 @@ if(cellName==="Price"){
 
 
 var tem=newhash[row.type1];
+var tax_tem;
 if(row.type1=="GST")
-tem=11
+var tax_tem=(parseFloat(row.Price)/parseFloat(11)).toFixed(2);
+else
+tax_tem=0
 
 
 
-var tax_tem=(parseFloat(row.Price)/parseFloat(tem)).toFixed(2);
 console.log(row.Price +" l "+tax_tem)
 money_tax[row.Desc]=parseFloat(tax_tem);
 
@@ -150,6 +155,8 @@ var TUID=taxhash[row.type1];
 var accountname= myHash[row.type];
 hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
 }
+console.log('onAftersavecell'+JSON.stringify(hashitems[row.Desc]));
+
 }
 
 
@@ -158,11 +165,11 @@ function onAfterInsertRow(row) {
 //checbox odule Inclusive
 
 var tem=newhash[row.type1];
+var tax_tem;
 if(row.type1=="GST")
-tem=11
-
-
-var tax_tem=(parseFloat(row.Price)/parseFloat(tem)).toFixed(2);
+tax_tem=(parseFloat(row.Price)/parseFloat(11)).toFixed(2);
+else
+tax_tem=0;
 console.log("tax"+tem+"fdv"+tax_tem);
 money_tax[row.Desc]=tax_tem;
 tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
@@ -195,16 +202,18 @@ hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountna
   //exclusive module
   var r=document.getElementById('check').checked;
   var ff=(parseFloat(row.Price)-parseFloat(tax_tem)).toFixed(2);
+  exclusive[row.Desc]={Desc:row.Desc,Price:ff,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 
+  money[row.Desc]=row.Price;
 
   if(r==false){
    row.Price=(parseFloat(row.Price)-parseFloat(tax_tem)).toFixed(2);
-money[row.Desc]=row.Price;
-   exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+//exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+
 }
 else{
 row.Price=row.Price;
- //  exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+
 }
 
 
@@ -214,20 +223,24 @@ row.Price=row.Price;
 
 function onAfterDeleteRow(rowKeys) {
 
-var tr=parseFloat(money[rowKeys]);
+console.log(rowKeys);
+
+
+for(var q=0;q<rowKeys.length;q++){
+var tr=parseFloat(money[rowKeys[q]])-parseFloat(money_tax[rowKeys[q]]);
 console.log("sub_total"+sub_total+"tax"+tr);
 sub_total=(parseFloat(sub_total)-parseFloat(tr)).toFixed(2);
 document.getElementById('sub_total').value=sub_total;
-money[rowKeys]=0;
-tax_total=(parseFloat(tax_total)-parseFloat(money_tax[rowKeys])).toFixed(2);
-money_tax[rowKeys]=0;
+money[rowKeys[q]]=0;
+tax_total=(parseFloat(tax_total)-parseFloat(money_tax[rowKeys[q]])).toFixed(2);
+money_tax[rowKeys[q]]=0;
 document.getElementById('tax_per').value=tax_total;
 document.getElementById('Total').value=parseFloat(tax_total)+parseFloat(sub_total);
-  alert('The sale you are deleting is: ' + rowKeys);
-delete hashitems[rowKeys];
-delete exclusive[rowKeys];
+  alert('The sale you are deleting is: ' + rowKeys[q]);
+delete hashitems[rowKeys[q]];
+delete exclusive[rowKeys[q]];
 row_count--;
-
+}
 }
 
 const selectRowProp = {
@@ -269,8 +282,11 @@ Object.keys(exclusive).forEach(function (key) {
     var Q=parseFloat(value.Price)+parseFloat(value.tax);
   texclusive.details.push({Desc:value.Desc,Price:Q,type:value.type,type1:value.type1,type2:value.type2})
   }
-  else
-  texclusive.details.push({Desc:value.Desc,Price:value.Price,type:value.type,type1:value.type1,type2:value.type2})
+  else{
+    var Q=parseFloat(value.Price);
+
+  texclusive.details.push({Desc:value.Desc,Price:Q,type:value.type,type1:value.type1,type2:value.type2})
+}
 })
 var e=texclusive.details;
 console.log("konnect"+JSON.stringify(e));
@@ -325,7 +341,7 @@ console.log("no"+JSON.stringify(klk));
 this.setState ( { loaded: true});
 var g=document.getElementById("check").checked;
 
-axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber,IsTaxInclusive:g,Supplier:{UID:supplier},Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
+axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber,IsTaxInclusive:true,Supplier:{UID:supplier},Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
 .then(function (response) {
    console.log(response);
      window.location.assign('/purchase');
@@ -370,19 +386,38 @@ var terms=[];
  //console.log("ji"+JSON.stringify(res.data));
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
+   if(k==0){
+     arrTen.push(<option>  </option>);
+
         arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
                 termhash[result[k].UID]=result[k].PaymentIsDue;
-    }
+              }
+              else{
 
+                arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
+                        termhash[result[k].UID]=result[k].PaymentIsDue;
+              }
+    }
+document.getElementById("check").checked="true";
 var result1=res.data.Comments;
 console.log("checkk"+result1);
 for (var l =0;l < result1.length;l++){
+  if(l==0){
+  comment.push(<option > </option>)
+  comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
+}
+  else
  comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
 }
 
 var re=res.data.delivery_status;
 console.log("checkk"+re);
 for (var l =0;l < re.length;l++){
+  if(l==0){
+  de.push(<option > </option>)
+  de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
+}
+  else
  de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
 }
 
@@ -398,6 +433,11 @@ for (var l =0;l < job.length;l++){
 
 var result3=res.data.Shipping;
 for(var l=0;l < result3.length;l++){
+  if(l==0){
+  shipping.push(<option > </option>)
+  shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
+}
+  else
 shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
 }
        //  const posts = res.data.Items;
@@ -415,10 +455,11 @@ var accnt=[];
 var taxt=[];
 
 for ( k = 0; k < acc.length; k++) {
+  if(acc[k].Name!=""){
         accnt.push(acc[k].Name);
         myHash[acc[k].Name]=acc[k].UID;
        // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
-
+}
     }
     var fri=[];
 for ( k = 0; k < tax.length; k++) {

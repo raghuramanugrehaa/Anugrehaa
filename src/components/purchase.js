@@ -151,7 +151,6 @@ componentDidMount() {
                    <TableHeaderColumn  width="16%" dataAlign="center" dataField='Date'> Invoice Date</TableHeaderColumn>
                     <TableHeaderColumn  width="15%"  dataAlign="center" dataField='UID'dataFormat={this.cellButton.bind(this)}>Edit Purchase</TableHeaderColumn>
                         <TableHeaderColumn   width="10%" dataAlign="center" dataField='UID'dataFormat={this.cellButton1.bind(this)}>Payment </TableHeaderColumn>
-                         <TableHeaderColumn   width="15%" dataAlign="center" dataField='UID'dataFormat={this.cellButton1.bind(this)}> Convert to Bill </TableHeaderColumn>
 
 
 

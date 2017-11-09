@@ -41,14 +41,16 @@ tax_total=(parseFloat(tax_total)-parseFloat(money_tax[row.Desc])).toFixed(2);
 if(cellName=="type1"){
 
 
-
-var tem=newhash[row.type1];
-if(row.type1=="GST")
-tem=11
+  var PR=parseFloat(money_tax[row.Desc])+parseFloat(money[row.Desc])
 
 
-var PR=parseFloat(money_tax[row.Desc])+parseFloat(money[row.Desc])
-var tax_tem=(parseFloat(PR)/parseFloat(tem)).toFixed(2);
+  var tem=newhash[row.type1];
+  var tax_tem;
+  if(row.type1=="GST")
+  tax_tem=(parseFloat(PR)/parseFloat(11)).toFixed(2);
+  else
+  var tax_tem=0
+
 console.log(row.Price +" l "+tax_tem)
 money_tax[row.Desc]=parseFloat(tax_tem);
 
@@ -94,14 +96,15 @@ if(cellName=="Price"){
 
 
 
-
-var tem=newhash[row.type1];
-if(row.type1=="GST")
-tem=11
+  var PR=parseFloat(money_tax[row.Desc])+parseFloat(money[row.Desc])
 
 
-
-var tax_tem=(parseFloat(row.Price)/parseFloat(tem)).toFixed(2);
+  var tem=newhash[row.type1];
+  var tax_tem;
+  if(row.type1=="GST")
+  tax_tem=(parseFloat(PR)/parseFloat(11)).toFixed(2);
+  else
+  var tax_tem=0
 console.log(row.Price +" l "+tax_tem)
 money_tax[row.Desc]=parseFloat(tax_tem);
 
@@ -155,13 +158,12 @@ hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountna
 function onAfterInsertRow(row) {
 
 //checbox odule Inclusive
-
 var tem=newhash[row.type1];
+var tax_tem;
 if(row.type1=="GST")
-tem=11
-
-
-var tax_tem=(parseFloat(row.Price)/parseFloat(tem)).toFixed(2);
+tax_tem=(parseFloat(row.Price)/parseFloat(11)).toFixed(2);
+else
+tax_tem=0;
 console.log("tax"+tem+"fdv"+tax_tem);
 money_tax[row.Desc]=tax_tem;
 tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
@@ -210,19 +212,20 @@ row.Price=row.Price;
 }
 
 function onAfterDeleteRow(rowKeys) {
-var tr=parseInt(money[rowKeys]);
-sub_total=sub_total-tr;
+  for(var l=0;l<rowKeys.length;l++){
+var tr=parseFloat(money[rowKeys[l]]);
+sub_total=(parseFloat(sub_total)-parseFloat(tr)).toFixed(2);
 document.getElementById('sub_total').value=sub_total;
-money[rowKeys]=0;
-tax_total=tax_total-parseInt(money_tax[rowKeys])
-money_tax[rowKeys]=0;
-document.getElementById('tax_per').value=tax_total;
-document.getElementById('Total').value=tax_total+sub_total;
+money[rowKeys[l]]=0;
+tax_total=(parseFloat(tax_total)-parseFloat(money_tax[rowKeys[l]])).toFixed(2);
+money_tax[rowKeys[l]]=0;
+document.getElementById('tax_per').value=parseFloat(tax_total).toFixed(2);
+document.getElementById('Total').value=(parseFloat(tax_total)+parseFloat(sub_total)).toFixed(2);
   alert('The sale you are deleting is: ' + rowKeys);
-delete hashitems[rowKeys];
-delete exclusive[rowKeys];
+delete hashitems[rowKeys[l]];
+delete exclusive[rowKeys[l]];
 row_count--;
-
+}
 }
 
 const selectRowProp = {
@@ -364,22 +367,43 @@ var terms=[];
  //console.log("ji"+JSON.stringify(res.data));
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
+   if(k==0){
+     arrTen.push(<option>  </option>);
+
         arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
                 termhash[result[k].UID]=result[k].PaymentIsDue;
+              }
+              else{
+
+                arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
+                        termhash[result[k].UID]=result[k].PaymentIsDue;
+              }
     }
 
 var result1=res.data.Comments;
 console.log("checkk"+result1);
 for (var l =0;l < result1.length;l++){
+  if(l==0){
+  comment.push(<option > </option>)
+  comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
+
+}
+  else
  comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
 }
 
 var re=res.data.delivery_status;
 console.log("checkk"+re);
 for (var l =0;l < re.length;l++){
+  if(l==0){
+  de.push(<option > </option>)
+    de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
+
+}
+  else
  de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
 }
-
+document.getElementById('check').checked="true"
 
 var job=res.data.Job;
 console.log("lm"+JSON.stringify(job));
@@ -392,6 +416,12 @@ for (var l =0;l < job.length;l++){
 
 var result3=res.data.Shipping;
 for(var l=0;l < result3.length;l++){
+  if(l==0){
+  shipping.push(<option > </option>)
+  shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
+
+}
+  else
 shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
 }
        //  const posts = res.data.Items;
@@ -409,10 +439,11 @@ var accnt=[];
 var taxt=[];
 
 for ( k = 0; k < acc.length; k++) {
+  if(acc[k].Name!=""){
         accnt.push(acc[k].Name);
         myHash[acc[k].Name]=acc[k].UID;
        // console.log("Tax hash"+JSON.stringify(acc[k].TaxCodeUID));
-
+}
     }
     var fri=[];
 for ( k = 0; k < tax.length; k++) {
