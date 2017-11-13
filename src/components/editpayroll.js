@@ -306,10 +306,26 @@ this.setState({day1:n})
 
  }
 
+
+   createCustomInsertButton = (openModal) => {
+     return (
+      <button type="button" className="btn btn-primary" style={ { 'margin-left': '10'} }  onClick={ openModal}>Add Item</button>
+     );
+ }
+
+  createCustomDeleteButton = (onBtnClick) => {
+     return (
+            <button type="button" className="btn btn-warning" style={ { 'margin-left': '10'} }  onClick={ onBtnClick }>Delete Item</button>
+
+     );
+   }
+
   render() {
     const options = {
       afterInsertRow: onAfterInsertRow,
-      afterDeleteRow: onAfterDeleteRow
+      afterDeleteRow: onAfterDeleteRow,
+             insertBtn:this.createCustomInsertButton,
+        deleteBtn: this.createCustomDeleteButton
 
      }
 
@@ -318,15 +334,12 @@ this.setState({day1:n})
 
 <div className="container">
 <div className="row">
-<label for="note" style={{'padding-top':'40'}}>Employee Details:</label>
-   <textarea id="note" className="form-control col-md-4" style={{"height":"100px","width":"280"} } value={"Employee Name:"+this.state.name} /><br></br>
-<div style={{'margin-left':'10%','padding-top':'40'}}>
- <input className="form-control" id="datenow" type="date"  onChange={this.handleChange} value={this.state.datem}/>
+<label for="note" style={{'padding-top':'20'}}>Employee Details:</label>
+   <textarea id="note" className="form-control col-md-4" style={{"height":"60px","width":"100px"} } value={" Name:"+this.state.name} /><br></br>
+                                                                                       <label for="date" style={{"margin-left":"8%",'padding-top':'10'}}>TimeSheet Start  Date:</label>
+<input className="form-control col-md-2" id="datenow"  type="date"   style={{"margin-left":"10", 'height':'40'}} onChange={this.handleChange} value ={this.state.datem}/>
 
-</div>
-
-
-<div style={{'margin-left':'10%','padding-top':'40'}}>
+<div style={{'margin-left':'8%','padding-top':'10'}}>
 <Button bsStyle="success" onClick={this.handleClick}>Save</Button>
      </div>
              </div>
@@ -334,13 +347,13 @@ this.setState({day1:n})
                                <br></br>
 <BootstrapTable data={this.state.r_d} cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow>
           <TableHeaderColumn width="60%" dataField='name' isKey={true} editable={ { type: 'select', options: {values: this.state.wage1} } } >Wage   Type</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day1' >Day {this.state.s1}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day2' >Day {this.state.s2}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day3' >Day {this.state.s3}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day4' >Day {this.state.s4}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day5' >Day {this.state.s5}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day6' >Day {this.state.s6}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day7' >Day {this.state.s7}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day1' >Mon {this.state.s1}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day2' >Tue {this.state.s2}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day3' >Wed {this.state.s3}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day4' >Thu {this.state.s4}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day5' >Fri {this.state.s5}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day6' >Sat {this.state.s6}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day7' >Sun {this.state.s7}</TableHeaderColumn>
            <TableHeaderColumn width="40%" dataField='Hours' editable={true } dataAlign="Center">Total HRS ({this.state.tat})</TableHeaderColumn>
 
 

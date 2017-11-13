@@ -387,7 +387,7 @@ var terms=[];
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
    if(k==0){
-     arrTen.push(<option>  </option>);
+     arrTen.push(<option value="Select Supplier">Select Supplier  </option>);
 
         arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
                 termhash[result[k].UID]=result[k].PaymentIsDue;
@@ -398,12 +398,16 @@ var result=res.data.Suppliers;
                         termhash[result[k].UID]=result[k].PaymentIsDue;
               }
     }
-document.getElementById("check").checked="true";
+
+
+
+
+
 var result1=res.data.Comments;
 console.log("checkk"+result1);
 for (var l =0;l < result1.length;l++){
   if(l==0){
-  comment.push(<option > </option>)
+  comment.push(<option value="Select Comment">Select Comment </option>)
   comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
 }
   else
@@ -414,7 +418,7 @@ var re=res.data.delivery_status;
 console.log("checkk"+re);
 for (var l =0;l < re.length;l++){
   if(l==0){
-  de.push(<option > </option>)
+  de.push(<option value="Bill">Select Bill Devlivery Status </option>)
   de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
 }
   else
@@ -434,7 +438,7 @@ for (var l =0;l < job.length;l++){
 var result3=res.data.Shipping;
 for(var l=0;l < result3.length;l++){
   if(l==0){
-  shipping.push(<option > </option>)
+  shipping.push(<option value="Select Shipping" > Select Shipping</option>)
   shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
 }
   else
@@ -542,10 +546,12 @@ this.setState({salesheads:heads})
                    {this.state.posts}
                  </select>
                  </div>
+                 <fieldset id="myFieldset">
 <div className="row col-md-4" style={{'margin-left':'10'}}>
 
-     <label for="date" maxlength="5"  style={{"height":"20"}}>Select Date:</label>
-<input className="form-control" id="date" placeholder="Select Date" type="date" max={p}  style={{"height":"30"}}/>
+     <label for="date" maxlength="5"  style={{"height":"20"}}>Purchase Date:</label>
+<input className="form-control" id="date"  type="date" placeholder="Date" max={p}  style={{"height":"30"}}/>
+
 </div>
 <div className="col-md-4" style={{ 'margin-left':'-20'}} maxlength="5">
     <input type="text" className="form-control"  id="SupplierInvoiceNumber"   placeholder="Supplier Invoice Number"  style={{"height":"30"}}/>
@@ -553,6 +559,8 @@ this.setState({salesheads:heads})
 <div className="row col-md-offset-8" style={{ 'margin-left':'-20'}}>
 <Button bsStyle="success" onClick={this.handleClick}  style={{"height":"40"}}>Submit</Button>
 </div>
+</fieldset>
+
 </div>
 <br></br>
 <div className="row">

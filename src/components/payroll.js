@@ -30,6 +30,7 @@ constructor(props) {
      posts: []
    };
     this.handleClick = this.handleClick.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 }
 
 handleClick(e){
@@ -71,12 +72,16 @@ this.setState({stdate:sdate})
 //  console.log("chek"+acc);
        this.setState  ({ loaded: true});
    this.setState({posts:acc});
-
+this.setState({stdate:R_date});
 });
 
 
 
 }
+
+handleChange(event) {
+    this.setState({spdate: event.target.value});
+  }
 componentDidMount() {
 	this.setState ( { loaded: false});
    axios.get(`http://13.126.134.204:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet`
@@ -108,6 +113,7 @@ edate=pem[0];
 	          this.setState  ({ loaded: true});
 			  this.setState({posts:acc});
 			  this.setState({stdate:sdate});
+			  			  this.setState({spdate:sdate});
               this.setState({endate:edate});
 
 //console.log("checcd "+JSON.stringify(this.state.posts));
@@ -207,12 +213,10 @@ return(
 <div className="container">
 <div className="row">
 <label for="date" style={{"margin-left":"10%",'padding-top':'10'}}>Select Date:</label>
-<input className="form-control col-md-2" id="date" placeholder="Select Date" type="date" max={p} style={{"margin-left":"10"}}/>
+<input className="form-control col-md-2" id="date" placeholder="Select Date" type="date" max={p}  style={{"margin-left":"10"}} onChange={this.handleChange} value ={this.state.spdate}/>
 <Button bsStyle="success" onClick={this.handleClick} style={{"margin-left":"40"}}>Get Details</Button>
-<label for="dateshow" style={{"margin-left":"20",'padding-top':'10'}}>Payroll for the week:</label>
-<input type="text" className="col-md-2 form-control"    id="Spdate"   disabled="disabled" value={this.state.stdate}/>
-<label for="dateshow" style={{"margin-left":"10",'padding-top':'10'}}>To :</label>
-<input type="text" className="col-md-2 form-control"    id="Enddate"   disabled="disabled" value={this.state.endate}/>
+<label for="dateshow" style={{"margin-left":"15%",'padding-top':'10'}}>Payroll for the week :{this.state.stdate}</label>
+<label for="dateshow" style={{"margin-left":"10",'padding-top':'10'}}> To :{this.state.endate}</label>
 
 
 
@@ -223,7 +227,7 @@ return(
 
 
 </div>
-<BootstrapTable  style={{"padding-top":"-5%"}} data={ this.state.posts } options={ options }     search  searchPlaceholder='search Timesheet' pagination  striped hover condensed>
+<BootstrapTable  style={{"padding-top":"-5%"}} data={ this.state.posts } options={ options }     search  searchPlaceholder='Search by Employee ' pagination  striped hover condensed>
          <TableHeaderColumn width="15%"  dataAlign="center" dataField='employee' isKey={ true }>Employee</TableHeaderColumn>
 				   <TableHeaderColumn width="10%"  dataAlign="center" dataField='hour'>Total Hours</TableHeaderColumn>
 				   <TableHeaderColumn  width="10%"  dataAlign="center" dataField='UID' dataFormat={this.cellButton.bind(this)}>Edit </TableHeaderColumn>

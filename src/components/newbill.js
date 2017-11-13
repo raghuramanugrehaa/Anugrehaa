@@ -368,7 +368,7 @@ var terms=[];
 var result=res.data.Suppliers;
  for (var k = 0; k < result.length; k++) {
    if(k==0){
-     arrTen.push(<option>  </option>);
+     arrTen.push(<option value="Select Supplier">Select Supplier  </option>);
 
         arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
                 termhash[result[k].UID]=result[k].PaymentIsDue;
@@ -384,7 +384,7 @@ var result1=res.data.Comments;
 console.log("checkk"+result1);
 for (var l =0;l < result1.length;l++){
   if(l==0){
-  comment.push(<option > </option>)
+  comment.push(<option value="Select Comment" >Select Comment </option>)
   comment.push(<option key={result1[l].name} value={result1[l].name}> {result1[l].name} </option>);
 
 }
@@ -396,7 +396,7 @@ var re=res.data.delivery_status;
 console.log("checkk"+re);
 for (var l =0;l < re.length;l++){
   if(l==0){
-  de.push(<option > </option>)
+  de.push(<option value="Select Bill Devlivery Status " >Select Bill Devlivery Status  </option>)
     de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
 
 }
@@ -417,7 +417,7 @@ for (var l =0;l < job.length;l++){
 var result3=res.data.Shipping;
 for(var l=0;l < result3.length;l++){
   if(l==0){
-  shipping.push(<option > </option>)
+  shipping.push(<option value="Select Shipping" >Select Shipping </option>)
   shipping.push(<option key={result3[l].name} value={result3[l].name}> {result3[l].name} </option>)
 
 }
@@ -542,7 +542,7 @@ this.setState({salesheads:heads})
 <div className="row">
 <label for="note" style={{'padding-top':'10'}}>Ship To:</label>
     <textarea id="note" className="form-control col-md-3" style={{"height":"50px",'width':'10%'} } />
-    <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}}>Terms:</label>
+    <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}} >Terms: </label>
     <input type="text" disabled='disabled' className="col-md-2 form-control"   style={{'height':'40','padding-top':'10px','margin-left':'10'}} id="Terms"  />
 
 <label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" id="check" onClick={this.handleClick1}  />Tax Inclusive</label>

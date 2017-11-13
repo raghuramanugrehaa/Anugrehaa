@@ -403,7 +403,7 @@ console.log("invocice "+JSON.stringify(invoice))
          console.log("iam"+memo);
          var yu=invoice.data.BalanceDueAmount;
          var mm=invoice.data.PromisedDate;
-//          inc=invoice.data.IsTaxInclusive;
+    var cinc=invoice.data.IsTaxInclusive;
 
          if(mm==null){
          //var resm = mm.split("T");
@@ -435,7 +435,7 @@ var taxt=[];
        document.getElementById('Memo').value=memo;
        document.getElementById('note1').value=myadd;
 //console.log("count of rows"+row_count)
-       // document.getElementById('datenow').defaultValue='2017-02-03'
+       document.getElementById('check').checked=cinc
     var tax=dependencies.data.TaxCode
        var fri=[];
       for ( k = 0; k < tax.length; k++) {
@@ -452,7 +452,7 @@ var taxt=[];
         var accnt =[];
         var jobs=[];
         var de=[];
-
+exclusive={};
         for (var k = 0; k < acc.length; k++) {
 money[acc[k].Description]=acc[k].Total;
 var mt=acc[k].TaxCode.Code;
@@ -464,7 +464,12 @@ money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
 sub_total=(parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])).toFixed(2)
 //money[acc[k].Description]=parseFloat(sub_total).toFixed(2);
 var tr=(parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])).toFixed(2);
-var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
+var details;
+if(cinc==false)
+ details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
+else
+details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:parseFloat(acc[k].Total),tax:acc[k].TaxCode.Code}
+
 exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code,rate:money_tax[acc[k].Description]};
 hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);

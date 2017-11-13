@@ -464,7 +464,7 @@ console.log("invocice "+JSON.stringify(invoice))
          console.log("iam"+memo);
          var yu=invoice.data.BalanceDueAmount;
          var mm=invoice.data.PromisedDate;
-//          inc=invoice.data.IsTaxInclusive;
+          var cinc=invoice.data.IsTaxInclusive;
 
          if(mm==null){
          //var resm = mm.split("T");
@@ -513,6 +513,8 @@ var taxt=[];
         var accnt =[];
         var jobs=[];
         var de=[];
+exclusive={};
+document.getElementById('check').checked=cinc
 
         for (var k = 0; k < acc.length; k++) {
 money[acc[k].Description]=acc[k].Total;
@@ -520,14 +522,20 @@ var mt=acc[k].TaxCode.Code;
 //console.log("got hit"+mt)
 if(mt=="GST"){
 mt=11;
+
 money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
 console.log("got hit"+money_tax[acc[k].Description])
 
 sub_total=(parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])).toFixed(2)
 //money[acc[k].Description]=parseFloat(sub_total);
-var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])
 var tr1=parseFloat(acc[k].Total);
-var details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
+var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])
+var details;
+if(cinc==false)
+details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
+else
+ details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr1,tax:acc[k].TaxCode.Code}
+
 exclusive[acc[k].Description]={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code,rate:money_tax[acc[k].Description]};
 hashitems[acc[k].Description]={Description:acc[k].Description,Total:tr1,Account:{UID:acc[k].Account.UID},Job:{UID:acc[k].Job.UID},TaxCode:{UID:acc[k].TaxCode.UID}}
                 accnt.push(details);
