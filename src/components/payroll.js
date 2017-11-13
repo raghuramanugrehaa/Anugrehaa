@@ -6,6 +6,7 @@ import Loader from 'react-loader';
 import { Link } from 'react-router-dom';
 import {Button} from 'react-bootstrap';
 var sdate;
+var edate;
 var p="/payment";
 var Lines = {
     details: []
@@ -48,15 +49,23 @@ var acc=[];
   var hr=0;
   var rm=data[i].Lines;
   if(rm.length>0){
-    var km=data[i].Lines[0].Entries;
-     for(var j=0;j<km.length;j++){
-    hr+=  data[i].Lines[0].Entries[j].Hours;
+     for(var r=0;r<rm.length;r++){
+    			   var km=data[i].Lines[r].Entries;
+    			    for(var j=0;j<km.length;j++){
+    		     hr+=  data[i].Lines[r].Entries[j].Hours;
+    	   }
 }
   }
 
   var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr,UID:data[i].Employee.UID};
 var tem=data[i].StartDate.split("T");
+var pem=data[i].EndDate.split("T");
 sdate=tem[0];
+edate=pem[0];
+
+console.log("i am date"+sdate);
+this.setState({stdate:sdate})
+              this.setState({endate:edate});
   acc.push(em);
 }
 //  console.log("chek"+acc);
@@ -64,6 +73,7 @@ sdate=tem[0];
    this.setState({posts:acc});
 
 });
+
 
 
 }
@@ -79,23 +89,30 @@ var acc=[];
 		   var hr=0;
 		   var rm=data[i].Lines;
 		   if(rm.length>0){
-			   var km=data[i].Lines[0].Entries;
+		   for(var r=0;r<rm.length;r++){
+			   var km=data[i].Lines[r].Entries;
 			    for(var j=0;j<km.length;j++){
-		     hr+=  data[i].Lines[0].Entries[j].Hours;
+		     hr+=  data[i].Lines[r].Entries[j].Hours;
 	   }
 		   }
-
+}
 		   var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr,UID:data[i].Employee.UID};
 var tem=data[i].StartDate.split("T");
+var pem=data[i].EndDate.split("T");
 sdate=tem[0];
+edate=pem[0];
+
 		   acc.push(em);
 	   }
 	 //  console.log("chek"+acc);
 	          this.setState  ({ loaded: true});
 			  this.setState({posts:acc});
+			  this.setState({stdate:sdate});
+              this.setState({endate:edate});
 
 //console.log("checcd "+JSON.stringify(this.state.posts));
      });
+//document.getElementById("Startdate").value=sdate;
  }
 
 
@@ -126,7 +143,7 @@ sdate=tem[0];
 
 return(
      //  <input type="button" value="Payment" className="btn btn-primary" onclick={"window.location.href=/payment/?id="+pp} />
- <a><Link to ={"/editpayroll/?id="+pp+"&&date="+sdate} ><input type="button" className="btn btn-info" value="Edit"/></Link></a>
+ <a><Link to ={"/editpayroll/?id="+pp+"&date="+sdate} ><input type="button" className="btn btn-info" value="Edit"/></Link></a>
     //   <a class="btn btn-primary" href={"/payment/?id="+pp} role="button"> Delete</a>
 )
 
@@ -187,11 +204,19 @@ return(
 
       return (
 	  	          <Loader loaded={this.state.loaded}>
-<div>
+<div className="container">
 <div className="row">
-<label for="date" style={{"margin-left":"400"}}>Select Date:</label>
+<label for="date" style={{"margin-left":"10%",'padding-top':'10'}}>Select Date:</label>
 <input className="form-control col-md-2" id="date" placeholder="Select Date" type="date" max={p} style={{"margin-left":"10"}}/>
 <Button bsStyle="success" onClick={this.handleClick} style={{"margin-left":"40"}}>Get Details</Button>
+<label for="dateshow" style={{"margin-left":"20",'padding-top':'10'}}>Payroll for the week:</label>
+<input type="text" className="col-md-2 form-control"    id="Spdate"   disabled="disabled" value={this.state.stdate}/>
+<label for="dateshow" style={{"margin-left":"10",'padding-top':'10'}}>To :</label>
+<input type="text" className="col-md-2 form-control"    id="Enddate"   disabled="disabled" value={this.state.endate}/>
+
+
+
+
 
 
 
@@ -200,10 +225,8 @@ return(
 </div>
 <BootstrapTable  style={{"padding-top":"-5%"}} data={ this.state.posts } options={ options }     search  searchPlaceholder='search Timesheet' pagination  striped hover condensed>
          <TableHeaderColumn width="15%"  dataAlign="center" dataField='employee' isKey={ true }>Employee</TableHeaderColumn>
-                   <TableHeaderColumn width="14%"  dataAlign="center" dataField='StartDate'>Timesheet StartDate</TableHeaderColumn>
-                   <TableHeaderColumn  width="14%" dataAlign="center" dataField='EndDate'>Timesheet EndDate</TableHeaderColumn>
 				   <TableHeaderColumn width="10%"  dataAlign="center" dataField='hour'>Total Hours</TableHeaderColumn>
-				   <TableHeaderColumn  width="10%"  dataAlign="center" dataField='UID' dataFormat={this.cellButton.bind(this)}>Edit Invoice</TableHeaderColumn>
+				   <TableHeaderColumn  width="10%"  dataAlign="center" dataField='UID' dataFormat={this.cellButton.bind(this)}>Edit </TableHeaderColumn>
 
 
       </BootstrapTable>

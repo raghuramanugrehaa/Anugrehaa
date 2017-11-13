@@ -5,6 +5,7 @@ import axios from "axios";
 import Loader from 'react-loader';
 
 const queryString = require('query-string');
+var tot=0;
 var d0="";
 var d1="";
 var d2="";
@@ -72,8 +73,11 @@ if(row.day7=="")
 row.day7=0;
 
 row.Hours=parseInt(row.day1)+parseInt(row.day2)+parseInt(row.day3)+parseInt(row.day4)+parseInt(row.day5)+parseInt(row.day6)+parseInt(row.day7)
+
 checkHash[row.name]={PayrollCategory:{UID:l},Entries:[{Date:d0,Hours:row.day1,Processed:false},{Date:d1,Hours:row.day2,Processed:false},{Date:d2,Hours:row.day3,Processed:false},{Date:d3,Hours:row.day4,Processed:false},{Date:d4,Hours:row.day5,Processed:false},{Date:d5,Hours:row.day6,Processed:false},{Date:d6,Hours:row.day7,Processed:false}]}
 console.log("afterSaveCell"+JSON.stringify(checkHash[row.name]))
+
+
 }
 function onAfterDeleteRow(rowKeys) {
 
@@ -103,8 +107,13 @@ function onAfterSaveCell(row,cellName,cellValue){
 
   row.Hours=parseInt(row.day1)+parseInt(row.day2)+parseInt(row.day3)+parseInt(row.day4)+parseInt(row.day5)+parseInt(row.day6)+parseInt(row.day7)
   checkHash[row.name]={PayrollCategory:{UID:l},Entries:[{Date:d0,Hours:row.day1,Processed:false},{Date:d1,Hours:row.day2,Processed:false},{Date:d2,Hours:row.day3,Processed:false},{Date:d3,Hours:row.day4,Processed:false},{Date:d4,Hours:row.day5,Processed:false},{Date:d5,Hours:row.day6,Processed:false},{Date:d6,Hours:row.day7,Processed:false}]}
+  var x = row.Hours;
+    console.log("iam" +x);
   console.log("afterSaveCell"+JSON.stringify(checkHash[row.name]))
+
+
 }
+
 
 //save
 const selectRowProp = {
@@ -245,11 +254,15 @@ for (var y=0;y<we.length;y++){
 var mm=we[y].Entries;
 checkHash[we[y].PayrollCategory.Name]={PayrollCategory:{UID:we[y].PayrollCategory.UID},Entries:[{Date:mm[0].Date,Hours:mm[0].Hours,Processed:mm[0].Processed},{Date:mm[1].Date,Hours:mm[1].Hours,Processed:mm[1].Processed},{Date:mm[2].Date,Hours:mm[2].Hours,Processed:mm[2].Processed},{Date:mm[3].Date,Hours:mm[3].Hours,Processed:mm[3].Processed},{Date:mm[4].Date,Hours:mm[4].Hours,Processed:mm[4].Processed},{Date:mm[5].Date,Hours:mm[5].Hours,Processed:mm[5].Processed},{Date:mm[6].Date,Hours:mm[6].Hours,Processed:mm[6].Processed}]}
 var ll=parseInt(mm[0].Hours)+parseInt(mm[1].Hours)+parseInt(mm[2].Hours)+parseInt(mm[3].Hours)+parseInt(mm[4].Hours)+parseInt(mm[5].Hours)+parseInt(mm[6].Hours)
-
+tot+=parseInt(ll);
+console.log("iam tot "+tot);
+console.log("ll "+ll)
 r_data.push({name:we[y].PayrollCategory.Name,day1:mm[0].Hours,day2:mm[1].Hours,day3:mm[2].Hours,day4:mm[3].Hours,day5:mm[4].Hours,day6:mm[5].Hours,day7:mm[6].Hours,Hours:ll})
 
 }
 this.setState({r_d:r_data});
+this.setState({tat:tot});
+
 
 r_data=[];
 
@@ -307,10 +320,13 @@ this.setState({day1:n})
 <div className="row">
 <label for="note" style={{'padding-top':'40'}}>Employee Details:</label>
    <textarea id="note" className="form-control col-md-4" style={{"height":"100px","width":"280"} } value={"Employee Name:"+this.state.name} /><br></br>
-<div style={{'margin-left':'90','padding-top':'40'}}>
+<div style={{'margin-left':'10%','padding-top':'40'}}>
  <input className="form-control" id="datenow" type="date"  onChange={this.handleChange} value={this.state.datem}/>
+
 </div>
-<div style={{'margin-left':'90','padding-top':'40'}}>
+
+
+<div style={{'margin-left':'10%','padding-top':'40'}}>
 <Button bsStyle="success" onClick={this.handleClick}>Save</Button>
      </div>
              </div>
@@ -325,7 +341,7 @@ this.setState({day1:n})
           <TableHeaderColumn width="20%" dataField='day5' >Day {this.state.s5}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day6' >Day {this.state.s6}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day7' >Day {this.state.s7}</TableHeaderColumn>
-           <TableHeaderColumn width="30%" dataField='Hours' editable={true } dataAlign="Center">Total HRS</TableHeaderColumn>
+           <TableHeaderColumn width="40%" dataField='Hours' editable={true } dataAlign="Center">Total HRS ({this.state.tat})</TableHeaderColumn>
 
 
       </BootstrapTable>
