@@ -6,6 +6,7 @@ import Loader from 'react-loader';
 import { Link } from 'react-router-dom';
 import {Button} from 'react-bootstrap';
 var sdate;
+var pro;
 var edate;
 var p="/payment";
 var Lines = {
@@ -45,20 +46,28 @@ axios.get('http://13.126.134.204:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439
 ).then(res => {
   var data = res.data.Items;
 var acc=[];
+var pro;
   for(var i=0;i<data.length;i++)
 {
   var hr=0;
+
+
   var rm=data[i].Lines;
   if(rm.length>0){
      for(var r=0;r<rm.length;r++){
     			   var km=data[i].Lines[r].Entries;
     			    for(var j=0;j<km.length;j++){
+    			    pro=true
     		     hr+=  data[i].Lines[r].Entries[j].Hours;
+    		     console.log("hours"+hr);
+
+    		     if(data[i].Lines[r].Entries[j].Processed== false)
+    		     pro=false;
     	   }
 }
   }
-
-  var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr,UID:data[i].Employee.UID};
+console.log("procesed"+pro);
+  var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr,UID:data[i].Employee.UID,processed:pro};
 var tem=data[i].StartDate.split("T");
 var pem=data[i].EndDate.split("T");
 sdate=tem[0];
@@ -97,11 +106,14 @@ var acc=[];
 		   for(var r=0;r<rm.length;r++){
 			   var km=data[i].Lines[r].Entries;
 			    for(var j=0;j<km.length;j++){
+			    pro=true
 		     hr+=  data[i].Lines[r].Entries[j].Hours;
+		     if(data[i].Lines[r].Entries[j].Processed== false)
+                 		     pro=false;
 	   }
 		   }
 }
-		   var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr,UID:data[i].Employee.UID};
+		   var em={employee:data[i].Employee.Name,StartDate:data[i].StartDate,EndDate:data[i].EndDate,hour:hr,UID:data[i].Employee.UID,processed:pro};
 var tem=data[i].StartDate.split("T");
 var pem=data[i].EndDate.split("T");
 sdate=tem[0];
@@ -215,8 +227,8 @@ return(
 <label for="date" style={{"margin-left":"10%",'padding-top':'10'}}>Select Date:</label>
 <input className="form-control col-md-2" id="date" placeholder="Select Date" type="date" max={p}  style={{"margin-left":"10"}} onChange={this.handleChange} value ={this.state.spdate}/>
 <Button bsStyle="success" onClick={this.handleClick} style={{"margin-left":"40"}}>Get Details</Button>
-<label for="dateshow" style={{"margin-left":"15%",'padding-top':'10'}}>Payroll for the week :{this.state.stdate}</label>
-<label for="dateshow" style={{"margin-left":"10",'padding-top':'10'}}> To :{this.state.endate}</label>
+<label for="dateshow" style={{"margin-left":"15%",'padding-top':'10'}}>Time sheet week :  {this.state.stdate}</label>
+<label for="dateshow" style={{"margin-left":"10",'padding-top':'10'}}> To {this.state.endate}</label>
 
 
 
@@ -230,6 +242,8 @@ return(
 <BootstrapTable  style={{"padding-top":"-5%"}} data={ this.state.posts } options={ options }     search  searchPlaceholder='Search by Employee ' pagination  striped hover condensed>
          <TableHeaderColumn width="15%"  dataAlign="center" dataField='employee' isKey={ true }>Employee</TableHeaderColumn>
 				   <TableHeaderColumn width="10%"  dataAlign="center" dataField='hour'>Total Hours</TableHeaderColumn>
+                 <TableHeaderColumn width="10%"  dataAlign="center" dataField='processed'>Processed</TableHeaderColumn>
+
 				   <TableHeaderColumn  width="10%"  dataAlign="center" dataField='UID' dataFormat={this.cellButton.bind(this)}>Edit </TableHeaderColumn>
 
 

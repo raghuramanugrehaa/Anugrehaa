@@ -517,7 +517,6 @@ exclusive={};
 document.getElementById('check').checked=cinc
 
         for (var k = 0; k < acc.length; k++) {
-money[acc[k].Description]=acc[k].Total;
 var mt=acc[k].TaxCode.Code;
 //console.log("got hit"+mt)
 if(mt=="GST"){
@@ -530,6 +529,8 @@ sub_total=(parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])).toFi
 //money[acc[k].Description]=parseFloat(sub_total);
 var tr1=parseFloat(acc[k].Total);
 var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])
+money[acc[k].Description]=tr;
+
 var details;
 if(cinc==false)
 details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
@@ -544,6 +545,8 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:tr1,Account:
               }
 else{
 mt=newhash[mt];
+money[acc[k].Description]=acc[k].Total;
+
  money_tax[acc[k].Description]=0;
  // money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
        sub_total=parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])

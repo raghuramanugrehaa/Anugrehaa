@@ -111,6 +111,7 @@ console.log(row.Price +" l "+tax_tem)
 money_tax[row.Desc]=parseFloat(tax_tem);
 
 tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
+console.log("toto"+sub_total)
 
 sub_total=((parseFloat(row.Price)-parseFloat(tax_tem))+parseFloat(sub_total)).toFixed(2);
 document.getElementById("sub_total").value=sub_total;
@@ -202,17 +203,20 @@ hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountna
   //exclusive module
   var r=document.getElementById('check').checked;
   var ff=(parseFloat(row.Price)-parseFloat(tax_tem)).toFixed(2);
+  money[row.Desc]=ff;
   exclusive[row.Desc]={Desc:row.Desc,Price:ff,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 
-  money[row.Desc]=row.Price;
 
   if(r==false){
    row.Price=(parseFloat(row.Price)-parseFloat(tax_tem)).toFixed(2);
+
+
 //exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
 
 }
 else{
 row.Price=row.Price;
+
 
 }
 
@@ -546,7 +550,7 @@ this.setState({salesheads:heads})
                    {this.state.posts}
                  </select>
                  </div>
-                 <fieldset id="myFieldset">
+
 <div className="row col-md-4" style={{'margin-left':'10'}}>
 
      <label for="date" maxlength="5"  style={{"height":"20"}}>Purchase Date:</label>
@@ -559,7 +563,7 @@ this.setState({salesheads:heads})
 <div className="row col-md-offset-8" style={{ 'margin-left':'-20'}}>
 <Button bsStyle="success" onClick={this.handleClick}  style={{"height":"40"}}>Submit</Button>
 </div>
-</fieldset>
+
 
 </div>
 <br></br>

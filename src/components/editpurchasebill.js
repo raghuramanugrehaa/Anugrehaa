@@ -160,8 +160,8 @@ row.Total=PR;
 
 
 
-
 if(cellName==="Total"){
+
 
 
   var tem=newhash[row.tax];
@@ -171,7 +171,10 @@ if(cellName==="Total"){
   else
   tax_tem=0;
 
-console.log(row.Price +" l "+tax_tem)
+
+
+
+console.log(row.Price +" lk "+row.Price-tax_tem)
 money_tax[row.Description]=parseFloat(tax_tem);
 
 tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
@@ -207,6 +210,7 @@ row.Total=row.Total;
 }
 
 }
+
 
 console.log('onAftersavecell'+JSON.stringify(hashitems[row.Description]));
 
@@ -454,7 +458,6 @@ var taxt=[];
         var de=[];
 exclusive={};
         for (var k = 0; k < acc.length; k++) {
-money[acc[k].Description]=acc[k].Total;
 var mt=acc[k].TaxCode.Code;
 console.log("got hit"+mt)
 if(mt=="GST"){
@@ -464,6 +467,8 @@ money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
 sub_total=(parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])).toFixed(2)
 //money[acc[k].Description]=parseFloat(sub_total).toFixed(2);
 var tr=(parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])).toFixed(2);
+money[acc[k].Description]=tr;
+
 var details;
 if(cinc==false)
  details={Description:acc[k].Description,Account:acc[k].Account.Name,type2:acc[k].Job.Number,Total:tr,tax:acc[k].TaxCode.Code}
@@ -479,6 +484,8 @@ hashitems[acc[k].Description]={Description:acc[k].Description,Total:acc[k].Total
 else{
 mt=newhash[mt];
  money_tax[acc[k].Description]=0;
+ var tr=(parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])).toFixed(2);
+ money[acc[k].Description]=tr;
  // money_tax[acc[k].Description]=(parseInt(acc[k].Total)/mt).toFixed(2);
        sub_total=parseFloat(sub_total)-parseFloat(money_tax[acc[k].Description])
 var tr=parseFloat(acc[k].Total)-parseFloat(money_tax[acc[k].Description])

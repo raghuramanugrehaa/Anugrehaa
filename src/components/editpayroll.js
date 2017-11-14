@@ -27,6 +27,7 @@ var mcat=[];
 var myHash = {};
 var catHash = {};
 var checkHash={};
+var tothash={};
 var taxhash={};
 var ids;
 var Lines = {
@@ -57,27 +58,27 @@ function getWeek(today){
 
 function onAfterInsertRow(row) {
 var l=catHash[row.name];
-if(row.day1=="")
+if(row.day1==""||row.day1>24)
 row.day1=0;
-if(row.day2=="")
+if(row.day2==""||row.day2>24)
 row.day2=0;
-if(row.day3=="")
+if(row.day3==""||row.day3>24)
 row.day3=0;
-if(row.day4=="")
+if(row.day4==""||row.day4>24)
 row.day4=0;
-if(row.day5=="")
+if(row.day5==""||row.day5>24)
 row.day5=0;
-if(row.day6=="")
+if(row.day6==""||row.day6>24)
 row.day6=0;
-if(row.day7=="")
+if(row.day7==""||row.day7>24)
 row.day7=0;
 
 row.Hours=parseInt(row.day1)+parseInt(row.day2)+parseInt(row.day3)+parseInt(row.day4)+parseInt(row.day5)+parseInt(row.day6)+parseInt(row.day7)
-
+tot+=parseInt(row.Hours);
 checkHash[row.name]={PayrollCategory:{UID:l},Entries:[{Date:d0,Hours:row.day1,Processed:false},{Date:d1,Hours:row.day2,Processed:false},{Date:d2,Hours:row.day3,Processed:false},{Date:d3,Hours:row.day4,Processed:false},{Date:d4,Hours:row.day5,Processed:false},{Date:d5,Hours:row.day6,Processed:false},{Date:d6,Hours:row.day7,Processed:false}]}
 console.log("afterSaveCell"+JSON.stringify(checkHash[row.name]))
-
-
+document.getElementById('total').innerHTML=tot;
+tothash[row.name]=row.Hours;
 }
 function onAfterDeleteRow(rowKeys) {
 
@@ -90,19 +91,19 @@ delete checkHash[rowKeys];
 
 function onAfterSaveCell(row,cellName,cellValue){
   var l=catHash[row.name];
-  if(row.day1=="")
+  if(row.day1==""||row.day1>24)
   row.day1=0;
-  if(row.day2=="")
+  if(row.day2==""||row.day2>24)
   row.day2=0;
-  if(row.day3=="")
+  if(row.day3==""||row.day3>24)
   row.day3=0;
-  if(row.day4=="")
+  if(row.day4==""||row.day4>24)
   row.day4=0;
-  if(row.day5=="")
+  if(row.day5==""||row.day5>24)
   row.day5=0;
-  if(row.day6=="")
+  if(row.day6==""||row.day6>24)
   row.day6=0;
-  if(row.day7=="")
+  if(row.day7==""||row.day7>24)
   row.day7=0;
 
   row.Hours=parseInt(row.day1)+parseInt(row.day2)+parseInt(row.day3)+parseInt(row.day4)+parseInt(row.day5)+parseInt(row.day6)+parseInt(row.day7)
@@ -110,8 +111,10 @@ function onAfterSaveCell(row,cellName,cellValue){
   var x = row.Hours;
     console.log("iam" +x);
   console.log("afterSaveCell"+JSON.stringify(checkHash[row.name]))
-
-
+var f = tothash[row.name];
+ tot = parseInt(tot)-parseInt(f);
+ tot+=parseInt(row.Hours);
+document.getElementById('total').innerHTML=tot;
 }
 
 
@@ -258,17 +261,20 @@ tot+=parseInt(ll);
 console.log("iam tot "+tot);
 console.log("ll "+ll)
 r_data.push({name:we[y].PayrollCategory.Name,day1:mm[0].Hours,day2:mm[1].Hours,day3:mm[2].Hours,day4:mm[3].Hours,day5:mm[4].Hours,day6:mm[5].Hours,day7:mm[6].Hours,Hours:ll})
+tothash[we[y].PayrollCategory.Name]=ll;
 
 }
+
 this.setState({r_d:r_data});
-this.setState({tat:tot});
+
+
 
 
 r_data=[];
 
 
 
-
+document.getElementById('total').innerHTML=tot;
 //filtering wage categories
 
 var m=dep.data.employeePayrollDetails;
@@ -348,19 +354,23 @@ this.setState({day1:n})
 <BootstrapTable data={this.state.r_d} cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow>
           <TableHeaderColumn width="60%" dataField='name' isKey={true} editable={ { type: 'select', options: {values: this.state.wage1} } } >Wage   Type</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day1' >Mon {this.state.s1}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day2' >Tue {this.state.s2}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day2' max='24' >Tue {this.state.s2}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day3' >Wed {this.state.s3}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day4' >Thu {this.state.s4}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day5' >Fri {this.state.s5}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day6' >Sat {this.state.s6}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day7' >Sun {this.state.s7}</TableHeaderColumn>
-           <TableHeaderColumn width="40%" dataField='Hours' editable={true } dataAlign="Center">Total HRS ({this.state.tat})</TableHeaderColumn>
+           <TableHeaderColumn width="40%" dataField='Hours' editable={true } dataAlign="Center">Total HRS </TableHeaderColumn>
 
 
       </BootstrapTable>
 
-
-
+<br></br>
+<br></br>
+<div className="row">
+<label for = "total" style={{'height':'40','padding-top':'10','margin-left':'86%'}} > Total Hours:</label>
+<p style={{'height':'40','padding-top':'10','margin-left':'20'}} id="total" ></p>
+</div>
 </div>
 </Loader>
 

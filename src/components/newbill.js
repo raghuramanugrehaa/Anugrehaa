@@ -40,18 +40,19 @@ tax_total=(parseFloat(tax_total)-parseFloat(money_tax[row.Desc])).toFixed(2);
 
 if(cellName=="type1"){
 
-
   var PR=parseFloat(money_tax[row.Desc])+parseFloat(money[row.Desc])
 
 
-  var tem=newhash[row.type1];
-  var tax_tem;
-  if(row.type1=="GST")
-  tax_tem=(parseFloat(PR)/parseFloat(11)).toFixed(2);
-  else
-  var tax_tem=0
+var tem=newhash[row.type1];
+var tax_tem;
+if(row.type1=="GST")
+ tax_tem=(parseFloat(PR)/parseFloat(11)).toFixed(2);
+else
+var tax_tem=0
 
-console.log(row.Price +" l "+tax_tem)
+
+
+console.log(PR +" l "+tax_tem)
 money_tax[row.Desc]=parseFloat(tax_tem);
 
 tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
@@ -92,23 +93,25 @@ row.Price=PR;
 
 
 
-if(cellName=="Price"){
+if(cellName==="Price"){
 
 
 
-  var PR=parseFloat(money_tax[row.Desc])+parseFloat(money[row.Desc])
+
+var tem=newhash[row.type1];
+var tax_tem;
+if(row.type1=="GST")
+var tax_tem=(parseFloat(row.Price)/parseFloat(11)).toFixed(2);
+else
+tax_tem=0
 
 
-  var tem=newhash[row.type1];
-  var tax_tem;
-  if(row.type1=="GST")
-  tax_tem=(parseFloat(PR)/parseFloat(11)).toFixed(2);
-  else
-  var tax_tem=0
+
 console.log(row.Price +" l "+tax_tem)
 money_tax[row.Desc]=parseFloat(tax_tem);
 
 tax_total=(parseFloat(tax_tem)+parseFloat(tax_total)).toFixed(2);
+console.log("toto"+sub_total)
 
 sub_total=((parseFloat(row.Price)-parseFloat(tax_tem))+parseFloat(sub_total)).toFixed(2);
 document.getElementById("sub_total").value=sub_total;
@@ -153,11 +156,15 @@ var TUID=taxhash[row.type1];
 var accountname= myHash[row.type];
 hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountname},Job:{UID:juid},TaxCode:{UID:TUID}}
 }
+console.log('onAftersavecell'+JSON.stringify(hashitems[row.Desc]));
 
 }
+
+
 function onAfterInsertRow(row) {
 
 //checbox odule Inclusive
+
 var tem=newhash[row.type1];
 var tax_tem;
 if(row.type1=="GST")
@@ -197,16 +204,23 @@ hashitems[row.Desc]={Description:row.Desc,Total:row.Price,Account:{UID:accountna
   var r=document.getElementById('check').checked;
   var ff=(parseFloat(row.Price)-parseFloat(tax_tem)).toFixed(2);
   money[row.Desc]=ff;
-   exclusive[row.Desc]={Desc:row.Desc,Price:ff,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+  exclusive[row.Desc]={Desc:row.Desc,Price:ff,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+
 
   if(r==false){
    row.Price=(parseFloat(row.Price)-parseFloat(tax_tem)).toFixed(2);
 
+
+//exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+
 }
 else{
 row.Price=row.Price;
- //  exclusive[row.Desc]={Desc:row.Desc,Price:row.Price,type:row.type,type1:row.type1,type2:row.type2,tax:money_tax[row.Desc]}
+
+
 }
+
+
 
 
 }
