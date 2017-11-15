@@ -82,11 +82,12 @@ tothash[row.name]=row.Hours;
 }
 function onAfterDeleteRow(rowKeys) {
 
+for (var x=0;x<rowKeys.length;x++){
+ // alert('The sale you are deleting is: ' + rowKeys);
+delete checkHash[rowKeys[x]];
+delete tothash[rowKeys[x]];
 
-  alert('The sale you are deleting is: ' + rowKeys);
-delete checkHash[rowKeys];
-
-
+}
 }
 
 function onAfterSaveCell(row,cellName,cellValue){
@@ -112,8 +113,10 @@ function onAfterSaveCell(row,cellName,cellValue){
     console.log("iam" +x);
   console.log("afterSaveCell"+JSON.stringify(checkHash[row.name]))
 var f = tothash[row.name];
+
  tot = parseInt(tot)-parseInt(f);
  tot+=parseInt(row.Hours);
+ tothash[row.name]=row.Hours;
 document.getElementById('total').innerHTML=tot;
 }
 
