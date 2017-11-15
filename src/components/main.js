@@ -13,6 +13,7 @@ import Editbill from './editpurchasebill';
 import Newbill from './newbill';
 import Payroll from './payroll';
 import editPayroll from './editpayroll';
+import Multi from './mpayments';
 
 
 // The Main component renders one of the three provided
@@ -40,6 +41,8 @@ export class Main extends React.Component{
       <Route exact path='/Purchasepayment' component={Purchasepayment}/>
 	  <Route path='/Payroll' component={Payroll}/>
 	  <Route path='/editPayroll' component={editPayroll}/>
+	  	  <Route path='/payments' component={Multi}/>
+
 
 
 
