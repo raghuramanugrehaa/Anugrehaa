@@ -78,7 +78,7 @@ var klk=Lines.details;
 console.log(klk);
 console.log("yes"+CV);
 
-axios.post('http://13.126.134.204:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices',{UID:ids,Number:invoiceID,Date:date,Customer:{UID:CV},Lines:klk,RowVersion:RV})
+axios.post('http://35.154.129.58:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices',{UID:ids,Number:invoiceID,Date:date,Customer:{UID:CV},Lines:klk,RowVersion:RV})
   .then(function (response) {
    console.log(response);
      window.location.assign('/');
@@ -228,7 +228,7 @@ class Editsale extends React.Component {
 
 
   ids=parsed.id;
-  url= "http://13.126.134.204:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices/"+ids;
+  url= "http://35.154.129.58:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices/"+ids;
   console.log(ids);
        this.state = {
          posts: [],
@@ -268,7 +268,7 @@ this.setState ( { loaded: false});
    // document.getElementById("date").value = "2014-02-09";
         axios.all([
         axios.get(url),
-        axios.get('http://13.126.134.204:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
+        axios.get('http://35.154.129.58:3001/sales/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
         ])
         .then(axios.spread((invoice,dependencies) => {
         var acc = invoice.data.Lines;

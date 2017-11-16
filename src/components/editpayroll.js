@@ -161,7 +161,7 @@ Object.keys(checkHash).forEach(function (key) {
 
 
 var klk=Lines.details;
-axios.put('http://13.126.134.204:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet/'+ids,{Employee:{UID:ids},StartDate:d0,EndDate:d6,Lines:klk})
+axios.put('http://35.154.129.58:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet/'+ids,{Employee:{UID:ids},StartDate:d0,EndDate:d6,Lines:klk})
   .then(function (response) {
    console.log(response);
      window.location.assign('/payroll');
@@ -195,8 +195,8 @@ handleChange(event) {
    this.setState ({ loaded: false});
         axios.all([
 
-        axios.get('http://13.126.134.204:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet/'+ids+"?StartDate="+d0),
-        axios.get('http://13.126.134.204:4001/timesheet/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90')
+        axios.get('http://35.154.129.58:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet/'+ids+"?StartDate="+d0),
+        axios.get('http://35.154.129.58:4001/timesheet/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90')
       ]).then(axios.spread((res,dep) =>{
                   this.setState  ({ loaded: true});
    console.log("data"+JSON.stringify(res));
@@ -227,8 +227,8 @@ r_data=[];
   this.setState ({ loaded: false});
        axios.all([
 
-       axios.get('http://13.126.134.204:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet/'+ids+"?StartDate="+d0),
-       axios.get('http://13.126.134.204:4001/timesheet/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90')
+       axios.get('http://35.154.129.58:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet/'+ids+"?StartDate="+d0),
+       axios.get('http://35.154.129.58:4001/timesheet/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90')
      ]).then(axios.spread((res,dep) =>{
 		             this.setState  ({ loaded: true});
 console.log("data"+JSON.stringify(res));

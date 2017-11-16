@@ -20,7 +20,7 @@ constructor(props) {
 
 componentDidMount() {
 	this.setState ( { loaded: false});
-   axios.get('http://13.126.134.204:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices'
+   axios.get('http://35.154.129.58:3001/sales/e3152784-4811-4f2e-9a4f-884f3439db90/invoices'
    ).then(res => {
 
        const posts = res.data.Items;

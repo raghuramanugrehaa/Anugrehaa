@@ -42,7 +42,7 @@ var g=getWeek(new Date(R_date));
 var f=g.getMonth()+1;
 R_date=g.getDate()+"-"+f+"-"+g.getFullYear();
 console.log("get"+g);
-axios.get('http://13.126.134.204:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet?StartDate='+R_date
+axios.get('http://35.154.129.58:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet?StartDate='+R_date
 ).then(res => {
   var data = res.data.Items;
 var acc=[];
@@ -93,7 +93,7 @@ handleChange(event) {
   }
 componentDidMount() {
 	this.setState ( { loaded: false});
-   axios.get(`http://13.126.134.204:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet`
+   axios.get(`http://35.154.129.58:4001/timesheet/e3152784-4811-4f2e-9a4f-884f3439db90/payroll/timesheet`
    ).then(res => {
 
        var data = res.data.Items;

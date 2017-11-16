@@ -260,7 +260,7 @@ class Newpurchase extends React.Component {
      this.handleClick = this.handleClick.bind(this);
      this.handleClick1 = this.handleClick1.bind(this);
      this.handleChange = this.handleChange.bind(this);
-     url= "http://13.126.134.204:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/";
+     url= "http://35.154.129.58:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/";
      this.state = {
        posts: [],
        accounts: [],
@@ -345,7 +345,7 @@ console.log("no"+JSON.stringify(klk));
 this.setState ( { loaded: true});
 var g=document.getElementById("check").checked;
 
-axios.post('http://13.126.134.204:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber,IsTaxInclusive:true,Supplier:{UID:supplier},Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
+axios.post('http://35.154.129.58:4000/purchase/e3152784-4811-4f2e-9a4f-884f3439db90/order',{Date:date,SupplierInvoiceNumber:supplierInvoiceNumber,IsTaxInclusive:true,Supplier:{UID:supplier},Lines:klk,Comment:com,ShippingMethod:ship,OrderDeliveryStatus:del_status,PromisedDate:pm_date,ShipToAddress:addr,Terms:{PaymentIsDue:ter},JournalMemo:mem,OrderDeliveryStatus:dev})
 .then(function (response) {
    console.log(response);
      window.location.assign('/purchase');

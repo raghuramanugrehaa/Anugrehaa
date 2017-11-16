@@ -90,7 +90,7 @@ var PI=document.getElementById('SupplierInvoiceNumber').value;
 console.log(del_status);
 var pm_date = document.getElementById("promise_date").value;
 var tttax=parseInt(document.getElementById('tax_per').value);
-axios.post('http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:PI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
+axios.post('http://35.154.129.58:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill',{UID:ids,Number:invoiceID,Date:date,SupplierInvoiceNumber:PI ,Supplier:{UID:Supplier},Lines:klk,RowVersion:RV,Freight:fre_amount,FreightTaxCode:{UID:fre_tax},TotalTax : tttax,Comment:com,ShippingMethod:ship,PromisedDate:pm_date,ShipToAddress:addr,JournalMemo:mo,Terms:{PaymentIsDue:te}})
   .then(function (response) {
    console.log(response);
      window.location.assign('/bill');
@@ -314,7 +314,7 @@ class Editpurchase extends React.Component {
 
 
   ids=parsed.id;
-  url= "http://13.126.134.204:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill/"+ids;
+  url= "http://35.154.129.58:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439db90/bill/"+ids;
   console.log(ids);
        this.state = {
          posts: [],
@@ -386,7 +386,7 @@ this.setState ( { loaded: false});
    // document.getElem  entById("date").value = "2014-02-09";
         axios.all([
         axios.get(url),
-        axios.get('http://13.126.134.204:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
+        axios.get('http://35.154.129.58:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
         ])
         .then(axios.spread((invoice,dependencies) => {
         var acc = invoice.data.Lines;

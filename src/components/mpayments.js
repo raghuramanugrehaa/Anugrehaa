@@ -4,10 +4,89 @@ import axios from "axios";
 import Loader from 'react-loader';
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 var termhash={};
-
+var acchash={};
+var tothash={};
+var p_data ={};
+var id="";
+var Lines = {
+    details: []
+};
 
 const queryString = require('query-string');
 
+
+const cellEditProp = {
+  mode: 'click',
+  blurToSave: true,
+  afterSaveCell: onAfterSaveCell
+
+};
+
+function handleClick(e){
+e.preventDefault();
+var date = document.getElementById("date").value;
+console.log("date"+date);
+var amount = document.getElementById("Amount").value;
+var sup = document.getElementById("supplier").value;
+if (date==""){
+alert("select date");
+}
+else if(amount == "" )
+{
+alert("Total Amount cannot be null ");
+}
+else
+{
+var tot=0;
+Object.keys(tothash).forEach(function (key) {
+tot += parseInt(tothash[key]);
+console.log(tot);
+
+})
+if(tot<amount||tot>amount)
+{
+alert("check  Amount applied  ");
+}
+else{
+Object.keys(p_data).forEach(function (key) {
+    var value = p_data[key]
+    var ll=value
+
+    console.log("jhg"+value)
+    Lines.details.push(ll)
+
+    // iteration code
+})
+
+var klk=Lines.details;
+    console.log(klk);
+axios.post('http://35.154.129.58:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments',{PayFrom:"Account",Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Supplier:{UID:id},Date:date,Lines:klk})
+  .then(function (response) {
+   console.log(response);
+     window.location.assign('/payments');
+  })
+  .catch(function (error) {
+    console.log(error.response);
+  });
+
+
+}
+}
+}
+
+
+function onAfterSaveCell(row,cellName,cellValue){
+  var p = acchash[row.Number];
+  if(row.Amount==""||row.Amount<0)
+  row.Amount=0;
+console.log(p);
+p_data[row.Number]={Purchase:{UID:p},AmountApplied:row.Amount}
+console.log(p_data[row.Number]);
+
+tothash[row.Number]=row.Amount;
+
+
+}
 class Payments extends React.Component {
 
 
@@ -24,16 +103,17 @@ class Payments extends React.Component {
   handleChange(event) {
     // this.setState({datem: event.target.value});
 
-var id = document.getElementById('supplier').value;
+ id = document.getElementById('supplier').value;
+console.log("yes"+termhash[id]);
 var r_data =[];
+document.getElementById("payee").innerHTML=termhash[id];
+document.getElementById("Memo").innerHTML="Payment;"+termhash[id];
 
-     this.setState ({ loaded: false});
 
-
-          axios.get('http://13.126.134.204:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments/'+id)
+          axios.get('http://35.154.129.58:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments/'+id)
 
         .then(res =>{
-                    this.setState  ({ loaded: true});
+
      console.log("data"+JSON.stringify(res));
      var name=res.data.Items;
 
@@ -41,10 +121,9 @@ var r_data =[];
 
 
      for (var y=0;y<name.length;y++){
-var kl=name[y].Lines;
-for(var e=0;e<kl.length;kl++)
-     r_data.push({Description:kl[e].Description,Total:kl[e].Total})
 
+     r_data.push({UID:name[y].UID,Number:name[y].Number,SupplierInvoiceNumber:name[y].SupplierInvoiceNumber,Date:name[y].Date,BalanceDueAmount:name[y].BalanceDueAmount})
+        acchash[name[y].Number]=name[y].UID
      }
 
      this.setState({r_d:r_data});
@@ -54,10 +133,13 @@ for(var e=0;e<kl.length;kl++)
 
   }
 
+
+
+
     componentDidMount() {
     this.setState ({ loaded: false});
     var arrTen = [];
-      axios.get('http://13.126.134.204:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
+      axios.get('http://35.154.129.58:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
         .then(res => {
 		             this.setState  ({ loaded: true});
 
@@ -67,14 +149,14 @@ for(var e=0;e<kl.length;kl++)
                     arrTen.push(<option value="Select Supplier">Select Supplier  </option>);
 
                        arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
-                              // termhash[result[k].UID]=result[k].PaymentIsDue;
+                               termhash[result[k].UID]=result[k].Name;
 
 
                              }
                              else{
 
                                arrTen.push(<option key={result[k].UID} value={result[k].UID}> {result[k].Name} </option>);
-                                     //  termhash[result[k].UID]=result[k].PaymentIsDue;
+                                      termhash[result[k].UID]=result[k].Name;
                              }
                    }
 this.setState({pos:arrTen})
@@ -107,29 +189,30 @@ const options = {
 <label for="cheque" style={{'padding-top':'10', 'padding-left':'5%'}}>Cheque No: </label>
     <input type="text" className="form-control col-md-2"  style={{'padding-left':'10','height':'40'}} id="cheque"   placeholder="Enter cheque No" />
 <div style={{'margin-left':'40'}}>
- <Button bsStyle="success" >Save</Button>
+ <Button bsStyle="success" onClick={handleClick} >Save</Button>
       </div>
 </div>
 <br></br>
 <div className="form-inline">
      <label for="payee">Payee:</label>
-<p id='payee'></p>
+<p id='payee' style={{'padding-top':'15','padding-left':'10'}}></p>
 <label for="memo" style={{'padding-top':'10', 'padding-left':'15%'}}>Memo: </label>
-<p id="Memo"> </p>
+<p id="Memo"style={{'padding-top':'20','padding-left':'10'}} > </p>
 
-          <label for="Amount" style={{'padding-top':'10', 'padding-left':'25%'}} >Amount:</label>
+          <label for="Amount" style={{'padding-top':'10', 'padding-left':'10%'}} >Amount:</label>
               <input type="number" className="form-control col-md-2"  style={{'padding-left':'10'}} id="Amount"   placeholder="Enter Amount" />
 
 </div>
 <br></br>
 
-<BootstrapTable   data={this.state.r_d}>
+<BootstrapTable   data={this.state.r_d} cellEdit={ cellEditProp }>
 
-                <TableHeaderColumn width="30%" dataField='Description' isKey={true}  >Supplier Invoice Number</TableHeaderColumn>
-                 <TableHeaderColumn width="30%"  dataField='Date'   >Date</TableHeaderColumn>
-                 <TableHeaderColumn width="30%" dataField='Total' editable={true } dataAlign="Center" >Amount</TableHeaderColumn>
-                  <TableHeaderColumn width="30%" dataField='Amount' editable={true } dataAlign="Center" >Discount</TableHeaderColumn>
-                    <TableHeaderColumn width="30%" dataField='Amount' editable={true } dataAlign="Center" >Total owed</TableHeaderColumn>
+                <TableHeaderColumn width="30%" dataField='SupplierInvoiceNumber' isKey={true}  >Supplier Invoice Number</TableHeaderColumn>
+                 <TableHeaderColumn width="30%"  dataField='Number'  editable={false }  >Number</TableHeaderColumn>
+                 <TableHeaderColumn width="30%"  dataField='Date'  editable={false } >Date</TableHeaderColumn>
+                 <TableHeaderColumn width="30%" dataField='BalanceDueAmount' editable={false } dataAlign="Center" >Amount</TableHeaderColumn>
+                  <TableHeaderColumn width="30%" dataField='Amount2' editable={false } dataAlign="Center" >Discount</TableHeaderColumn>
+                    <TableHeaderColumn width="30%" dataField='Amount1' editable={false } dataAlign="Center" >Total owed</TableHeaderColumn>
                 <TableHeaderColumn width="30%" dataField='Amount' editable={true } dataAlign="Center" >Amount Applied</TableHeaderColumn>
 
            </BootstrapTable>
