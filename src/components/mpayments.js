@@ -278,8 +278,6 @@ const options = {
                  <TableHeaderColumn width="30%"  dataField='Number'  editable={false }  >Number</TableHeaderColumn>
                  <TableHeaderColumn width="30%"  dataField='Date'  editable={false } >Date</TableHeaderColumn>
                  <TableHeaderColumn width="30%" dataField='BalanceDueAmount' editable={false } dataAlign="Center" >Amount</TableHeaderColumn>
-                  <TableHeaderColumn width="30%" dataField='Discount' editable={false } dataAlign="Center" >Discount</TableHeaderColumn>
-                    <TableHeaderColumn width="30%" dataField='Owed' editable={false } dataAlign="Center" >Total owed</TableHeaderColumn>
                 <TableHeaderColumn width="30%" dataField='Amount' editable={true } dataAlign="Center" >Amount Applied</TableHeaderColumn>
 
            </BootstrapTable>

@@ -58,20 +58,39 @@ function getWeek(today){
 
 function onAfterInsertRow(row) {
 var l=catHash[row.name];
-if(row.day1==""||row.day1>24)
+if(row.day1==""||row.day1>24){
+alert("enter hours correctly");
 row.day1=0;
-if(row.day2==""||row.day2>24)
+}
+if(row.day2==""||row.day2>24){
+alert("enter hours correctly");
 row.day2=0;
+}
 if(row.day3==""||row.day3>24)
+{
+alert("enter hours correctly");
 row.day3=0;
+}
 if(row.day4==""||row.day4>24)
+{
+alert("enter hours correctly");
 row.day4=0;
+}
 if(row.day5==""||row.day5>24)
+{
+alert("enter hours correctly");
 row.day5=0;
+}
 if(row.day6==""||row.day6>24)
+{
+alert("enter hours correctly");
 row.day6=0;
+}
 if(row.day7==""||row.day7>24)
+{
+alert("enter hours correctly");
 row.day7=0;
+}
 
 row.Hours=parseInt(row.day1)+parseInt(row.day2)+parseInt(row.day3)+parseInt(row.day4)+parseInt(row.day5)+parseInt(row.day6)+parseInt(row.day7)
 tot+=parseInt(row.Hours);
@@ -93,19 +112,40 @@ delete tothash[rowKeys[x]];
 function onAfterSaveCell(row,cellName,cellValue){
   var l=catHash[row.name];
   if(row.day1==""||row.day1>24)
+  {
+  alert("enter hours correctly");
   row.day1=0;
+  }
   if(row.day2==""||row.day2>24)
+  {
+  alert("enter hours correctly");
   row.day2=0;
+  }
   if(row.day3==""||row.day3>24)
+  {
+  alert("enter hours correctly");
   row.day3=0;
+  }
   if(row.day4==""||row.day4>24)
+  {
+  alert("enter hours correctly");
   row.day4=0;
+  }
   if(row.day5==""||row.day5>24)
+  {
+  alert("enter hours correctly");
   row.day5=0;
+  }
   if(row.day6==""||row.day6>24)
+  {
+  alert("enter hours correctly");
   row.day6=0;
+  }
   if(row.day7==""||row.day7>24)
+  {
+  alert("enter hours correctly");
   row.day7=0;
+  }
 
   row.Hours=parseInt(row.day1)+parseInt(row.day2)+parseInt(row.day3)+parseInt(row.day4)+parseInt(row.day5)+parseInt(row.day6)+parseInt(row.day7)
   checkHash[row.name]={PayrollCategory:{UID:l},Entries:[{Date:d0,Hours:row.day1,Processed:false},{Date:d1,Hours:row.day2,Processed:false},{Date:d2,Hours:row.day3,Processed:false},{Date:d3,Hours:row.day4,Processed:false},{Date:d4,Hours:row.day5,Processed:false},{Date:d5,Hours:row.day6,Processed:false},{Date:d6,Hours:row.day7,Processed:false}]}

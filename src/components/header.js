@@ -28,6 +28,8 @@ export class Header extends React.Component{
                                   <ul className="dropdown-menu">
                                     <li><Link to ='/bill'>Bill</Link></li>
                                     <li><Link to ='/purchase'>Order</Link></li>
+                                    <li><Link to ='/payments'>Payemts</Link></li>
+
                                   </ul>
                                 </li>
                           <li style={{"margin-left":"20px"}}><Link to='/Payroll'>Time Sheets</Link></li>
