@@ -8,6 +8,7 @@ var acchash={};
 var tothash={};
 var p_data ={};
 var id="";
+
 var Lines = {
     details: []
 };
@@ -28,25 +29,38 @@ var date = document.getElementById("date").value;
 console.log("date"+date);
 var amount = document.getElementById("Amount").value;
 var sup = document.getElementById("supplier").value;
+var stat = document.getElementById("status").value;
+var fcharge = document.getElementById("finance").value;
+console.log("dropdopw"+stat)
 if (date==""){
 alert("select date");
 }
-else if(amount == "" )
+else if(stat=="Select Bill Devlivery Status"){
+alert("please select Delivery Status")
+}
+else if(amount == "")
 {
 alert("Total Amount cannot be null ");
 }
 else
 {
+
+ if(fcharge=="")
+{
+document.getElementById('finance').value = 0 ;
+}
 var tot=0;
 Object.keys(tothash).forEach(function (key) {
 tot += parseInt(tothash[key]);
 console.log(tot);
 
 })
+tot=parseInt(tot+fcharge)
 if(tot<amount||tot>amount)
 {
 alert("check  Amount applied  ");
 }
+
 else{
 Object.keys(p_data).forEach(function (key) {
     var value = p_data[key]
@@ -59,8 +73,8 @@ Object.keys(p_data).forEach(function (key) {
 })
 
 var klk=Lines.details;
-    console.log(klk);
-axios.post('http://35.154.129.58:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments',{PayFrom:"Account",Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Supplier:{UID:id},Date:date,Lines:klk})
+    console.log("yout"+klk);
+axios.post('http://35.154.129.58:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments',{PayFrom:"Account",Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Supplier:{UID:id},Date:date,Lines:klk,DeliveryStatus:stat})
   .then(function (response) {
    console.log(response);
      window.location.assign('/payments');
@@ -75,7 +89,26 @@ axios.post('http://35.154.129.58:4000/purchase/payment/e3152784-4811-4f2e-9a4f-8
 }
 
 
+
+
 function onAfterSaveCell(row,cellName,cellValue){
+
+/*if (row.Discount == "")
+{
+row.Discount = 0;
+row.Owed =0;
+}
+else
+{
+row.Owed = parseInt(row.BalanceDueAmount)- parseInt(row.Discount);
+}
+
+if (parseInt(row.Owed)<parseInt(row.Amount))
+{
+alert("unbalanced amount")
+}
+else
+{*/
   var p = acchash[row.Number];
   if(row.Amount==""||row.Amount<0)
   row.Amount=0;
@@ -85,14 +118,29 @@ console.log(p_data[row.Number]);
 
 tothash[row.Number]=row.Amount;
 
+var pot=0;
+Object.keys(tothash).forEach(function (key) {
+pot += parseInt(tothash[key]);
+console.log(pot);
 
+})
+document.getElementById("applied").value = pot;
+var am = document.getElementById("Amount").value;
+document.getElementById("bal").value =  parseInt(am) - parseInt(pot) ;
 }
+
+//}
+
+
+
+
 class Payments extends React.Component {
 
 
  constructor(props) {
      super(props);
           this.handleChange = this.handleChange.bind(this);
+          this.onChange1 = this.onChange1.bind(this)
     this.state = {
        posts: [],
 
@@ -133,12 +181,19 @@ document.getElementById("Memo").innerHTML="Payment;"+termhash[id];
 
   }
 
+onChange1(event){
 
+var x = document.getElementById("Amount").value;
+
+document.getElementById("paid").value = x ;
+
+}
 
 
     componentDidMount() {
     this.setState ({ loaded: false});
     var arrTen = [];
+    var de=[];
       axios.get('http://35.154.129.58:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
         .then(res => {
 		             this.setState  ({ loaded: true});
@@ -159,8 +214,20 @@ document.getElementById("Memo").innerHTML="Payment;"+termhash[id];
                                       termhash[result[k].UID]=result[k].Name;
                              }
                    }
-this.setState({pos:arrTen})
 
+                   var re=res.data.delivery_status;
+                   console.log("checkk"+re);
+                   for (var l =0;l < re.length;l++){
+                     if(l==0){
+                     de.push(<option value="Select Bill Devlivery Status" >Select Bill Devlivery Status  </option>)
+                       de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
+
+                   }
+                     else
+                    de.push(<option key={re[l].value} value={re[l].value}> {re[l].name} </option>);
+                   }
+this.setState({pos:arrTen})
+this.setState({dstatus:de})
 
         })
 }
@@ -200,7 +267,7 @@ const options = {
 <p id="Memo"style={{'padding-top':'20','padding-left':'10'}} > </p>
 
           <label for="Amount" style={{'padding-top':'10', 'padding-left':'10%'}} >Amount:</label>
-              <input type="number" className="form-control col-md-2"  style={{'padding-left':'10'}} id="Amount"   placeholder="Enter Amount" />
+              <input type="number" className="form-control col-md-2"  style={{'padding-left':'10'}} id="Amount"   placeholder="Enter Amount" onChange={this.onChange1} />
 
 </div>
 <br></br>
@@ -211,8 +278,8 @@ const options = {
                  <TableHeaderColumn width="30%"  dataField='Number'  editable={false }  >Number</TableHeaderColumn>
                  <TableHeaderColumn width="30%"  dataField='Date'  editable={false } >Date</TableHeaderColumn>
                  <TableHeaderColumn width="30%" dataField='BalanceDueAmount' editable={false } dataAlign="Center" >Amount</TableHeaderColumn>
-                  <TableHeaderColumn width="30%" dataField='Amount2' editable={false } dataAlign="Center" >Discount</TableHeaderColumn>
-                    <TableHeaderColumn width="30%" dataField='Amount1' editable={false } dataAlign="Center" >Total owed</TableHeaderColumn>
+                  <TableHeaderColumn width="30%" dataField='Discount' editable={false } dataAlign="Center" >Discount</TableHeaderColumn>
+                    <TableHeaderColumn width="30%" dataField='Owed' editable={false } dataAlign="Center" >Total owed</TableHeaderColumn>
                 <TableHeaderColumn width="30%" dataField='Amount' editable={true } dataAlign="Center" >Amount Applied</TableHeaderColumn>
 
            </BootstrapTable>
@@ -220,13 +287,12 @@ const options = {
   <br></br>
 <div className="row">
      <label for="Delivary" style={{'padding-top':'10'}} >Remittance Advice devilary status:</label>
-<select  name="cars"  className="col-md-2 form-control" id="supplier" style={{'padding-left':'10'}} >
-          <option>hii</option>
-           <option>i</option>
+<select  name="cars"  className="col-md-2 form-control" id="status" style={{'padding-left':'10'}} >
+           {this.state.dstatus}
 </select>
 
      <label for="Total Applied" style={{'padding-left':'4%','padding-top':'10'}} >Total Applied:</label>
-     <input type="number" className="form-control col-md-2"  style={{'padding-left':'10'}} id="Amount Applied"  disabled='disabled' />
+     <input type="number" className="form-control col-md-2"  style={{'padding-left':'10'}} id="applied"  disabled='disabled' />
 
           <label for="Finance " style={{'padding-left':'4%','padding-top':'10'}} >Finance Charge:</label>
                <input type="number" className="form-control col-md-2"  style={{'padding-left':'10'}} id='finance' placeholder="Enter Amount"   />
@@ -234,12 +300,12 @@ const options = {
 <br></br>
 <div className="row">
           <label for="out balance " style={{'padding-left':'41%','padding-top':'10'}} >Out of Balance:</label>
-                         <input type="number" className="form-control col-md-2"  style={{'padding-left':'10'}} id='out bal'  disabled='disabled'  />
+                         <input type="number" className="form-control col-md-2"  style={{'padding-left':'10'}} id='bal'  disabled='disabled'  />
 
 
 
           <label for="Total " style={{'padding-left':'4%','padding-top':'10'}} >Total Paid:</label>
-                         <input type="number" className="form-control col-md-2"  style={{'padding-left':'20'}} id='total' disabled='disabled'   />
+                         <input type="number" className="form-control col-md-2"  style={{'padding-left':'20'}} id='paid' disabled='disabled'   />
 
 
 
