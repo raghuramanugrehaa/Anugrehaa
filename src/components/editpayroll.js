@@ -133,7 +133,7 @@ row.Hours=parseInt(row.day1)+parseInt(row.day2)+parseInt(row.day3)+parseInt(row.
 tot+=parseInt(row.Hours);
 checkHash[row.name]={PayrollCategory:{UID:l},Entries:[{Date:d0,Hours:row.day1,Processed:false},{Date:d1,Hours:row.day2,Processed:false},{Date:d2,Hours:row.day3,Processed:false},{Date:d3,Hours:row.day4,Processed:false},{Date:d4,Hours:row.day5,Processed:false},{Date:d5,Hours:row.day6,Processed:false},{Date:d6,Hours:row.day7,Processed:false}]}
 console.log("afterSaveCell"+JSON.stringify(checkHash[row.name]))
-document.getElementById('total').value=tot;
+document.getElementById('total').innerHTML=tot;
 tothash[row.name]=row.Hours;
 }
 function onAfterDeleteRow(rowKeys) {
@@ -227,7 +227,7 @@ var f = tothash[row.name];
  tot = parseInt(tot)-parseInt(f);
  tot+=parseInt(row.Hours);
  tothash[row.name]=row.Hours;
-document.getElementById('total').value=tot;
+document.getElementById('total').innerHTML=tot;
 }
 
 
@@ -387,7 +387,7 @@ r_data=[];
 
 
 
-document.getElementById('total').value=tot;
+document.getElementById('total').innerHTML=tot;
 //filtering wage categories
 
 var m=dep.data.employeePayrollDetails;
@@ -473,7 +473,7 @@ this.setState({day1:n})
           <TableHeaderColumn width="20%" dataField='day5' >Fri {this.state.s5}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day6' >Sat {this.state.s6}</TableHeaderColumn>
           <TableHeaderColumn width="20%" dataField='day7' >Sun {this.state.s7}</TableHeaderColumn>
-           <TableHeaderColumn width="40%" dataField='Hours' editable={true } dataAlign="Center">Total HRS </TableHeaderColumn>
+           <TableHeaderColumn width="40%" dataField='Hours' editable={false} dataAlign="Center">Total HRS </TableHeaderColumn>
 
 
       </BootstrapTable>
@@ -481,8 +481,8 @@ this.setState({day1:n})
 <br></br>
 <br></br>
 <div className="row">
-<label for = "total" style={{'height':'40','padding-top':'10','margin-left':'66%'}} > Total Hours:</label>
-< input type="number" className="col-md-2 form-control" style={{'height':'40','padding-top':'10','margin-left':'20'}} id="total" disabled="disable" />
+<label for = "total" style={{'height':'40','padding-top':'10','margin-left':'86%'}} > Total Hours:</label>
+<p style={{'height':'40','padding-top':'10','margin-left':'20'}} id="total" ></p>
 </div>
 </div>
 </Loader>

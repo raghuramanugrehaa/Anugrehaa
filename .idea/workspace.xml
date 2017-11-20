@@ -3,14 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a24ee07c-6bc4-4075-b338-1e69bdc41a57" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/billpurchase.js" afterPath="$PROJECT_DIR$/src/components/billpurchase.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/editpayroll.js" afterPath="$PROJECT_DIR$/src/components/editpayroll.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/editpurchase.js" afterPath="$PROJECT_DIR$/src/components/editpurchase.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/editpurchasebill.js" afterPath="$PROJECT_DIR$/src/components/editpurchasebill.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/header.js" afterPath="$PROJECT_DIR$/src/components/header.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/mpayments.js" afterPath="$PROJECT_DIR$/src/components/mpayments.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/newbill.js" afterPath="$PROJECT_DIR$/src/components/newbill.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/newpurchase.js" afterPath="$PROJECT_DIR$/src/components/newpurchase.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -77,8 +70,8 @@
       <file leaf-file-name="editpayroll.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/editpayroll.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="389" column="38" lean-forward="false" selection-start-line="389" selection-start-column="38" selection-end-line="389" selection-end-column="38" />
+            <state relative-caret-position="315">
+              <caret line="475" column="75" lean-forward="false" selection-start-line="475" selection-start-column="75" selection-end-line="475" selection-end-column="75" />
               <folding />
             </state>
           </provider>
@@ -778,8 +771,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/editpayroll.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="389" column="38" lean-forward="false" selection-start-line="389" selection-start-column="38" selection-end-line="389" selection-end-column="38" />
+        <state relative-caret-position="315">
+          <caret line="475" column="75" lean-forward="false" selection-start-line="475" selection-start-column="75" selection-end-line="475" selection-end-column="75" />
           <folding />
         </state>
       </provider>
