@@ -357,7 +357,7 @@ axios.post('http://35.154.129.58:4000/purchaseb/e3152784-4811-4f2e-9a4f-884f3439
    console.log("hi"+event.target.value)
   var k=termhash[event.target.value]
   console.log("am"+strUser)
-  document.getElementById('Terms').value=k;
+  document.getElementById('Terms').innerHTML=k;
   document.getElementById("Memo").value="purchase,"+strUser
   //this.setState({supterm: event.target.value});
   }
@@ -557,7 +557,7 @@ this.setState({salesheads:heads})
 <label for="note" style={{'padding-top':'10'}}>Ship To:</label>
     <textarea id="note" className="form-control col-md-3" style={{"height":"50px",'width':'10%'} } />
     <label for="Terms" style={{ 'margin-left':'20','padding-top':'10'}} >Terms: </label>
-    <input type="text" disabled='disabled' className="col-md-2 form-control"   style={{'height':'40','padding-top':'10px','margin-left':'10'}} id="Terms"  />
+    <p  style={{'height':'40','padding-top':'10px','margin-left':'10'}} id="Terms"  />
 
 <label style={{'margin-left':'20','padding-top':'10'}}><input type="checkbox" id="check" onClick={this.handleClick1}  />Tax Inclusive</label>
 <label for="Journal Memo" style={{ 'margin-left':'20','padding-top':'10'}}>Journal Memo:</label>

@@ -28,7 +28,7 @@ export class Header extends React.Component{
                                   <ul className="dropdown-menu">
                                     <li><Link to ='/bill'>Bill</Link></li>
                                     <li><Link to ='/purchase'>Order</Link></li>
-                                    <li><Link to ='/payments'>Payemts</Link></li>
+                                    <li><Link to ='/payments'>Payments</Link></li>
 
                                   </ul>
                                 </li>

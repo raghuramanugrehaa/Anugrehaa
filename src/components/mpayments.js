@@ -4,6 +4,8 @@ import axios from "axios";
 import Loader from 'react-loader';
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 var termhash={};
+var cashhash={};
+
 var acchash={};
 var tothash={};
 var p_data ={};
@@ -31,6 +33,7 @@ var amount = document.getElementById("Amount").value;
 var sup = document.getElementById("supplier").value;
 var stat = document.getElementById("status").value;
 var fcharge = document.getElementById("finance").value;
+var ack = document.getElementById("Account").value;
 console.log("dropdopw"+stat)
 if (date==""){
 alert("select date");
@@ -74,7 +77,7 @@ Object.keys(p_data).forEach(function (key) {
 
 var klk=Lines.details;
     console.log("yout"+klk);
-axios.post('http://35.154.129.58:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments',{PayFrom:"Account",Account:{UID:"ff5fccac-6897-425e-87fd-dbb474c542f4"},Supplier:{UID:id},Date:date,Lines:klk,DeliveryStatus:stat})
+axios.post('http://35.154.129.58:4000/purchase/payment/e3152784-4811-4f2e-9a4f-884f3439db90/supplierPayments',{PayFrom:"Account",Account:{UID:ack},Supplier:{UID:id},Date:date,Lines:klk,DeliveryStatus:stat})
   .then(function (response) {
    console.log(response);
      window.location.assign('/payments');
@@ -140,6 +143,7 @@ class Payments extends React.Component {
  constructor(props) {
      super(props);
           this.handleChange = this.handleChange.bind(this);
+          this.handleChange1 = this.handleChange1.bind(this);
           this.onChange1 = this.onChange1.bind(this)
     this.state = {
        posts: [],
@@ -181,6 +185,20 @@ document.getElementById("Memo").innerHTML="Payment;"+termhash[id];
 
   }
 
+
+    handleChange1(event) {
+
+    var p = document.getElementById("Account").value;
+    var r =  cashhash[p];
+    document.getElementById("balance").innerHTML = r;
+
+
+
+
+
+    }
+
+
 onChange1(event){
 
 var x = document.getElementById("Amount").value;
@@ -194,9 +212,28 @@ document.getElementById("paid").value = x ;
     this.setState ({ loaded: false});
     var arrTen = [];
     var de=[];
+    var acc=[];
       axios.get('http://35.154.129.58:4000/purchase/dependencies/e3152784-4811-4f2e-9a4f-884f3439db90/')
         .then(res => {
 		             this.setState  ({ loaded: true});
+
+ var result1=res.data.main;
+                for (var k = 0; k < result1.length; k++) {
+                  if(k==0){
+                    acc.push(<option value="Select Account">Select Account</option>);
+
+                       acc.push(<option key={result1[k].UID} value={result1[k].UID}> {result1[k].Name} </option>);
+                               cashhash[result1[k].UID]=result1[k].account;
+
+
+                             }
+                             else{
+
+                               acc.push(<option key={result1[k].UID} value={result1[k].UID}> {result1[k].Name} </option>);
+                                      cashhash[result1[k].UID]=result1[k].account;
+                             }
+                   }
+
 
                var result=res.data.Suppliers;
                 for (var k = 0; k < result.length; k++) {
@@ -228,7 +265,7 @@ document.getElementById("paid").value = x ;
                    }
 this.setState({pos:arrTen})
 this.setState({dstatus:de})
-
+this.setState({main:acc})
         })
 }
   render() {
@@ -245,6 +282,16 @@ const options = {
 	          <Loader loaded={this.state.loaded}>
 
  <div className="container">
+ <div className = "row">
+ <label for="Account" style={{'padding-top':'10'}}>Pay from Account: </label>
+           <select  name="cars"  className="col-md-2 form-control" id="Account" style={{'padding-left':'10'}}  onChange={this.handleChange1}>
+ {this.state.main}
+ </select>
+  <label for="Balance" style={{'padding-top':'10','padding-left':'40%'}}>Balance: </label>
+  <p id= "balance"  style={{'padding-top':'10','padding-left':'10'}}></p>
+
+ </div>
+ <br></br>
  <div className="row">
 <label for="supplier" style={{'padding-top':'10'}}>Select Supplier: </label>
           <select  name="cars"  className="col-md-2 form-control" id="supplier" style={{'padding-left':'10'}}  onChange={this.handleChange}>

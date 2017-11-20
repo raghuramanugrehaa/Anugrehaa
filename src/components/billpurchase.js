@@ -26,7 +26,7 @@ componentDidMount() {
    ).then(res => {
 
        const posts = res.data.Items;
-
+console.log(posts);
        this.setState({posts});
 	          this.setState  ({ loaded: true});
 //console.log("checcd "+JSON.stringify(posts));
