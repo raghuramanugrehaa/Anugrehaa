@@ -42,14 +42,31 @@ const cellEditProp = {
 
 function getWeek(today){
   var result=[];
-  var dayOfWeekStartingSundayZeroIndexBased = today.getDay(); // 0 : Sunday ,1 : Monday,2,3,4,5,6 : Saturday
-  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()+1));
-  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()+2));
-  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()+3));
-  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()+4));
-  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()+5));
-  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()+6));
-  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()+7));
+  var da;
+  var f= today.getDay() ;
+  if(f==0)
+  da=3
+  if(f==1)
+  da=4
+  if(f==2){
+  da=5;
+  }
+  if(f==3)
+  da=6
+  if(f==4)
+  da=0
+  if(f==5)
+  da=1
+  if(f==6)
+  da=2
+  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()-da))
+  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()-da+1))
+  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()-da+2))
+  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()-da+3))
+  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()-da+4))
+  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()-da+5))
+  result.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()-da+6))
+
 
  return result;
 }
@@ -334,6 +351,7 @@ r_data=[];
     console.log("KUCH"+week[6].getDate())
     var f=week[0].getMonth()+1;
     d0=week[0].getFullYear()+"-"+f+"-"+week[0].getDate();
+    console.log("pop "+mdate)
   this.setState ({ loaded: false});
        axios.all([
 
@@ -365,7 +383,8 @@ d6=week[6].getFullYear()+"-"+f+"-"+week[6].getDate();
 this.setState({name:name,s1:week[0].getDate(),s2:week[1].getDate(),s3:week[2].getDate(),s4:week[3].getDate(),s5:week[4].getDate(),s6:week[5].getDate(),s7:week[6].getDate(),datem:mdate});
 //Already insertedd
 var we=res.data.Lines;
-
+console.log("leng "+we.length)
+if(we.length!=0){
 for (var y=0;y<we.length;y++){
 var mm=we[y].Entries;
 checkHash[we[y].PayrollCategory.Name]={PayrollCategory:{UID:we[y].PayrollCategory.UID},Entries:[{Date:mm[0].Date,Hours:mm[0].Hours,Processed:mm[0].Processed},{Date:mm[1].Date,Hours:mm[1].Hours,Processed:mm[1].Processed},{Date:mm[2].Date,Hours:mm[2].Hours,Processed:mm[2].Processed},{Date:mm[3].Date,Hours:mm[3].Hours,Processed:mm[3].Processed},{Date:mm[4].Date,Hours:mm[4].Hours,Processed:mm[4].Processed},{Date:mm[5].Date,Hours:mm[5].Hours,Processed:mm[5].Processed},{Date:mm[6].Date,Hours:mm[6].Hours,Processed:mm[6].Processed}]}
@@ -375,7 +394,7 @@ console.log("iam tot "+tot);
 console.log("ll "+ll)
 r_data.push({name:we[y].PayrollCategory.Name,day1:mm[0].Hours,day2:mm[1].Hours,day3:mm[2].Hours,day4:mm[3].Hours,day5:mm[4].Hours,day6:mm[5].Hours,day7:mm[6].Hours,Hours:ll})
 tothash[we[y].PayrollCategory.Name]=ll;
-
+}
 }
 
 this.setState({r_d:r_data});
@@ -439,11 +458,13 @@ this.setState({day1:n})
      );
    }
 
+
+
   render() {
     const options = {
       afterInsertRow: onAfterInsertRow,
       afterDeleteRow: onAfterDeleteRow,
-             insertBtn:this.createCustomInsertButton,
+        insertBtn:this.createCustomInsertButton,
         deleteBtn: this.createCustomDeleteButton
 
      }
@@ -466,13 +487,13 @@ this.setState({day1:n})
                                <br></br>
 <BootstrapTable data={this.state.r_d} cellEdit={ cellEditProp } deleteRow selectRow={ selectRowProp } options={ options } insertRow>
           <TableHeaderColumn width="60%" dataField='name' isKey={true} editable={ { type: 'select', options: {values: this.state.wage1} } } >Wage   Type</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day1' >Mon {this.state.s1}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day2' max='24' >Tue {this.state.s2}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day3' >Wed {this.state.s3}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day4' >Thu {this.state.s4}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day5' >Fri {this.state.s5}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day6' >Sat {this.state.s6}</TableHeaderColumn>
-          <TableHeaderColumn width="20%" dataField='day7' >Sun {this.state.s7}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day1' >THU {this.state.s1}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day2' max='24' >FRI {this.state.s2}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day3' >SAT {this.state.s3}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day4' >SUN {this.state.s4}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day5' >MON {this.state.s5}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day6' >TUE {this.state.s6}</TableHeaderColumn>
+          <TableHeaderColumn width="20%" dataField='day7' >WED {this.state.s7}</TableHeaderColumn>
            <TableHeaderColumn width="40%" dataField='Hours' editable={false} dataAlign="Center">Total HRS </TableHeaderColumn>
 
 

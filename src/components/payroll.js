@@ -14,8 +14,27 @@ var Lines = {
 };
 function getWeek(today){
   var result;
-  var dayOfWeekStartingSundayZeroIndexBased = today.getDay(); // 0 : Sunday ,1 : Monday,2,3,4,5,6 : Saturday
-  result=new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()+1);
+  var da;
+
+  var f= today.getDay() ;
+
+  if(f==0)
+  da=3
+  if(f==1)
+  da=4
+  if(f==2){
+  da=5;
+  }
+  if(f==3)
+  da=6
+  if(f==4)
+  da=0
+  if(f==5)
+  da=1
+  if(f==6)
+  da=2
+
+  result=new Date(today.getFullYear(), today.getMonth(), today.getDate()-da);
 
 
  return result;
@@ -73,7 +92,7 @@ var pem=data[i].EndDate.split("T");
 sdate=tem[0];
 edate=pem[0];
 
-console.log("i am date"+sdate);
+console.log("yes i "+sdate);
 this.setState({stdate:sdate})
               this.setState({endate:edate});
   acc.push(em);
@@ -117,6 +136,7 @@ var acc=[];
 var tem=data[i].StartDate.split("T");
 var pem=data[i].EndDate.split("T");
 sdate=tem[0];
+console.log("sdate"+sdate);
 edate=pem[0];
 
 		   acc.push(em);
@@ -204,6 +224,9 @@ return(
 
               )
             }
+
+
+
 
     render() {
 //console.log("ffinal "+this.state.posts);
